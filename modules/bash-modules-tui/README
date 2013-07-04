@@ -1,0 +1,19 @@
+Very simple module system for bash.
+
+Author: Volodymyr M. Lisivka <vlisivka@gmail.com>
+
+Home page: http://www.assembla.com/spaces/show/bash-modules
+
+
+Usagge
+
+. import.sh module[...]
+
+OR
+
+source import.sh module[...]
+
+
+Bash modules should work OK wih -u and -e shell options. It is good idea
+to always use "-u" in your own applications.
+
