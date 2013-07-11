@@ -16,6 +16,10 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 #BuildRequires:
 Requires:       bash
 
+# For arguments module, for built-in documentation to workd
+Requires:       perl
+Requires:       perl-Pod-Perldoc
+
 %define  homedir /usr/share/bash-modules
 
 %description

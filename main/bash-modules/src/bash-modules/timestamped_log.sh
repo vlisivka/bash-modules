@@ -147,7 +147,7 @@ printed with message level higlighted in green.
   }
 
   debug() {
-    local ="`date "+$__timestamped_log_format"`"
+    local TIMESTAMP="`date "+$__timestamped_log_format"`"
    [ "${__log__DEBUG:-}" != yes ] || echo "$TIMESTAMP DEBUG [$__log__APP] ${*:-}"
   }
 
