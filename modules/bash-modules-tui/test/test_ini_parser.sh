@@ -3,6 +3,7 @@
 set -ue
 
 __IMPORT__BASE_PATH=../src/bash-modules
+export PATH="../src:$PATH"
 . import.sh log unit mktemp ini_parser
 
 EXIT_CODE=0

@@ -1,6 +1,6 @@
-#!/bin/bash
+##!/bin/bash
 #
-# Copyright (c) 2009-2011 Volodymyr M. Lisivka <vlisivka@gmail.com>, All Rights Reserved
+# Copyright (c) 2013 Volodymyr M. Lisivka <vlisivka@gmail.com>, All Rights Reserved
 #
 # This file is part of bash-modules (http://trac.assembla.com/bash-modules/).
 #

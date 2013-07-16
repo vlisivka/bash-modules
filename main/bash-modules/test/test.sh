@@ -3,6 +3,7 @@
 set -ue
 
 export __IMPORT__BASE_PATH=../src/bash-modules
+export PATH="../src:$PATH"
 . ../src/import.sh log
 
 APP_DIR=`dirname "$0"`

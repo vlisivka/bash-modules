@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ue
 . import.sh log arguments
 
 NAME="world"

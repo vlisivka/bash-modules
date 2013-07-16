@@ -3,6 +3,7 @@
 set -ue
 
 __IMPORT__BASE_PATH=../src/bash-modules
+export PATH="../src:$PATH"
 . ../src/import.sh log unit mktemp
 
 setUp() {

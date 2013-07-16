@@ -1,14 +1,12 @@
 
-%{!?svn_revision:%define svn_revision 1}
-
 Name:           bash-modules
-Version:        2.0
+Version:        2.0.2
 Release:        1%{?dist}
 Summary:        Modules for bash
 
 Group:          System Environment/Base
 URL:            http://trac.assembla.com/bash-modules/
-License:        LGPL
+License:        LGPLv2.1+
 Source0:        %{name}.tar.gz
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -26,7 +24,7 @@ Requires:       perl-Pod-Perldoc
 Optional modules to use with bash, like logging, argument parsing, etc.
 
 %prep
-%setup -n %{name}
+%setup -q -n %{name}
 
 
 %build
@@ -46,9 +44,6 @@ install -D src/import.sh "$RPM_BUILD_ROOT%_bindir/import.sh"
 mkdir -p "$RPM_BUILD_ROOT%homedir/"
 cp -a src/bash-modules/* "$RPM_BUILD_ROOT%homedir/"
 
-# Remove .svn directories, if any
-find "$RPM_BUILD_ROOT" -type d -name '.svn' -exec rm -rf '{}' '+'
-
 %clean
 rm -rf "$RPM_BUILD_ROOT"
 
@@ -62,3 +57,5 @@ rm -rf "$RPM_BUILD_ROOT"
 
 
 %changelog
+* Tue Jul 16 2013 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.2-2
+- License tag changed from LGPL to LGPL2.1+
