@@ -1,12 +1,12 @@
 
 Name:           bash-modules
 Version:        2.0.2
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        Modules for bash
 
-Group:          System Environment/Base
+Group:          Development/Libraries/Bash
 URL:            http://trac.assembla.com/bash-modules/
-License:        LGPLv2.1+
+License:        LGPL-2.1+
 Source0:        %{name}.tar.gz
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -57,5 +57,8 @@ rm -rf "$RPM_BUILD_ROOT"
 
 
 %changelog
+* Mon Jul 29 2013  Volodymyr M. Lisivka  <vlisivka@gmail.com> - 2.0.2-3
+- Group changed from "System Environment/Base" to "Development/Libraries/Bash"
+
 * Tue Jul 16 2013 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.2-2
 - License tag changed from LGPL to LGPL2.1+
