@@ -1,4 +1,4 @@
-* 2012-07-04  Volodymyr M. Lisivka  <vlisivka@gmail.com>
+* 2013-07-04  Volodymyr M. Lisivka  <vlisivka@gmail.com>
 - Version 2.0: only core modules are left. All optional modules are removed.
 - Settings module refactored, test cases are added.
 

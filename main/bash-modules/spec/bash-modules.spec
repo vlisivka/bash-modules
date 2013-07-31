@@ -1,18 +1,18 @@
 
 Name:           bash-modules
 Version:        2.0.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Modules for bash
 
-Group:          Development/Libraries/Bash
-URL:            http://trac.assembla.com/bash-modules/
+Group:          System/Libraries
+URL:            https://github.com/vlisivka/bash-modules
 License:        LGPL-2.1+
 Source0:        %{name}.tar.gz
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #BuildRequires:
-Requires:       bash
+Requires:       bash > 3
 
 # For arguments module, for built-in documentation to workd
 Requires:       perl
@@ -57,7 +57,11 @@ rm -rf "$RPM_BUILD_ROOT"
 
 
 %changelog
-* Mon Jul 29 2013  Volodymyr M. Lisivka  <vlisivka@gmail.com> - 2.0.2-3
+* Wed Jul 31 2013 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.2-4
+- Group changed again from to "System/Libraries"
+- URL to home page is changed to github
+
+* Mon Jul 29 2013 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.2-3
 - Group changed from "System Environment/Base" to "Development/Libraries/Bash"
 
 * Tue Jul 16 2013 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.2-2
