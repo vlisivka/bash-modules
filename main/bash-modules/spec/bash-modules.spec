@@ -1,7 +1,7 @@
 
 Name:           bash-modules
-Version:        2.0.2
-Release:        4%{?dist}
+Version:        2.0.3
+Release:        1%{?dist}
 Summary:        Modules for bash
 
 Group:          System/Libraries
@@ -57,6 +57,9 @@ rm -rf "$RPM_BUILD_ROOT"
 
 
 %changelog
+* Thu Nov 27 2014 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.3-1
+- Fix for bash incompatibility with empty arrays and -u setting introduced in bash-4.3.30
+
 * Wed Jul 31 2013 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.2-4
 - Group changed again from to "System/Libraries"
 - URL to home page is changed to github

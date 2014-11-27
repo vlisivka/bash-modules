@@ -124,6 +124,8 @@ Example:
     # Local variables
     local OPTION_DESCRIPTIONS PARSER
     declare -a OPTION_DESCRIPTIONS
+    # Initialize array, because declare -a is not enough anymore for -u opt
+    OPTION_DESCRIPTIONS=( )
 
     # Split arguments list at "--"
     while [ $# -gt 0 ]
