@@ -178,8 +178,8 @@ refresh_menu() {
 }
 
 menu_redraw_border() {
-  local COLUMNS=`tput cols`
-  local LINES=`tput lines`
+  local COLUMNS="$(tput cols)"
+  local LINES="$(tput lines)"
 
   if [ "$x" == "center" ]
   then
@@ -303,7 +303,7 @@ trap "switch_from_alternate_screen; echo -n \"\$T_CURSOR_ON\" " EXIT SIGHUP
 echo -n "$T_CLEAR_ALL"
 
 # Create temporary fifo file
-TEMP_FIFO=`mktemp -t "menu_example.XXXXXXXXXXXXXX.fifo"`
+TEMP_FIFO="$(mktemp -t "menu_example.XXXXXXXXXXXXXX.fifo")"
 rm -f "$TEMP_FIFO"
 mkfifo "$TEMP_FIFO" || {
   error "Cannot create fifo file."

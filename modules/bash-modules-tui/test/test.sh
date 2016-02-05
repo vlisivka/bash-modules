@@ -6,7 +6,7 @@ export __IMPORT__BASE_PATH=../src/bash-modules
 export PATH="../src:$PATH"
 . import.sh log
 
-APP_DIR=`dirname "$0"`
+APP_DIR="$(dirname "$0")"
 EXIT_CODE=0
 
 for I in "$APP_DIR"/test_*.sh

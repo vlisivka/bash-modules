@@ -92,7 +92,7 @@ printed with message level higlighted in green.
   }
 
   error() {
-    local TIMESTAMP="`date "+$__timestamped_log_format"`"
+    local TIMESTAMP="$(date "+$__timestamped_log_format")"
     if [ -t 2 ]
     then
       # STDERR is tty
@@ -106,7 +106,7 @@ printed with message level higlighted in green.
   }
 
   warn() {
-    local TIMESTAMP="`date "+$__timestamped_log_format"`"
+    local TIMESTAMP="$(date "+$__timestamped_log_format")"
     if [ -t 2 ]
     then
       # STDERR is tty
@@ -120,7 +120,7 @@ printed with message level higlighted in green.
   }
 
   info() {
-    local TIMESTAMP="`date "+$__timestamped_log_format"`"
+    local TIMESTAMP="$(date "+$__timestamped_log_format")"
     if [ -t 1 ]
     then
       # STDOUT is tty
@@ -133,7 +133,7 @@ printed with message level higlighted in green.
   }
 
   todo() {
-    local TIMESTAMP="`date "+$__timestamped_log_format"`"
+    local TIMESTAMP="$(date "+$__timestamped_log_format")"
     if [ -t 2 ]
     then
       # STDERR is tty
@@ -147,12 +147,12 @@ printed with message level higlighted in green.
   }
 
   debug() {
-    local TIMESTAMP="`date "+$__timestamped_log_format"`"
+    local TIMESTAMP="$(date "+$__timestamped_log_format")"
    [ "${__log__DEBUG:-}" != yes ] || echo "$TIMESTAMP DEBUG [$__log__APP] ${*:-}"
   }
 
   log_error() {
-    local TIMESTAMP="`date "+$__timestamped_log_format"`"
+    local TIMESTAMP="$(date "+$__timestamped_log_format")"
     local LEVEL="$1" ; shift
     if [ -t 2 ]
     then
@@ -167,7 +167,7 @@ printed with message level higlighted in green.
   }
 
   log_warn() {
-    local TIMESTAMP="`date "+$__timestamped_log_format"`"
+    local TIMESTAMP="$(date "+$__timestamped_log_format")"
     local LEVEL="${1:-WARN}" ; shift
     if [ -t 2 ]
     then
@@ -182,7 +182,7 @@ printed with message level higlighted in green.
   }
 
   log_info() {
-    local TIMESTAMP="`date "+$__timestamped_log_format"`"
+    local TIMESTAMP="$(date "+$__timestamped_log_format")"
     local LEVEL="${1:-INFO}" ; shift
     if [ -t 1 ]
     then

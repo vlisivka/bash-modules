@@ -140,7 +140,7 @@ Example:
     done
 
     # Generate parser and execute it
-    PARSER="`__generate_arguments_parser "${OPTION_DESCRIPTIONS[@]:+${OPTION_DESCRIPTIONS[@]}}"`"
+    PARSER="$(__generate_arguments_parser "${OPTION_DESCRIPTIONS[@]:+${OPTION_DESCRIPTIONS[@]}}")"
     eval "$PARSER" || return 1
     [ $# -eq 0 ] || __parse_arguments_sub "$@"
   }

@@ -232,7 +232,7 @@
     [ "${#__TEST_CASES[@]}" -gt 0 ] || {
       # Then generate list of test cases using compgen
       # As alternative, declare -F | cut -d ' ' -f 3 | grep '^test' can be used
-      __TEST_CASES=( `compgen -A function test` )
+      __TEST_CASES=( $(compgen -A function test) )
     }
 
     local __TEST __EXIT_CODE=0

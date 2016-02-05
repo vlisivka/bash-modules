@@ -59,20 +59,20 @@
 
 # TODO: add more functions
 
-  T_BOLD_ON=`setterm -term $TERM -bold on 2>/dev/null || :`
-  T_BOLD_OFF=`setterm -term $TERM -bold off  2>/dev/null || :`
+  T_BOLD_ON="$(setterm -term $TERM -bold on 2>/dev/null || :)"
+  T_BOLD_OFF="$(setterm -term $TERM -bold off  2>/dev/null || :)"
 
-  T_CURSOR_ON=`setterm -term $TERM -cursor on 2>/dev/null || :`
-  T_CURSOR_OFF=`setterm -term $TERM -cursor off 2>/dev/null || :`
+  T_CURSOR_ON="$(setterm -term $TERM -cursor on 2>/dev/null || :)"
+  T_CURSOR_OFF="$(setterm -term $TERM -cursor off 2>/dev/null || :)"
 
-  T_UNDERLINE_ON=`setterm -term $TERM -underline on 2>/dev/null || :`
-  T_UNDERLINE_OFF=`setterm -term $TERM -underline off 2>/dev/null || :`
+  T_UNDERLINE_ON="$(setterm -term $TERM -underline on 2>/dev/null || :)"
+  T_UNDERLINE_OFF="$(setterm -term $TERM -underline off 2>/dev/null || :)"
 
-  T_REVERSE_ON=`setterm -term $TERM -reverse on 2>/dev/null || :`
-  T_REVERSE_OFF=`setterm -term $TERM -reverse off 2>/dev/null || :`
+  T_REVERSE_ON="$(setterm -term $TERM -reverse on 2>/dev/null || :)"
+  T_REVERSE_OFF="$(setterm -term $TERM -reverse off 2>/dev/null || :)"
 
-  T_CLEAR_ALL=`clear 2>/dev/null || setterm -term $TERM -clear all || :`
-  T_CLEAR_REST=`setterm -term $TERM -clear rest || :`
+  T_CLEAR_ALL="$(clear 2>/dev/null || setterm -term $TERM -clear all || :)"
+  T_CLEAR_REST="$(setterm -term $TERM -clear rest || :)"
   
 }
 

@@ -10,7 +10,7 @@ export PATH="../src:$PATH"
 # Test cases
 
 test_import_from_single_file() {
-  local FILE=`mktemp`
+  local FILE="$(mktemp)"
   echo "TEST=foo" >"$FILE"
 
   import_settings "$FILE"
@@ -21,9 +21,9 @@ test_import_from_single_file() {
 }
 
 test_import_from_multiple_files() {
-  local FILE1=`mktemp`
+  local FILE1="$(mktemp)"
   echo "TEST1=foo" >"$FILE1"
-  local FILE2=`mktemp`
+  local FILE2="$(mktemp)"
   echo "TEST2=bar" >"$FILE2"
 
   import_settings "$FILE1" "$FILE2"
@@ -35,7 +35,7 @@ test_import_from_multiple_files() {
 }
 
 test_import_from_dir() {
-  local DIR=`mktemp -d`
+  local DIR="$(mktemp -d)"
   local FILE1="$DIR/file1.sh"
   echo "TEST1=foo" >"$FILE1"
   local FILE2="$DIR/file2.sh"

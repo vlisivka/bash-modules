@@ -88,7 +88,7 @@ test_empty_value() {
 
 ###############################################
 # Test suite setUp
-INI_FILE=`mktemp -t test_ini_parser-XXXXXXXXXXXXXX.ini`
+INI_FILE="$(mktemp -t test_ini_parser-XXXXXXXXXXXXXX.ini)"
 echo "
 # [Foo] section
 [foo]  
