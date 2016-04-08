@@ -1,6 +1,6 @@
 
 Name:           bash-modules
-Version:        2.0.3
+Version:        2.0.4
 Release:        1%{?dist}
 Summary:        Modules for bash
 
@@ -13,10 +13,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #BuildRequires:
 Requires:       bash > 3
-
-# For arguments module, for built-in documentation to workd
-Requires:       perl
-Requires:       perl-Pod-Perldoc
 
 %define  homedir /usr/share/bash-modules
 
@@ -57,8 +53,8 @@ rm -rf "$RPM_BUILD_ROOT"
 
 
 %changelog
-* Thu Nov 27 2014 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.3-1
-- Fix for bash incompatibility with empty arrays and -u setting introduced in bash-4.3.30
+* Thu Aor 8 2016 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.4-1
+- Dependency on perl (for documentation) is removed.
 
 * Wed Jul 31 2013 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.2-4
 - Group changed again from to "System/Libraries"
