@@ -22,11 +22,10 @@
 [ "${__mktemp__DEFINED:-}" == "yes" ] || {
   __mktemp__DEFINED="yes"
 
-                                                                                  
   mktemp_summary() {
     echo "mktemp implementation in pure bash for portability"
   }
-  
+
   mktemp_usage() {
     echo '
 SYNOPSIS
