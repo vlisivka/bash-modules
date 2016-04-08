@@ -84,6 +84,10 @@ Example:
   echo "--inc option used $TIMES times."
   echo "Arguments count: ${#ARGUMENTS[@]}."
   echo "Arguments: ${ARGUMENTS[@]:+${ARGUMENTS[@]}}."
+
+This module also contains helper function: __END__, which can be used to
+separate source and documentation at end of source. It equivalent of "exit $?".
+
 '
   }
 
@@ -242,6 +246,11 @@ Example:
     "
   }
 
+}
+
+# Helper function, to put at end of source, before documentation part.
+__END__() {
+  exit $?
 }
 
 [ $# -eq 0 ] || parse_arguments "$@"

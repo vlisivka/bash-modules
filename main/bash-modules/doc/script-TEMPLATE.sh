@@ -14,54 +14,20 @@ set -ue
 . import.sh log arguments
 
 # Various settings
-FOO="no"
-BAR=""
-BAZ=( )
-INC=0
-
-# Global variables
-EXIT_CODE=0
+FOO="bar"
 
 # Main logic of this script
 main() {
-
   todo "Implement your logic here."
-
-  info "Is --foo option used?: $FOO"
-  info "Value of --bar option: \"$BAR\"."
-
-  info "Baz count: ${#BAZ[@]}."
-  local I IND=0
-  for I in "${BAZ[@]:+${BAZ[@]}}"
-  do
-    let IND++
-    info "Baz #$IND: \"$I\"."
-  done
-
-  if [ "$INC" -gt 0 ]
-  then
-    info "--inc option used $INC times."
-  else
-    warn "--inc option is not used at all."
-  fi
-
-  info "Arguments count: ${#ARGUMENTS[@]}."
-  local I IND=0
-  for I in "${ARGUMENTS[@]:+${ARGUMENTS[@]}}"
-  do
-    let IND++
-    info "Argument #$IND: \"$I\"."
-  done
 }
 
 # Parse arguments
-parse_arguments "-f|--foo)FOO;B" "-b|--bar)BAR;S" "-B|--baz)BAZ;A" "-i|--inc)INC;I" -- "${@}" || exit $?
-debug "Arguments: \"$@\"."
+parse_arguments \
+  "-f|--foo)FOO;s" \
+  -- "${@}" || exit $?
 
 # Invoke main logic
-main "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" || EXIT_CODE=$?
-
-exit $EXIT_CODE
+main "${ARGUMENTS[@]:+${ARGUMENTS[@]}}"
 
 __END__
 
