@@ -53,7 +53,7 @@ rm -rf "$RPM_BUILD_ROOT"
 
 
 %changelog
-* Thu Aor 8 2016 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.4-1
+* Thu Apr 8 2016 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.4-1
 - Dependency on perl (for documentation) is removed.
 
 * Wed Jul 31 2013 Volodymyr M. Lisivka <vlisivka@gmail.com> - 2.0.2-4
