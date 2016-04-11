@@ -43,7 +43,7 @@ test_numeric_argument() {
 
 test_required_option() {
   local FOO="" BAR="" BAZ=""
-  parse_arguments '--foo)FOO;Str,Req' '--bar)BAR;S' -- --bar bar 2>/dev/null && {
+  parse_arguments '--foo)FOO;Str,Req' -- 2>/dev/null && {
     error "Function must return error code when required option is missed."
     return 1
   } || :

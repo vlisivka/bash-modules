@@ -151,7 +151,7 @@ separate source and documentation at end of source. It equivalent of "exit $?".
     # Generate parser and execute it
     PARSER="$(__generate_arguments_parser "${OPTION_DESCRIPTIONS[@]:+${OPTION_DESCRIPTIONS[@]}}")" || return 1
     eval "$PARSER" || return 1
-    [ $# -eq 0 ] || __parse_arguments_sub "$@"
+    __parse_arguments_sub "${@:+$@}" || return $?
   }
 
   __generate_arguments_parser() {
