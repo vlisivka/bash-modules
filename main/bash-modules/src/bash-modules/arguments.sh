@@ -34,17 +34,22 @@
 parse_arguments		Parse arguments and assign them to variables
 
 Usage:
-  parse_arguments [-O|--LONG_OPTION)VARIABLE;FLAGS]... -- [ARGUMENTS]...
+  parse_arguments [-O|--LONG_OPTION)VARIABLE;FLAGS[,COND]...]... -- [ARGUMENTS]...
 
 Where 
   -O		short option name
   --LONG_OPTION	long option name
   VARIABLE	shell variable name to assign value
-  FLAGS:	one of:
-    B			boolean (no value);
-    I			incremental (no value) - increment variable by one;
-    S			string value;
-    A			array of string values (multiple options);
+  FLAGS:	one of (case sensitive):
+    B | Bul | Boolean		boolean (no value);
+    I | Inc | Incremental	incremental (no value) - increment variable by one;
+    S | Str | String		string value;
+    N | Num | Number		numeric value;
+    A | Array			array of string values (multiple options);
+  COND:		post conditions:
+    R | Req | Requires		option is required, i.e. it must be not empty;
+    any code 			executed after option parsing to check post conditions
+				e.g. (( FOO > 3 )), (( FOO > BAR ))
   -- separator between option descriptions and commandline arguments
   ARGUMENTS	command line arguments to parse
 
@@ -151,39 +156,54 @@ separate source and documentation at end of source. It equivalent of "exit $?".
 
   __generate_arguments_parser() {
 
-    local OPTION_DESCRIPTION OPTION_CASE OPTION_FLAGS OPTION_PARSER=""
+    local OPTION_DESCRIPTION OPTION_CASE OPTION_FLAGS OPTION_TYPE OPTION_OPTIONS OPTIONS_PARSER="" OPTION_POSTCONDITIONS=""
 
+    # Parse option description and generate code to parse that option from script arguments
     while [ $# -gt 0 ]
     do
       # Parse option description
       OPTION_DESCRIPTION="$1" ; shift
-      OPTION_CASE="${OPTION_DESCRIPTION%%)*}"
-      OPTION_VARIABLE="${OPTION_DESCRIPTION#*)}"
-      OPTION_FLAGS="${OPTION_VARIABLE#*;}"
-      OPTION_VARIABLE="${OPTION_VARIABLE%%;*}"
+
+      # Check option syntax
+      case "$OPTION_DESCRIPTION" in
+        *')'*';'*) ;; # OK
+        *)
+          error "Incorrect syntax of option: \"$OPTION_DESCRIPTION\". Option syntax: -S|--FULL)VARIABLE;TYPE[,CHECK]... . Example: '-f|--foo)FOO;String,Required'."
+          __log__DEBUG=yes; backtrace
+          return 1
+        ;;
+      esac
+
+      OPTION_CASE="${OPTION_DESCRIPTION%%)*}" # Strip everything after first ')': --foo)BAR -> --foo
+      OPTION_VARIABLE="${OPTION_DESCRIPTION#*)}" # Strip everything before first ')': --foo)BAR -> BAR
+      OPTION_FLAGS="${OPTION_VARIABLE#*;}" # Strip everything before first ';': BAR;Baz -> Baz
+      OPTION_VARIABLE="${OPTION_VARIABLE%%;*}" # String everything after first ';': BAR;Baz -> BAR
+
+      IFS=',' read -a OPTION_OPTIONS <<<"$OPTION_FLAGS" # Convert string into array: 'a,b,c' -> [ a b c ]
+      OPTION_TYPE="${OPTION_OPTIONS[0]:-}" ; unset OPTION_OPTIONS[0] ; # First element of array is option type
 
       # Generate option parser for boolean variable
-      case "$OPTION_FLAGS" in
-       *B*)
-          OPTION_PARSER="$OPTION_PARSER
+      case "$OPTION_TYPE" in
+       B|Bool|Boolean) # Boolean - "yes" or "no"
+          OPTIONS_PARSER="$OPTIONS_PARSER
           $OPTION_CASE)
             $OPTION_VARIABLE=\"yes\"
             shift 1
           ;;
           "
         ;;
-       *I*)
-          OPTION_PARSER="$OPTION_PARSER
+       I|Incr|Incremental) # Incremental - any use of this option will increment variable by 1
+          OPTIONS_PARSER="$OPTIONS_PARSER
           $OPTION_CASE)
             let $OPTION_VARIABLE++ || :
             shift 1
           ;;
           "
         ;;
-        *S*)
-          OPTION_PARSER="$OPTION_PARSER
+        S|Str|String) # Regular strings
+          OPTIONS_PARSER="$OPTIONS_PARSER
           $OPTION_CASE)
-            $OPTION_VARIABLE=\"\${2:?Value is required for \\\"$OPTION_CASE\\\".}\"
+            $OPTION_VARIABLE=\"\${2:?ERROR: String value is required for \\\"$OPTION_CASE\\\" option. See --help for details.}\"
             shift 2
           ;;
           $OPTION_CASE=*)
@@ -192,10 +212,22 @@ separate source and documentation at end of source. It equivalent of "exit $?".
           ;;
           "
         ;;
-        *A*)
-          OPTION_PARSER="$OPTION_PARSER
+        N|Num|Number) # Same as string
+          OPTIONS_PARSER="$OPTIONS_PARSER
           $OPTION_CASE)
-            ${OPTION_VARIABLE}[\${#${OPTION_VARIABLE}[@]}]=\"\${2:?Value is required for \\\"$OPTION_CASE\\\".}\"
+            $OPTION_VARIABLE=\"\${2:?ERROR: Numeric value is required for \\\"$OPTION_CASE\\\" option. See --help for details.}\"
+            shift 2
+          ;;
+          $OPTION_CASE=*)
+            $OPTION_VARIABLE=\"\${1#*=}\"
+            shift 1
+          ;;
+          "
+        ;;
+        A|Array) # Array of strings
+          OPTIONS_PARSER="$OPTIONS_PARSER
+          $OPTION_CASE)
+            ${OPTION_VARIABLE}[\${#${OPTION_VARIABLE}[@]}]=\"\${2:?Value is required for \\\"$OPTION_CASE\\\". See --help for details.}\"
             shift 2
           ;;
           $OPTION_CASE=*)
@@ -204,7 +236,29 @@ separate source and documentation at end of source. It equivalent of "exit $?".
           ;;
           "
         ;;
+        *)
+          echo "ERROR: Unknown option type: \"$OPTION_TYPE\"." >&2
+          return 1
+        ;;
       esac
+
+      # Parse option options, e.g "Required". Any other text is treated as condition, e.g. (( VAR > 10 && VAR < 20 ))
+      local OPTION_OPTION
+      for OPTION_OPTION in "${OPTION_OPTIONS[@]:+${OPTION_OPTIONS[@]}}"
+      do
+        case "$OPTION_OPTION" in
+          R|Req|Required)
+            OPTION_POSTCONDITIONS="$OPTION_POSTCONDITIONS
+              [ -n \"\$${OPTION_VARIABLE}\" ] || { echo \"ERROR: Option $OPTION_CASE is required. See --help for details.\" >&2; return 1; }
+            "
+          ;;
+          *) # Any other code after option type i
+            OPTION_POSTCONDITIONS="$OPTION_POSTCONDITIONS
+              $OPTION_OPTION || { echo \"ERROR: Condition for $OPTION_CASE option is failed. See --help for details.\" >&2; return 1; }
+            "
+          ;;
+        esac
+      done
 
     done
     echo "
@@ -215,7 +269,7 @@ separate source and documentation at end of source. It equivalent of "exit $?".
       while [ \$# -gt 0 ]
       do
         case \"\$1\" in
-        $OPTION_PARSER
+        $OPTIONS_PARSER
         -h|--help)
           help 1
           exit 0
@@ -232,7 +286,7 @@ separate source and documentation at end of source. It equivalent of "exit $?".
           shift; break; # Do not parse rest of the command line arguments
         ;;
         -*)
-          echo \"Unknown option: \\\"\$1\\\".\" >&2
+          echo \"ERROR: Unknown option: \\\"\$1\\\".\" >&2
           help 1
           return 1
         ;;
@@ -242,15 +296,15 @@ separate source and documentation at end of source. It equivalent of "exit $?".
         esac
       done
       [ \$# -eq 0 ] || ARGUMENTS=( \"\$@\" ) # Store rest of the command line arguments into the ARGUMENTS array
+      $OPTION_POSTCONDITIONS
       }
     "
   }
 
+  # Helper function, to put at end of source, before documentation part.
+  __END__() {
+    exit $?
+  }
+
 }
 
-# Helper function, to put at end of source, before documentation part.
-__END__() {
-  exit $?
-}
-
-[ $# -eq 0 ] || parse_arguments "$@"

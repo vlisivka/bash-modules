@@ -11,7 +11,7 @@ export PATH="../src:$PATH"
 # Test cases
 
 test_boolean_argument() {
-  local FOO=no
+  local FOO="no"
   parse_arguments '--foo)FOO;B' -- --foo || {
     error "Cannot parse boolean argument."
     return 1
@@ -20,21 +20,51 @@ test_boolean_argument() {
 }
 
 test_string_argument() {
-  local FOO=""
-  parse_arguments '--foo)FOO;S' -- --foo bar || {
+  local FOO="" BAR="" BAZ=""
+  parse_arguments '--foo)FOO;S' '--bar)BAR;Str' '--baz)BAZ;String' -- --foo foo --bar=bar --baz baz || {
     error "Cannot parse string argument."
     return 1
   }
-  assertEqual "$FOO" "bar" "String argument parsed incorrectly."
+  assertEqual "$FOO" "foo" "String option foo parsed incorrectly."
+  assertEqual "$BAR" "bar" "String option bar parsed incorrectly."
+  assertEqual "$BAZ" "baz" "String option baz parsed incorrectly."
 }
 
-test_string_argument_alt() {
-  local FOO=""
-  parse_arguments '--foo)FOO;S' -- --foo=bar || {
-    error "Cannot parse string argument in alternate form."
+test_numeric_argument() {
+  local FOO="" BAR="" BAZ=""
+  parse_arguments '--foo)FOO;N' '--bar)BAR;Num,(( BAR >= 2 ))' '--baz)BAZ;Number,Required' -- --foo 1 --bar 2 --baz 3 || {
+    error "Cannot parse numeric argument."
     return 1
   }
-  assertEqual "$FOO" "bar" "String argument parsed incorrectly in alternate form."
+  assertEqual "$FOO" "1" "Numeric option foo parsed incorrectly."
+  assertEqual "$BAR" "2" "Numeric option bar parsed incorrectly."
+  assertEqual "$BAZ" "3" "Numeric option baz parsed incorrectly."
+}
+
+test_required_option() {
+  local FOO="" BAR="" BAZ=""
+  parse_arguments '--foo)FOO;Str,Req' '--bar)BAR;S' -- --bar bar 2>/dev/null && {
+    error "Function must return error code when required option is missed."
+    return 1
+  } || :
+}
+
+test_option_postcondition() {
+  local FOO="" BAR="" BAZ=""
+  parse_arguments '--foo)FOO;Num,Req,(( FOO > 2 ))' '--bar)BAR;Num,Req, (( BAR > 1 )), (( BAR > FOO ))' -- --foo 3 --bar 4 || {
+    error "Cannot parse numeric argument with option postcondition."
+    return 1
+  }
+  assertEqual "$FOO" "3" "Numeric option foo parsed incorrectly."
+  assertEqual "$BAR" "4" "Numeric option bar parsed incorrectly."
+}
+
+test_option_postcondition_failed() {
+  local FOO="" BAR="" BAZ=""
+  parse_arguments '--foo)FOO;Num,Req,(( FOO > 2 ))' -- --foo 2 2>/dev/null && {
+    error "Function must return error code when option postcondition is failed."
+    return 1
+  } || :
 }
 
 test_array_argument() {
