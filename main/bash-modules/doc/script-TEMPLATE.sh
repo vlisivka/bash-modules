@@ -23,7 +23,7 @@ main() {
 
 # Parse arguments
 parse_arguments \
-  "-f|--foo)FOO;s" \
+  "-f|--foo)FOO;S" \
   -- "${@}" || exit $?
 
 # Invoke main logic
