@@ -29,13 +29,18 @@
     exit 80
   }
 
-
-  __IMPORT__BASE_PATH=( "${__IMPORT__BASE_PATH[@]:+${__IMPORT__BASE_PATH[@]}}" "/usr/share/bash-modules" )
+  # User can define shell variable BASH_MODULES_PATH or define (in script) array with variables
+  __IMPORT__BASE_PATH=( "${BASH_MODULES_PATH:+$BASH_MODULES_PATH}" "${IMPORT__BASE_PATH[@]:+${__IMPORT__BASE_PATH[@]}}" "/usr/share/bash-modules" )
 
   # Source default setting from system wide configuration file and from user home configuration file
-  [ ! -f /etc/bash-modules/config.sh ] || source /etc/bash-modules/config.sh
+  [ ! -s /etc/bash-modules/config.sh ] || source /etc/bash-modules/config.sh || {
+    echo "WARN: Cannot import \"/etc/bash-modules/config.sh\" or an error in this file." >&2
+  }
+
   # Source user configuration file when run as non-root only
-  [ $UID -ne 0 -o ! -f ~/.bash-modules/config.sh ] || source ~/.bash-modules/config.sh
+  [ $UID -eq 0 -o ! -s "$HOME"/.bash-modules/config.sh ] || source "$HOME"/.bash-modules/config.sh || {
+    echo "WARN: Cannot import \"$HOME/.bash-modules/config.sh\" or an error in this file." >&2
+  }
 
   # Import single module only.
   # Argument: module name (without absolute path and without .sh extension)
@@ -163,13 +168,15 @@ Use \"import.sh --list\" to print list of available modules.
 Use \"import.sh --summary\" to print list of available modules with short
 description.
 
-
-
 Use \"import.sh --usage MODULE[...]\" to print longer description of
 given module(s).
 
-You can set __IMPORT__BASE_PATH array with list of your own directories
-with modules, which will be prepended to search path.
+In script, you can set __IMPORT__BASE_PATH array with list of your own
+directories with modules, which will be prepended to search path.
+
+In shell, you can set BASH_MODULES_PATH variable (with single path entry
+only at present time), or you can set __IMPORT__BASE_PATH array in
+/etc/bash-modules/config.sh or in ~/.bash-modules/config.sh file.
 
 "
   }
