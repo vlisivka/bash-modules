@@ -18,10 +18,18 @@ Example:
     
     NAME="world"
     
-    parse_arguments "-n|--name)NAME;S" -- "$@" || {
-      error "Cannot parse command line."
-      exit 1
+    main() {
+      info "Hello, $NAME!"
     }
     
-    info "Hello, $NAME!"
+    parse_arguments \
+      '-n|--name)NAME;String,Required' \
+      -- "$@" || exit 1
     
+    main
+    
+    __END__
+
+    =pod
+    
+    Script built-in help text in POD format...
