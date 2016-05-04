@@ -38,8 +38,8 @@
   }
 
   # Source user configuration file when run as non-root only
-  [ $UID -eq 0 -o ! -s "$HOME"/.bash-modules/config.sh ] || source "$HOME"/.bash-modules/config.sh || {
-    echo "WARN: Cannot import \"$HOME/.bash-modules/config.sh\" or an error in this file." >&2
+  [ $UID -eq 0 -o ! -s ~/.bash-modules/config.sh ] || source ~/.bash-modules/config.sh || {
+    echo "WARN: Cannot import \"~/.bash-modules/config.sh\" or an error in this file." >&2
   }
 
   # Import single module only.
