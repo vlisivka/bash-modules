@@ -1,3 +1,9 @@
+* 2016-06-14 Volodymyr M. Lisivka  <vlisivka@gmail.com> - 3.0.0
+- Backward compatibility is broken.
+- Modules are guarderd by import.sh, so check for __module__DEFINED is not necessary anymore.
+- Support for built-in documentation is added to import.sh.
+- Many fixes and rewrites in modules.
+
 * 2016-05-04 Volodymyr M. Lisivka  <vlisivka@gmail.com> - 2.1.1
 - Bugfixes for user-defined configuration files and for "Requied" options with no arguments.
 

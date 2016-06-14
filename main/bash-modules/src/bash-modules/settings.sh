@@ -17,59 +17,44 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with bash-modules  If not, see <http://www.gnu.org/licenses/>.
 
-[ "${__settings__DEFINED:-}" == "yes" ] || {
-  __settings__DEFINED="yes"
+#>>> settigngs -import settings from files and directories (AKA .d pattern)."
 
-  if [ "${1:-}" == '--usage' -o "${1:-}" == '--summary' ]
+#>> * settings::import [-e|--ext EXTENSION] FILE|DIR...
+#>>
+#>> Import settings (source them into current program as shell script) when
+#>> file or directory exists. For directories, all files with given extension
+#>> (".sh" by default) are imported, without recursion.
+settings::import() {
+  local __settings_EXTENSION="sh"
+  if [ "$1" == "-e" -o "$1" == "--ext" ]
   then
-    settings_summary() {
-      echo "Import settings from files and directories."
-    }
-
-    settings_usage() {
-      echo '
-  import_settings [-e|--ext EXTENSION] FILE|DIR...
-
-  Import settings (source them into current program) when file or
-  directory exists. For directories, all files with given extension ("sh"
-  by default) are imported, without recursion.
-'
-    }
-  else
-
-  import_settings() {
-    local EXTENSION="sh"
-    if [ "$1" == "-e" -o "$1" == "--ext" ]
-    then
-      EXTENSION="$2"
-      shift 2
-    fi
-
-    local FILE_OR_DIR
-    for FILE_OR_DIR in "${@:+$@}"
-    do
-      if [ -f "$FILE_OR_DIR" -a -r "$FILE_OR_DIR" -a -s "$FILE_OR_DIR" ]
-      then
-        source "$FILE_OR_DIR" || {
-          echo "ERROR: Cannot import settings from \"$FILE_OR_DIR\" file: non-zero exit code returned: $?." >&2
-          return 1
-        }
-      elif [ -d "$FILE_OR_DIR" -a -x "$FILE_OR_DIR" ]
-      then
-        local FILE
-        for FILE in "$FILE_OR_DIR"/*."$EXTENSION"
-        do
-          if [ -f "$FILE" -a -r "$FILE" -a -s "$FILE" ]
-          then
-            source "$FILE" || {
-              echo "ERROR: Cannot import settings from \"$FILE\" file: non-zero exit code returned: $?." >&2
-              return 1
-            }
-          fi
-        done
-      fi
-    done
-    return 0
-  }
+    __settings_EXTENSION="$2"
+    shift 2
   fi
+
+  local __settings_ENTRY
+  for __settings_ENTRY in "${@:+$@}"
+  do
+    if [ -f "$__settings_ENTRY" -a -r "$__settings_ENTRY" -a -s "$__settings_ENTRY" ]
+    then
+      source "$__settings_ENTRY" || {
+        echo "[settings] ERROR: Cannot import settings from \"$__settings_ENTRY\" file: non-zero exit code returned: $?." >&2
+        return 1
+      }
+    elif [ -d "$__settings_ENTRY" -a -x "$__settings_ENTRY" ]
+    then
+      local __settings_FILE
+      for __settings_FILE in "$__settings_ENTRY"/*."$__settings_EXTENSION"
+      do
+        if [ -f "$__settings_FILE" -a -r "$__settings_FILE" -a -s "$__settings_FILE" ]
+        then
+          source "$__settings_FILE" || {
+            echo "[settings] ERROR: Cannot import settings from \"$__settings_FILE\" file: non-zero exit code returned: $?." >&2
+            return 1
+          }
+        fi
+      done
+    fi
+  done
+  return 0
 }

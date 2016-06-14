@@ -1,10 +1,10 @@
 #!/bin/bash
+set -ueo pipefail
 
-set -ue
-
-__IMPORT__BASE_PATH=../src/bash-modules
-export PATH="../src:$PATH"
-. ../src/import.sh log unit mktemp
+APP_DIR="$(dirname "$0")"
+export __IMPORT__BASE_PATH="$APP_DIR/../src/bash-modules"
+export PATH="$APP_DIR/../src:$PATH"
+. import.sh log unit mktemp
 
 setUp() {
   unset TMPDIR
@@ -15,54 +15,54 @@ setUp() {
 
 test_mktemp_without_options() {
   FOO="$(mktemp)"
-  assert "File was not created by mktemp." [ -f "$FOO" ]
-  assert "Temporary file must be placed in /tmp." [[ "$FOO" == "/tmp/*" ]]
+  unit::assert "File was not created by mktemp." [ -f "$FOO" ]
+  unit::assert "Temporary file must be placed in /tmp." [[ "$FOO" == "/tmp/*" ]]
   rm -f "$FOO"
 }
 
 test_mktemp_with_u_option() {
   FOO="$(mktemp -u)"
-  assert "File must not be created by mktemp with -u option." [ !  -f "$FOO" ]
-  assert "Temporary file must be placed in /tmp." [[ "$FOO" == "/tmp/*" ]]
+  unit::assert "File must not be created by mktemp with -u option." [ !  -f "$FOO" ]
+  unit::assert "Temporary file must be placed in /tmp." [[ "$FOO" == "/tmp/*" ]]
 }
 
 test_mktemp_with_dry_run_option() {
   FOO="$(mktemp --dry-run)"
-  assert "File must not be created by mktemp with -u option." [ !  -f "$FOO" ]
-  assert "Temporary file must be placed in /tmp." [[ "$FOO" == "/tmp/*" ]]
+  unit::assert "File must not be created by mktemp with -u option." [ !  -f "$FOO" ]
+  unit::assert "Temporary file must be placed in /tmp." [[ "$FOO" == "/tmp/*" ]]
 }
 
 test_mktemp_with_dry_run_option() {
   FOO="$(mktemp --dry-run)"
-  assert "File must not be created by mktemp with --dry-run option." [ !  -f "$FOO" ]
-  assert "Temporary file must be placed in /tmp." [[ "$FOO" == "/tmp/*" ]]
+  unit::assert "File must not be created by mktemp with --dry-run option." [ !  -f "$FOO" ]
+  unit::assert "Temporary file must be placed in /tmp." [[ "$FOO" == "/tmp/*" ]]
 }
 
 test_mktemp_with_template() {
   FOO="$(mktemp /var/tmp/foooXXXXXXXXX.bar)"
-  assertNotEqual "$FOO" "/var/tmp/foooXXXXXXXXX.bar" "XXXXX in template is not replaced by random string."
-  assert "File was not created by mktemp." [ -f "$FOO" ]
-  assert "Temporary file must be placed in /var/tmp in this case." [[ "$FOO" == "/var/tmp/*" ]]
+  unit::assertNotEqual "$FOO" "/var/tmp/foooXXXXXXXXX.bar" "XXXXX in template is not replaced by random string."
+  unit::assert "File was not created by mktemp." [ -f "$FOO" ]
+  unit::assert "Temporary file must be placed in /var/tmp in this case." [[ "$FOO" == "/var/tmp/*" ]]
   rm -f "$FOO"
 }
 
 test_mktemp_with_d_option() {
   FOO="$(mktemp -d)"
-  assert "Directory was not created by mktemp." [ -d "$FOO" ]
+  unit::assert "Directory was not created by mktemp." [ -d "$FOO" ]
   rm -rf "$FOO"
 }
 
 test_mktemp_with_t_option() {
   FOO="$(mktemp -t /var/tmp/foooXXXXXXXXX.bar)"
-  assert "File was not created by mktemp." [ -f "$FOO" ]
-  assert "Temporary file must be placed in /tmp in this case." [[ "$FOO" == "/tmp/foo*" ]]
+  unit::assert "File was not created by mktemp." [ -f "$FOO" ]
+  unit::assert "Temporary file must be placed in /tmp in this case." [[ "$FOO" == "/tmp/foo*" ]]
   rm -f "$FOO"
 }
 
 test_mktemp_with_tmpdir_option() {
   FOO="$(mktemp --tmpdir=/var/tmp /tmp/foooXXXXXXXXX.bar)"
-  assert "File was not created by mktemp." [ -f "$FOO" ]
-  assert "Temporary file must be placed in /var/tmp in this case." [[ "$FOO" == "/var/tmp/foo*" ]]
+  unit::assert "File was not created by mktemp." [ -f "$FOO" ]
+  unit::assert "Temporary file must be placed in /var/tmp in this case." [[ "$FOO" == "/var/tmp/foo*" ]]
   rm -f "$FOO"
 }
 
@@ -82,7 +82,7 @@ mktemp_test_file_worker() {
 
   for((I=0; I<NUMBER_OF_FILES; I++))
   do
-    assertEqual "$(cat "${FILES[I]}")" "$WORKER_NUMBER:$I" "Incorrect content of file \"${FILES[I]}\"."
+    unit::assertEqual "$(cat "${FILES[I]}")" "$WORKER_NUMBER:$I" "Incorrect content of file \"${FILES[I]}\"."
     rm -f "${FILES[I]}"
   done
 }
@@ -112,7 +112,7 @@ mktemp_test_dir_worker() {
 
   for((I=0; I<NUMBER_OF_DIRS; I++))
   do
-    assertEqual "$(cat "${DIRS[I]}"/foo.txt)" "$WORKER_NUMBER:$I" "Incorrect content of file in directory \"${DIRS[I]}\"."
+    unit::assertEqual "$(cat "${DIRS[I]}"/foo.txt)" "$WORKER_NUMBER:$I" "Incorrect content of file in directory \"${DIRS[I]}\"."
     rm -rf "${DIRS[I]}"
   done
 }
@@ -126,4 +126,4 @@ DISABLED_test_mktemp_in_parallel_mode_for_dirs() {
   wait
 }
 
-run_test_cases "$@"
+unit::run_test_cases "$@"

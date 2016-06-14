@@ -17,25 +17,14 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with bash-modules  If not, see <http://www.gnu.org/licenses/>.
 
+#>>> elapsed_time - print elapsed time since shell start in human readable form.
 
-[ "${__elapsed_time__DEFINED:-}" == "yes" ] || {
-  __elapsed_time__DEFINED="yes"
+#>>
+#>> Functions:
 
-  elapsed_time_summary() {
-    echo "Print elapsed time since shell start in human readable format"
-  }
-
-  elapsed_time_usage() {
-    echo '
-print_elapsed_time	print value of SECONDS variable in human readable form: "Elapsed time: 0 days 00:00:00."
-
-Assign 0 to SECONDS variable to reset counter.
-'
-  }
-
-  # Print elapsed time since script start in user friendly format.
-  print_elapsed_time() {
-    printf "Elapsed time: %d days %02d:%02d:%02d.\n" $((SECONDS/(24*60*60))) $(((SECONDS/(60*60))%24)) $(((SECONDS/60)%60)) $((SECONDS%60))
-  }
-
+#>>
+#>> * elapsed_time::print - print value of SECONDS variable in human readable form: "Elapsed time: 0 days 00:00:00."
+#>> Assign 0 to SECONDS variable to reset counter.
+elapsed_time::print() {
+  printf "Elapsed time: %d days %02d:%02d:%02d.\n" $((SECONDS/(24*60*60))) $(((SECONDS/(60*60))%24)) $(((SECONDS/60)%60)) $((SECONDS%60))
 }

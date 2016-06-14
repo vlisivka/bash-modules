@@ -17,31 +17,13 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with bash-modules  If not, see <http://www.gnu.org/licenses/>.
 
-[ "${__cwdir__DEFINED:-}" == "yes" ] || {
-  __cwdir__DEFINED="yes"
+#>>> cwdir - change working directory to directory where main script file is located.
+#>>
+#>> Just import this cwdir module to change working directory to directory where main script file is located.
 
-  if [ "${1:-}" == '--usage' -o "${1:-}" == '--summary' ]
-  then
-    cwdir_summary() {
-      echo "Change working directory to directory where main script file is located."
-    }
 
-    cwdir_usage() {
-      echo 'Just import this cwdir module to change working directory to directory where main script file is located.'
-    }
-  else
+# Redefine variable, to make path to main file absolute, so it will not be affected by change of working dir.
+IMPORT__BIN_FILE="$(readlink -f "$BIN_FILE")"
 
-    # Get main file name
-    __cwdir_IND="${#BASH_SOURCE[*]}"
-    __cwdir__APP="${BASH_SOURCE[__cwdir_IND-1]}"
-
-    case "$__cwdir__APP" in
-      */*)
-        cd "${__cwdir__APP%/*}/" || return $?
-      ;;
-    esac
-
-    unset __cwdir_IND __cwdir__APP
-
-  fi
-}
+# Change working directory to directory where script is located
+cd "${IMPORT__BIN_FILE%/*}/"

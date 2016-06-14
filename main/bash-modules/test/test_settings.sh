@@ -1,10 +1,10 @@
 #!/bin/bash
+set -ueo pipefail
 
-set -ue
-
-__IMPORT__BASE_PATH=../src/bash-modules
-export PATH="../src:$PATH"
-. ../src/import.sh log unit mktemp settings
+APP_DIR="$(dirname "$0")"
+export __IMPORT__BASE_PATH="$APP_DIR/../src/bash-modules"
+export PATH="$APP_DIR/../src:$PATH"
+. import.sh log unit mktemp settings
 
 ###############################################
 # Test cases
@@ -13,9 +13,9 @@ test_import_from_single_file() {
   local FILE="$(mktemp)"
   echo "TEST=foo" >"$FILE"
 
-  import_settings "$FILE"
+  settings::import "$FILE"
 
-  assertEqual "${TEST:-}" "foo"
+  unit::assertEqual "${TEST:-}" "foo"
 
   rm -f "$FILE"
 }
@@ -26,10 +26,10 @@ test_import_from_multiple_files() {
   local FILE2="$(mktemp)"
   echo "TEST2=bar" >"$FILE2"
 
-  import_settings "$FILE1" "$FILE2"
+  settings::import "$FILE1" "$FILE2"
 
-  assertEqual "${TEST1:-}" "foo"
-  assertEqual "${TEST2:-}" "bar"
+  unit::assertEqual "${TEST1:-}" "foo"
+  unit::assertEqual "${TEST2:-}" "bar"
 
   rm -f "$FILE1" "$FILE2"
 }
@@ -41,12 +41,12 @@ test_import_from_dir() {
   local FILE2="$DIR/file2.sh"
   echo "TEST2=bar" >"$FILE2"
 
-  import_settings "$DIR"
+  settings::import "$DIR"
 
-  assertEqual "${TEST1:-}" "foo"
-  assertEqual "${TEST2:-}" "bar"
+  unit::assertEqual "${TEST1:-}" "foo"
+  unit::assertEqual "${TEST2:-}" "bar"
 
   rm -rf "$DIR"
 }
 
-run_test_cases "$@"
+unit::run_test_cases "$@"

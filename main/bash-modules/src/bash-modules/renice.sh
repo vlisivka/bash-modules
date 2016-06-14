@@ -17,23 +17,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with bash-modules  If not, see <http://www.gnu.org/licenses/>.
 
-[ "${__renice__DEFINED:-}" == "yes" ] || {
-  __renice__DEFINED="yes"
+#>>> renice - alter priority of current shell to make it low priority task (renice 19 to self).
+#>> Usage:
+#>>    . import.sh renice
 
-  if [ "${1:-}" == '--usage' -o "${1:-}" == '--summary' ]
-  then
-
-    renice_summary() {
-      echo "Alter priority of current shell to make it low priority task"
-    }
-
-    renice_usage() {
-      echo '
-    source import.sh renice		Change prirority of current shell to 19 (lowest)
-'
-    }
-  else
-    # Run this script as low priority task
-    renice 19 -p $$ >/dev/null
-  fi
-}
+# Run this script as low priority task
+renice 19 -p $$ >/dev/null

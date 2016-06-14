@@ -17,41 +17,91 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with bash-modules  If not, see <http://www.gnu.org/licenses/>.
 
+#>>> import.sh - import bash modules into scripts or interactive shell.
+#>>
+#>> Syntax:
+#>>     source import.sh MODULE[...]       - import module(s) into script or shell
+#>>     import.sh --help|-h                - print help text
+#>>     import.sh --man                    - show documentation
+#>>     import.sh --list                   - list modules
+#>>     import.sh --summary|-s [MODULE...] - list module(s) with summary
+#>>     import.sh --usage|-u MODULE[...]   - print module help text
+#>>     import.sh --doc|-d MODULE[...]     - print module documentation
+#>
+#> Description:
+#>
+#> Imports given module(s) into current shell.
+#>
+#> Use "import.sh --list" to print list of available modules.
+#>
+#> Use "import.sh --summary" to print list of available modules with short
+#> description.
+#>
+#> Use "import.sh --usage MODULE[...]\" to print longer description of
+#> given module(s).
 
 [ "${__IMPORT__DEFINED:-}" == "yes" ] || {
   __IMPORT__DEFINED="yes"
 
-
-  __IMPORT_MINIMUM_VERSION=3
-  [ ! "$BASH_VERSION" \< "$__IMPORT_MINIMUM_VERSION" ] || {
-    echo "This script works only with Bash, version $__IMPORT_MINIMUM_VERSION or greater." >&2
-    echo "Upgrade is strongly recommended." >&2
+  [ "$BASH_VERSINFO" -ge 4 ] || {
+    echo "[import.sh] ERROR: This script works only with Bash, version 4 or greater. Upgrade is necessary." >&2
     exit 80
   }
 
-  # User can define shell variable BASH_MODULES_PATH or define (in script) array with variables
+  #>
+  #> Configuration:
+
+  #>
+  #> * BASH_MODULES_PATH - (variable with single path entry, at present time).
+  # TODO: split BASH_MODULES_PATH environment variable at ":", to allow multiple entries
+  #>
+  #> * __IMPORT__BASE_PATH - array with list of your own directories with modules,
+  #> which will be prepended to module search path. You can set __IMPORT__BASE_PATH array in
+  #> script at begining, in /etc/bash-modules/config.sh, or in ~/.bash-modules/config.sh file.
   __IMPORT__BASE_PATH=( "${BASH_MODULES_PATH:+$BASH_MODULES_PATH}" "${IMPORT__BASE_PATH[@]:+${__IMPORT__BASE_PATH[@]}}" "/usr/share/bash-modules" )
 
-  # Source default setting from system wide configuration file and from user home configuration file
+  #>
+  #> * /etc/bash-modules/config.sh - system wide configuration file.
+  #> WARNING: Code in this script will affect all scripts.
+  #>
+  #> Example code:
+  #>     set -ueEo pipefail # Force strict mode for all scripts.
+  #>     trap 'panic "Uncatched error."' ERR # Enable stack traces for uncatched errors.
+  #>     __log__BACKTRACE=="yes" # Enable stack traces for catched errors.
   [ ! -s /etc/bash-modules/config.sh ] || source /etc/bash-modules/config.sh || {
-    echo "WARN: Cannot import \"/etc/bash-modules/config.sh\" or an error in this file." >&2
+    echo "[import.sh] WARN: Cannot import \"/etc/bash-modules/config.sh\" or an error in this file." >&2
   }
 
-  # Source user configuration file when run as non-root only
-  [ $UID -eq 0 -o ! -s ~/.bash-modules/config.sh ] || source ~/.bash-modules/config.sh || {
-    echo "WARN: Cannot import \"~/.bash-modules/config.sh\" or an error in this file." >&2
-  }
+  #>
+  #> Variables:
 
-  # Import single module only.
-  # Argument: module name (without absolute path and without .sh extension)
-  import_module() {
-    local __MODULE="$1"
+  #>
+  #> * IMPORT__BIN_FILE -  main file name, so it will be available to all modules and script functions.
+  __IMPORT_INDEX="${#BASH_SOURCE[*]}"
+  IMPORT__BIN_FILE="${BASH_SOURCE[__IMPORT_INDEX-1]}"
+  unset __IMPORT_INDEX
+
+  #>
+  #> Functions:
+
+  #>
+  #> * import::import_module() - import single module only.
+  #> Argument: module name, without absolute path and without .sh extension, e.g. "log".
+  import::import_module() {
+    local __MODULE="${1:?Argument is required: module name, without path and without .sh extension, e.g. "log".}"
 
     local __PATH
     for __PATH in "${__IMPORT__BASE_PATH[@]}"
     do
       [ -f "$__PATH/$__MODULE.sh" ] || continue
 
+      # Don't import module twice, to avoid loops.
+      local -n __IMPORT_MODULE_DEFINED="__${__MODULE}__DEFINED" # Variable reference
+      [ "${__IMPORT_MODULE_DEFINED:-}" != "yes" ] || return 0 # Already imported
+      __IMPORT_MODULE_DEFINED="yes"
+      unset -n __IMPORT_MODULE_DEFINED # Unset reference
+
+      # Import module
       source "$__PATH/$__MODULE.sh" || return 1
       return 0
     done
@@ -60,23 +110,32 @@
     return 2
   }
 
-  # Import list of modules at once and return error code
-  # Arguments: module names (without absolute path and without .sh extension)
-  import_modules() {
+  #>
+  #> * import::import_modules() - import list of modules at once and return error code.
+  #> Arguments: module names (without absolute path and without .sh extension), e.g. "log arguments".
+  import::import_modules() {
     local __MODULE __ERROR_CODE=0
     for __MODULE in "$@"
     do
-      import_module "$__MODULE" || __ERROR_CODE=$?
+      import::import_module "$__MODULE" || __ERROR_CODE=$?
     done
     return $__ERROR_CODE
   }
 
-  # Print various information about module(s)
-  __import_list_modules() {
-    local __FUNC="$1" ; shift
+  #>
+  #> * import::list_modules() - print various information about module(s).
+  #> Arguments: first argument is function to call on each module.
+  #> Rest of arguments are module names. No arguments means all modules.
+  #>
+  #> Function called with two arguments: path to module and module name (without .sh extension).
+  import::list_modules() {
+    local __FUNC="${1:?ERROR: Argument is required: function to call with module name.}"
+    shift
+
     declare -a __MODULES
     local __PATH __MODULE __MODULES
 
+    # Collect modules
     if [ $# -eq 0 ]
     then
       # If no arguments are given,
@@ -117,69 +176,58 @@
       done
     fi
 
+    # Call function on each module
     local __MODULE_PATH
     for __MODULE_PATH in "${__MODULES[@]}"
     do
-        [ -f "$__MODULE_PATH" ] || continue
-        __MODULE="${__MODULE_PATH##*/}" # Strip directory
-        __MODULE="${__MODULE%.sh}" # Strip extension
-        if [ "$__FUNC" == "" ]
-        then
-          # just print module name
-          echo "$__MODULE"
-        else
-          # Call requested function on each module
-          echo -n "MODULE $__MODULE: "
-          (
-            # Import module
-            source "$__MODULE_PATH" --${__FUNC} || exit $? # Exit from subshell
-            "${__MODULE}_${__FUNC}"
-            echo
-          ) || {
-            echo "Module \"$__MODULE\" ($__MODULE_PATH) returned non-zero exit code: $?."
-          }
-        fi
+      [ -f "$__MODULE_PATH" ] || continue
+      __MODULE="${__MODULE_PATH##*/}" # Strip directory
+      __MODULE="${__MODULE%.sh}" # Strip extension
+
+      # Call requested function on each module
+      $__FUNC "$__MODULE_PATH" "$__MODULE" || { echo "WARN: Error in function \"$__FUNC '$__MODULE_PATH'\"." >&2 ; }
     done
   }
 
-  import_summary() {
-    echo "source import.sh MODULE[...] | import.sh --list | import.sh --help MODULE[...]   import modules"
+  import::show_documentation() {
+    local LEVEL="${1:?ERROR: Argument is required: level of documentation: 1 for all documentation, 2 for summary.}"
+    local PARSER="${2:?ERROR: Argument is required: command to parse documentation text, e.g. cat.}"
+    local FILE="${3:?ERRROR: Argument is required: file to parse documentation from.}"
+
+    [ -e "$FILE" ] || {
+      echo "ERROR: File \"$FILE\" is not exits." >&2
+    }
+    [ -f "$FILE" ] || {
+      echo "ERROR: Path \"$FILE\" is not a file." >&2
+    }
+    [ -r "$FILE" ] || {
+      echo "ERROR: Cannot read file \"$FILE\"." >&2
+    }
+    [ -s "$FILE" ] || {
+      echo "ERROR: File \"$FILE\" is empty." >&2
+    }
+
+    local PREFIX=""
+    case "$LEVEL" in
+      1)  PREFIX="#>" ;;
+      2)  PREFIX="#>>" ;;
+      3)  PREFIX="#>>>" ;;
+      *)
+        echo "ERROR: Incorrect level for documentation. Supported levels: 1, 2, 3." >&2
+        return 1
+      ;;
+    esac
+
+    local line
+    while read line
+    do
+      if [[ "$line" =~ ^\s*"$PREFIX"\>*\s*(.*)$ ]]
+      then
+        echo "${BASH_REMATCH[1]}"
+      fi
+    done < "$FILE" | $PARSER
   }
 
-  import_usage() {
-    echo "
-
-Usage:
-
-  source import.sh MODULE[...]
-
-  import.sh --list|-l
-
-  import.sh --summary|-s [MODULE...]
-
-  import.sh --usage|-u MODULE[...]
-
-Description:
-
-Imports given module(s) into current shell.
-
-Use \"import.sh --list\" to print list of available modules.
-
-Use \"import.sh --summary\" to print list of available modules with short
-description.
-
-Use \"import.sh --usage MODULE[...]\" to print longer description of
-given module(s).
-
-In script, you can set __IMPORT__BASE_PATH array with list of your own
-directories with modules, which will be prepended to search path.
-
-In shell, you can set BASH_MODULES_PATH variable (with single path entry
-only at present time), or you can set __IMPORT__BASE_PATH array in
-/etc/bash-modules/config.sh or in ~/.bash-modules/config.sh file.
-
-"
-  }
 
 }
 
@@ -189,28 +237,37 @@ then
   # import.sh called as standalone program
   if  [ "$#" -eq 0 ]
   then
-    import_usage
+    import::show_documentation 3 cat "$IMPORT__BIN_FILE"
   else
     case "$1" in
       --list|-l)
         shift 1
-        __import_list_modules "" "${@:+$@}"
+        import::list_modules "echo" "${@:+$@}"
       ;;
       --summary|-s)
         shift 1
-        __import_list_modules summary "${@:+$@}"
+        import::list_modules "import::show_documentation 3 cat" "${@:+$@}"
       ;;
       --usage|-u)
         shift 1
-        __import_list_modules usage "${@:+$@}"
+        import::list_modules "import::show_documentation 2 cat" "${@:+$@}"
       ;;
-      *)
-        import_usage
+      --documentation|--doc|-d)
+        shift 1
+        import::list_modules "import::show_documentation 1 less" "${@:+$@}"
+      ;;
+      --man)
+        shift 1
+        import::show_documentation 1 less "$IMPORT__BIN_FILE"
+      ;;
+      --help|-h|*)
+        shift 1
+        import::show_documentation 2 cat "$IMPORT__BIN_FILE"
       ;;
     esac
   fi
 
 else
   # Import given modules when parameters are supplied.
-  [ "$#" -eq 0 ] || import_modules "$@"
+  [ "$#" -eq 0 ] || import::import_modules "$@"
 fi

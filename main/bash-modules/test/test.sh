@@ -1,17 +1,16 @@
 #!/bin/bash
-
-set -ue
-
-export __IMPORT__BASE_PATH=../src/bash-modules
-export PATH="../src:$PATH"
-. ../src/import.sh log
+set -ueo pipefail
 
 APP_DIR="$(dirname "$0")"
+export __IMPORT__BASE_PATH="$APP_DIR/../src/bash-modules"
+export PATH="$APP_DIR/../src:$PATH"
+. import.sh log
+
 EXIT_CODE=0
 
 for I in "$APP_DIR"/test_*.sh
 do
-  /bin/bash -ue "$I" "$@" || {
+  bash -ue "$I" "$@" || {
     EXIT_CODE=$?
   }
 done

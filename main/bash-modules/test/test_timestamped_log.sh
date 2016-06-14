@@ -1,42 +1,43 @@
 #!/bin/bash
 
-set -ue
+set -ueo pipefail
 
-__IMPORT__BASE_PATH=../src/bash-modules
-export PATH="../src:$PATH"
-. ../src/import.sh timestamped_log unit
+APP_DIR="$(dirname "$0")"
+export __IMPORT__BASE_PATH="$APP_DIR/../src/bash-modules"
+export PATH="$APP_DIR/../src:$PATH"
+. import.sh timestamped_log unit
 
 ###############################################
 # Test cases
 
 test_info() {
-  assertEqual "$(info Test)" "placeholder INFO [test_timestamped_log.sh] Test"
+  unit::assertEqual "$(info Test 2>/dev/null)" "placeholder[test_timestamped_log.sh] INFO: Test"
 }
 
 test_warn() {
-  assertEqual "$(warn Test 2>&1 1>/dev/null)" "placeholder WARN [test_timestamped_log.sh] Test"
+  unit::assertEqual "$(warn Test 2>&1 1>/dev/null)" "placeholder[test_timestamped_log.sh] WARN: Test"
 }
 
 test_error() {
-  assertEqual "$(error Test 2>&1 1>/dev/null)" "placeholder ERROR [test_timestamped_log.sh] Test"
+  unit::assertEqual "$(error Test 2>&1 1>/dev/null)" "placeholder[test_timestamped_log.sh] ERROR: Test"
 }
 
 test_todo() {
-  assertEqual "$(todo Test 2>&1 1>/dev/null)" "placeholder TODO [test_timestamped_log.sh] Test"
+  unit::assertEqual "$(todo Test 2>&1 1>/dev/null)" "placeholder[test_timestamped_log.sh] TODO: Test"
 }
 
 test_timestamped_log_info() {
-  assertEqual "$(log_info foo Test)" "placeholder foo [test_timestamped_log.sh] Test"
+  unit::assertEqual "$(log::info foo Test 2>/dev/null)" "placeholder[test_timestamped_log.sh] foo: Test"
 }
 
 test_timestamped_log_warn() {
-  assertEqual "$(log_warn foo Test 2>&1 1>/dev/null)" "placeholder foo [test_timestamped_log.sh] Test"
+  unit::assertEqual "$(log::warn foo Test 2>&1 1>/dev/null)" "placeholder[test_timestamped_log.sh] foo: Test"
 }
 
 test_timestamped_log_error() {
-  assertEqual "$(log_error foo Test 2>&1 1>/dev/null)" "placeholder foo [test_timestamped_log.sh] Test"
+  unit::assertEqual "$(log::error foo Test 2>&1 1>/dev/null)" "placeholder[test_timestamped_log.sh] foo: Test"
 }
 
-timestamped_log_set_format "placeholder"
+timestamped_log::set_format "placeholder"
 
-run_test_cases "$@"
+unit::run_test_cases "$@"
