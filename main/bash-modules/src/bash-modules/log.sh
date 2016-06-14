@@ -159,14 +159,13 @@ log::info() {
 }
 
 #>>
-#>> * log::panic LEVEL MESAGE... - print error message and backtrace, then exit.
+#>> * log::panic LEVEL MESAGE... - print error message, then exit.
 log::panic() {
   local LEVEL="$1"
   shift 1
 
   log::error "$LEVEL" "$@"
   log::enable_backtrace
-  log::backtrace 2
   exit 42
 }
 

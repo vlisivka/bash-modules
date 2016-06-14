@@ -4,16 +4,13 @@
 #
 # YOUR LICENSE FOR MODULE (LGPL2+, MIT, etc.)
 
-[ "${__TEMPLATE__DEFINED:-}" == "yes" ] || {
-  __TEMPLATE__DEFINED="yes"
+#>>> template - todo: summary
 
-  TEMPLATE_summary() {
-    echo "TODO."
-  }
+#>>
+#>> Functions:
 
-  TEMPLATE_usage() {
-    echo 'TODO'
-  }
-
-
+#>>
+#>> template::echo ARGUMENTS - todo: function summary
+template::echo() {
+  echo "$@"
 }

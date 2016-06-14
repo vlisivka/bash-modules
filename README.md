@@ -14,22 +14,49 @@ Main goal of the project is to provide developers with set of bash subroutines, 
 Example:
 
     #!/bin/bash
-    . import.sh log arguments
+    #>>> hw.sh - hello, world! See --help for details.
     
-    NAME="world"
+    . import.sh strict log arguments
     
-    main() {
+    #>
+    #> Environment variables:
+    
+    #>
+    #> HW_NAME -  name of someone to grit. Default value: "world".
+    NAME="${HW_NAME:-world}"
+    
+    #>
+    #> Functions:
+    
+    #>
+    #> hw NAME - greet someone by name.
+    hw() {
+      local NAME="${1:?ERROR: Argument is required: a name to grit.}"
       info "Hello, $NAME!"
     }
     
-    parse_arguments \
-      '-n|--name)NAME;String,Required' \
-      -- "$@" || exit 1
+    #>
+    #> main - main function.
+    main() {
+      #>>
+      #>> Usage:
+      #>> hw.sh [OPTIONS]
+      #>>
+      #>> Options:
+      #>>   * -h | --help - show this text.
+      #>>   * --man - show documentation.
+      #>>   * -n | --name NAME - name of someone to greet. Default value: "world".
+      arguments::parse \
+        '-n|--name)NAME;String' \
+        -- "$@" || exit 1
     
-    main
+      hw "$NAME"
+      exit $?
+    }
     
-    __END__
-
-    =pod
+    main "$@"
     
-    Script built-in help text in POD format...
+    #>
+    #> See also:
+    #>   * import.sh --list  - show list of available modules.
+    #>   * import.sh --usage arguments  - show usage information for 

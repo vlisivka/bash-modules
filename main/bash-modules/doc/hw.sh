@@ -1,76 +1,53 @@
 #!/bin/bash
-set -ue
-. import.sh log arguments
+#>>> hw.sh - hello, world! Use --help for details.
 
-NAME="world"
+. import.sh strict log arguments
 
-parse_arguments "-n|--name)NAME;S" -- "$@" || exit $?
+#>
+#> Environment variables:
 
-info "Hello, $NAME!"
+#>
+#> HW_NAME - name of someone to grit. Default value: "world".
+NAME="${HW_NAME:-world}"
 
-if (( ${#ARGUMENTS[@]} > 0))
-then
-  for ARG in "${ARGUMENTS[@]}"
-  do
-    info "Hello, $ARG, too!"
-  done
-fi
+#>
+#> Functions:
 
-exit 0
+#>
+#> hw NAME - greet someone by name.
+hw() {
+  local NAME="${1:?ERROR: Argument is required: a name to grit.}"
+  info "Hello, $NAME!"
+  return 0
+}
 
-__END__
+#>
+#> main - main function.
+main() {
+  #>>
+  #>> Usage:
+  #>>   hw.sh [OPTIONS]
+  #>>
+  #>> Options:
+  #>>   * -h | --help - show this text.
+  #>>   * --man - show documentation.
+  #>>   * -n | --name NAME - name of someone to greet. Default value: "world".
+  arguments::parse \
+    '-n|--name)NAME;String' \
+    -- "$@" || log::panic "ERROR" "Cannot parse arguments."
 
-=pod
+  hw "$NAME" || panic "Cannot greet \"$NAME\"."
 
-=head1 NAME
+  exit 0
+}
 
-hw.sh - program for greeting
+main "$@"
 
-=head1 SYNOPSIS
-
-hw.sh [OPTIONS] [--] [ARGUMENTS]
-
-=head1 OPTIONS
-
-=over 4
-
-=item B<--help> | B<-h>
-
-Print a brief help message and exit.
-
-=item B<--man>
-
-Show manual page.
-
-=item B<--debug>
-
-Enable debugging features, like backtrace and debugging messages.
-
-=item B<--name> NAME
-
-Greet a NAME. Default value: "world".
-
-=back
-
-Unlike many other programs, this program stops option parsing at first
-non-option argument.
-
-Use -- in commandline arguments to strictly separate options and arguments.
-
-=head1 ARGUMENTS
-
-Additional names to greet.
-
-=head1 DESCRIPTION
-
-Example how to greet a someone properly using bash-modules.
-
-=head1 SEE ALSO
-
-bash-modules
-
-=head1 AUTHOUR
-
-Volodymyr M. Lisivka <vlisivka@gmail.com>
-
-=cut
+#>
+#> Examples:
+#>   * ./hw.sh --name user
+#>   * HW_NAME="user" ./hw.sh
+#>
+#> See also:
+#>   * import.sh --list  - show list of available modules.
+#>   * import.sh --usage arguments  - show usage information for 
