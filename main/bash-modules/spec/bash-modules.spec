@@ -1,18 +1,14 @@
 
 Name:           bash-modules
-Version:        2.1.0
+Version:        3.0.0
 Release:        1%{?dist}
 Summary:        Modules for bash
 
-Group:          System/Libraries
+Group:          System Environment/Libraries
 URL:            https://github.com/vlisivka/bash-modules
 License:        LGPL-2.1+
 Source0:        %{name}.tar.gz
 BuildArch:      noarch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-#BuildRequires:
-Requires:       bash > 3
 
 %define  homedir /usr/share/bash-modules
 
@@ -21,7 +17,6 @@ Optional modules to use with bash, like logging, argument parsing, etc.
 
 %prep
 %setup -q -n %{name}
-
 
 %build
 # Nothing to do
@@ -33,8 +28,6 @@ Optional modules to use with bash, like logging, argument parsing, etc.
 )
 
 %install
-rm -rf "$RPM_BUILD_ROOT"
-
 install -D src/import.sh "$RPM_BUILD_ROOT%_bindir/import.sh"
 
 mkdir -p "$RPM_BUILD_ROOT%homedir/"
@@ -42,7 +35,6 @@ cp -a src/bash-modules/* "$RPM_BUILD_ROOT%homedir/"
 
 %clean
 rm -rf "$RPM_BUILD_ROOT"
-
 
 %files
 %defattr(644,root,root,755)
