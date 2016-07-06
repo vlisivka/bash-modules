@@ -22,7 +22,7 @@ Example:
     #> Environment variables:
     
     #>
-    #> HW_NAME -  name of someone to grit. Default value: "world".
+    #> HW_NAME -  name of someone to greet. Default value: "world".
     NAME="${HW_NAME:-world}"
     
     #>
@@ -31,7 +31,7 @@ Example:
     #>
     #> hw NAME - greet someone by name.
     hw() {
-      local NAME="${1:?ERROR: Argument is required: a name to grit.}"
+      local NAME="${1:?ERROR: Argument is required: a name to greet.}"
       info "Hello, $NAME!"
     }
     
