@@ -51,7 +51,7 @@ Example:
         -- "$@" || exit 1
     
       hw "$NAME"
-      exit $?
+      exit
     }
     
     main "$@"
