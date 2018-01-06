@@ -1,8 +1,8 @@
 ##!/bin/bash
 #
-# Copyright (c) 2016 Volodymyr M. Lisivka <vlisivka@gmail.com>, All Rights Reserved
+# Copyright (c) 20011-2017 Volodymyr M. Lisivka <vlisivka@gmail.com>, All Rights Reserved
 #
-# This file is part of bash-modules (http://trac.assembla.com/bash-modules/).
+# This file is part of bash-modules (https://github.com/vlisivka/bash-modules).
 #
 # bash-modules is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published
@@ -17,19 +17,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with bash-modules  If not, see <http://www.gnu.org/licenses/>.
 
-#>>> strict - strict mode (more checks for errors).
 
-. import.sh log
 
+#>>> strict - unofficial strict mode for bash
 #>>
-#>> Bash options turned on:
-#>>   * u - abort when undefined or empty variable is used. Use ${VAR:-DEFAULT_VALUE} or "${VAR:+$VAR}" to be safe.
-#>>   * e - abort on uncaught errors.
-#>>   * E - inherit ERR trap (see below)
-#>>   * pipefail - return error code when any component of pipe will fail, instead of last one only. 
-set -ueE -o pipefail
+#>> See also: http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
-#>>
-#>> Traps installed:
-#>>   * ERR - show error and print stack trace in case of uncaught error.
-trap 'panic "Uncaught error."' ERR
+set -euo pipefail
+IFS=$'\n\t'
