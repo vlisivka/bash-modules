@@ -166,6 +166,7 @@ log::panic() {
 
   log::error "$LEVEL" "$@"
   log::enable_backtrace
+  log::backtrace 2
   exit 42
 }
 
