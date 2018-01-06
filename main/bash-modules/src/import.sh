@@ -58,7 +58,7 @@
   #> * __IMPORT__BASE_PATH - array with list of your own directories with modules,
   #> which will be prepended to module search path. You can set __IMPORT__BASE_PATH array in
   #> script at begining, in /etc/bash-modules/config.sh, or in ~/.bash-modules/config.sh file.
-  __IMPORT__BASE_PATH=( "${BASH_MODULES_PATH:+$BASH_MODULES_PATH}" "${IMPORT__BASE_PATH[@]:+${__IMPORT__BASE_PATH[@]}}" "/usr/share/bash-modules" )
+  __IMPORT__BASE_PATH=( "${BASH_MODULES_PATH:+$BASH_MODULES_PATH}" "${__IMPORT__BASE_PATH[@]:+${__IMPORT__BASE_PATH[@]}}" "/usr/share/bash-modules" )
 
   #>
   #> * /etc/bash-modules/config.sh - system wide configuration file.
