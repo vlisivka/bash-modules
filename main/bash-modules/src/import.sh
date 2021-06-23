@@ -66,7 +66,7 @@
   #>
   #> Example code:
   #>     set -ueEo pipefail # Force strict mode for all scripts.
-  #>     trap 'panic "Uncatched error."' ERR # Enable stack traces for uncatched errors.
+  #>     trap 'panic "Uncaught error."' ERR # Enable stack traces for uncaught errors.
   #>     __log__BACKTRACE=="yes" # Enable stack traces for catched errors.
   [ ! -s /etc/bash-modules/config.sh ] || source /etc/bash-modules/config.sh || {
     echo "[import.sh] WARN: Cannot import \"/etc/bash-modules/config.sh\" or an error in this file." >&2
