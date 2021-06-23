@@ -122,6 +122,7 @@
     return $__ERROR_CODE
   }
 
+# TODO: Move this function to separate module.
   #>
   #> * import::list_modules() - print various information about module(s).
   #> Arguments: first argument is function to call on each module.
@@ -189,9 +190,10 @@
     done
   }
 
+# TODO: Move this function to separate module.
   import::show_documentation() {
     local LEVEL="${1:?ERROR: Argument is required: level of documentation: 1 for all documentation, 2 for summary.}"
-    local PARSER="${2:?ERROR: Argument is required: command to parse documentation text, e.g. cat.}"
+    local PARSER="${2:?ERROR: Argument is required: command to parse documentation text, e.g. cat, more, less, nroff.}"
     local FILE="${3:?ERRROR: Argument is required: file to parse documentation from.}"
 
     [ -e "$FILE" ] || {
@@ -232,7 +234,7 @@
 }
 
 # If this is top level code and program name is .../import.sh
-if [ "${FUNCNAME:+$FUNCNAME}" == "" -a "${0##*/}" == "import.sh" ]
+if [ "${FUNCNAME:+x}" == "" -a "${0##*/}" == "import.sh" ]
 then
   # import.sh called as standalone program
   if  [ "$#" -eq 0 ]

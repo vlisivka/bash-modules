@@ -22,6 +22,7 @@
 
 
 #>>> timestamped_log - print timestamped logs. Drop-in replacement for log module.
+#>>> Warning: call to logging function will invokes `date` command to generate timestamp.
 
 #>
 #> Variables:
@@ -70,8 +71,7 @@ function $FUNCTION_NAME() {
 
 #>>
 #>> Wrapped functions:
-#>> log::info info debug - print timestamp to stdout.
-
+#>> log::info, info, debug - print timestamp to stdout and then log message.
 timestamped_log::wrap \
   'echo -n "$(date "+$__timestamped_log_format")"' \
   '' \
@@ -79,13 +79,12 @@ timestamped_log::wrap \
   info \
   debug
 
-#>> log::error log::warn todo error warn panic - print timestamp to stderr.
+#>> log::error, log::warn, error, warn - print timestamp to stderr and then log message.
 timestamped_log::wrap \
   'echo -n "$(date "+$__timestamped_log_format")" >&2' \
   '' \
   log::error \
   log::warn \
-  todo \
   error \
   warn \
   panic

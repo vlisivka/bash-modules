@@ -93,21 +93,6 @@ info() {
 }
 
 #>>
-#>> * todo MESAGE... - print todo message and backtrace (if enabled).
-todo() {
-  if [ -t 2 ]
-  then
-    # STDERR is tty
-    local __log_WARN_BEGIN=$'\033[33m'
-    local __log_WARN_END=$'\033[39m'
-    echo "[$__log__APP] ${__log_WARN_BEGIN}TODO${__log_WARN_END}: ${*:-}" >&2
-  else
-    echo "[$__log__APP] TODO: ${*:-}" >&2
-  fi
-  log::backtrace 2
-}
-
-#>>
 #>> * debug MESAGE... - print debug message, when debugging is enabled only.
 debug() {
  [ "${__log__DEBUG:-}" != yes ] || echo "[$__log__APP] DEBUG: ${*:-}"
@@ -159,24 +144,60 @@ log::info() {
 }
 
 #>>
-#>> * log::panic LEVEL MESAGE... - print error message, then exit.
+#>> * log::panic LEVEL EXIT_CODE MESAGE... - print error message with backtrace, then exit with exit code.
 log::panic() {
   local LEVEL="$1"
-  shift 1
+  local EXIT_CODE="$2"
+  shift 2
 
-  log::error "$LEVEL" "$@"
+  log::error "$LEVEL" "${*:-}"
+  log::enable_backtrace
+  log::backtrace 2
+  exit "$EXIT_CODE"
+}
+
+#>>
+#>> * panic MESAGE... - print error message and backtrace, then exit with error code 1.
+panic() {
+  log::error "PANIC"  "${*:-}"
+  log::enable_backtrace
+  log::backtrace 2
+  exit 1
+}
+
+#>>
+#>> * unimplemented MESAGE... - print message and backtrace, then exit with error code 42.
+unimplemented() {
+  log::error "UNIMPLEMENTED" "${*:-}"
   log::enable_backtrace
   log::backtrace 2
   exit 42
 }
 
+
 #>>
-#>> * panic MESAGE... - print error message and backtrace, then exit.
-panic() {
-  log::error "PANIC" "$@"
+#>> * todo MESAGE... - print todo message and backtrace, then exit with error code 2.
+todo() {
+  log::error "TODO" "${*:-}"
   log::enable_backtrace
   log::backtrace 2
-  exit 42
+  exit 2
+}
+
+#>>
+#>> * dbg VARIABLE... - print name of variable and it content to stderr
+dbg() {
+  local __dbg_OUT=$( declare -p "$@" )
+
+  if [ -t 2 ]
+  then
+    # STDERR is tty
+    local __log_DBG_BEGIN=$'\033[33m'
+    local __log_DBG_END=$'\033[39m'
+    echo "[$__log__APP] ${__log_DBG_BEGIN}DBG${__log_DBG_END}: ${__dbg_OUT//declare -? /}" >&2
+  else
+    echo "[$__log__APP] DBG: ${__dbg_OUT//declare -? /}" >&2
+  fi
 }
 
 #>>
