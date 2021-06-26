@@ -2,13 +2,13 @@
 # Copyright (c) YEAR AUTHOR <EMAIL>, All Rights Reserved
 # YOUR LICENSE FOR MODULE (LGPL2+, MIT, etc.)
 
-#>>> template - todo: summary
+#>> template - todo: summary
 
-#>>
-#>> Functions:
+#>
+#> Functions:
 
-#>>
-#>> template::echo ARGUMENTS - todo: function summary
+#>
+#> template::echo ARGUMENTS - todo: function summary
 template::echo() {
   echo "$@"
 }

@@ -1,6 +1,6 @@
 ##!/bin/bash
 # Copyright (c) 2009-2021 Volodymyr M. Lisivka <vlisivka@gmail.com>, All Rights Reserved
-# License: GPL2+
+# License: LGPL2+
 
 # Import log module and then override some functions
 . import.sh log

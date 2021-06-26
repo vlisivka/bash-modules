@@ -1,6 +1,6 @@
-##!/bin/bash
+#!/bin/bash
 # Copyright (c) 2009-2021 Volodymyr M. Lisivka <vlisivka@gmail.com>, All Rights Reserved
-# License: GPL2+
+# License: LGPL2+
 
 #>>> arguments  - contains function to parse arguments and assign option values to variables.
 
@@ -8,13 +8,13 @@
 #>> Functions:
 
 #>>
-#>> * arguments::parse [-O|--LONG_OPTION)VARIABLE;FLAGS[,COND]...]... -- [ARGUMENTS]...
+#>> * arguments::parse [-S|--FULL)VARIABLE;FLAGS[,COND]...]... -- [ARGUMENTS]...
 #>
 #> Where:
-#>   -O - short option name
-#>   --LONG_OPTION - long option name
-#>   VARIABLE -  shell variable name to assign value
-#>   FLAGS - one of (case sensitive):
+#>   -S       - short option name.
+#>   --FULL   - long option name.
+#>   VARIABLE - shell variable name to assign value.
+#>   FLAGS    - one of (case sensitive):
 #>     B | Bul | Boolean     - boolean (no value);
 #>     I | Inc | Incremental - incremental (no value) - increment variable by one;
 #>     S | Str | String      - string value;
@@ -27,6 +27,7 @@
 #>   -- - separator between option descriptions and commandline arguments
 #>   ARGUMENTS - command line arguments to parse
 #>
+#> LIMITATION:
 #> Value for option can be set as -opt VALUE or as -opt=VALUE, but this
 #> will work for last option name in case of multiple options. If option
 #> description is "-b|--bar", then --bar=VALUE will work, but -b=VALUE will
@@ -34,6 +35,7 @@
 #> but --bar=VALUE will not. You will need to create two separate option
 #> descriptions for that to work in both cases.
 #>
+#> LIMITATION:
 #> Grouping of one-letter options is NOT supported. -abc will be parsed as
 #> option -abc, not as -a -b -c.
 #>
@@ -51,7 +53,7 @@
 #>
 #> Example:
 #>
-#>   arguments::parse "-f|--foo)FOO;Boolean" "-b|--bar)BAR;String" "-B|--baz)BAZ;Array" "-i|--inc)TIMES;Incremental" -- "${@:+$@}"
+#>   arguments::parse "-f|--foo)FOO;Boolean" "-b|--bar)BAR;String;Required" "-B|--baz)BAZ;Array" "-i|--inc)TIMES;Incremental,((TIMES<3))" -- "${@:+$@}"
 #>   echo "Foo: $FOO, Bar: $BAR."
 #>   IND=0; for I in "${BAZ[@]}"; do let IND++; echo "BAZ[$IND]=$I"; done
 #>   echo "--inc option used $TIMES times."
@@ -185,12 +187,12 @@ arguments::generate_parser() {
       case "$OPTION_OPTION" in
         R|Req|Required)
           OPTION_POSTCONDITIONS="$OPTION_POSTCONDITIONS
-            [ -n \"\$${OPTION_VARIABLE}\" ] || { echo \"ERROR: Option $OPTION_CASE is required. See --help for details.\" >&2; return 1; }
+            [ -n \"\$${OPTION_VARIABLE}\" ] || { echo \"ERROR: Option \\\"$OPTION_CASE\\\" is required. See --help for details.\" >&2; return 1; }
           "
         ;;
         *) # Any other code after option type i
           OPTION_POSTCONDITIONS="$OPTION_POSTCONDITIONS
-            $OPTION_OPTION || { echo \"ERROR: Condition for $OPTION_CASE option is failed. See --help for details.\" >&2; return 1; }
+            $OPTION_OPTION || { echo \"ERROR: Condition for \\\"$OPTION_CASE\\\" option is failed. See --help for details.\" >&2; return 1; }
           "
         ;;
       esac
@@ -218,7 +220,7 @@ arguments::generate_parser() {
         exit 0
       ;;
       --debug)
-        log_enable_debug_mode
+        log::enable_debug_mode
         shift
       ;;
       --)
