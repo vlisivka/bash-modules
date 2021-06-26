@@ -21,7 +21,8 @@
 #>     N | Num | Number      - numeric value;
 #>     A | Array             - array of string values (multiple options);
 #>   COND -  post conditions:
-#>     R | Req | Required - option is required, i.e. it must be not empty;
+#>     R | Req | Required - option value must be not empty after end of parsing.
+#>                          Set initial value to empty value to require this option;
 #>     any code           - executed after option parsing to check post conditions, e.g. "(( FOO > 3 )), (( FOO > BAR ))".
 #>   -- - separator between option descriptions and commandline arguments
 #>   ARGUMENTS - command line arguments to parse

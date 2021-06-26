@@ -8,7 +8,9 @@ NAME="${HW_NAME:-world}"
 
 hw() {
   local NAME="${1:?ERROR: Argument is required: a name to grit.}"
+
   info "Hello, $NAME!"
+
   return 0
 }
 
@@ -20,7 +22,7 @@ main() {
 
 arguments::parse \
     '-n|--name)NAME;String,Required' \
-    -- "$@" || panic "ERROR" "Cannot parse arguments."
+    -- "$@" || panic "Cannot parse arguments."
 
 main "${ARGUMENTS[@]}"; exit $?
 
