@@ -2,7 +2,7 @@
 # Copyright (c) 2009-2021 Volodymyr M. Lisivka <vlisivka@gmail.com>, All Rights Reserved
 # License: LGPL2+
 
-#>>> elapsed_time - print elapsed time since shell start in human readable form.
+#>>> elapsed_time - print elapsed time since shell script start in human readable form.
 
 #>>
 #>> Functions:

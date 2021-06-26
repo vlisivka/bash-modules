@@ -151,7 +151,7 @@ panic() {
 }
 
 #>>
-#>> * unimplemented MESAGE... - print message and backtrace, then exit with error code 42.
+#>> * unimplemented MESAGE... - print error message and backtrace, then exit with error code 42.
 unimplemented() {
   log::error "UNIMPLEMENTED" "${*:-}"
   log::enable_backtrace
@@ -161,12 +161,11 @@ unimplemented() {
 
 
 #>>
-#>> * todo MESAGE... - print todo message and backtrace, then exit with error code 2.
+#>> * todo MESAGE... - print todo message and backtrace.
 todo() {
   log::error "TODO" "${*:-}"
-  log::enable_backtrace
+  local __log__BACKTRACE="yes"
   log::backtrace 2
-  exit 2
 }
 
 #>>
