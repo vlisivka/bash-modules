@@ -1,2 +1,0 @@
-* Tue Jul 16 2013  Volodymyr M. Lisivka - 2.0
-- TUI modules are moved out from core package into separate package.
