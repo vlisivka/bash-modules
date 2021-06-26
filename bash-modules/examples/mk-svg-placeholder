@@ -1,0 +1,46 @@
+#!/bin/bash
+. import.sh log strict arguments
+
+BG_COLOR="white"
+FG_COLOR="gray"
+IMAGE_WIDTH="600"
+IMAGE_HEIGHT="400"
+IMAGE_TYPE="svg"
+FONT_SIZE="30"
+
+main() {
+  local image_text="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$IMAGE_WIDTH\" height=\"$IMAGE_HEIGHT\" viewBox=\"0 0 $IMAGE_WIDTH $IMAGE_HEIGHT\">\
+<rect fill=\"$BG_COLOR\" width=\"$IMAGE_WIDTH\" height=\"$IMAGE_HEIGHT\"/>\
+<text fill=\"$FG_COLOR\" font-family=\"sans-serif\" font-size=\"$FONT_SIZE\" dy=\"10.5\" font-weight=\"bold\" x=\"50%\" y=\"50%\" text-anchor=\"middle\">$IMAGE_WIDTH×$IMAGE_HEIGHT</text>\
+</svg>"
+
+  local image_b64=$( echo -n "$image_text" | base64 --wrap=0 )
+
+  echo "data:image/$IMAGE_TYPE;base64,$image_b64"
+}
+
+
+arguments::parse \
+  "-b|--bg-color)BG_COLOR;String" \
+  "-f|--fg-color)FG_COLOR;String" \
+  "-W|--image-width)IMAGE_WIDTH;Number" \
+  "-H|--image-height)IMAGE_HEIGHT;Number" \
+  "-s|--font-size)FONT_SIZE;Number" \
+  -- "${@:+$@}" || panic "Cannot parse arguments."
+
+main "${ARGUMENTS[@]:+${ARGUMENTS[@]}}"; exit $?
+
+#>> Usage: mk-svg-placeholder [-h|--help|--man] | [-b|--bg-color BG_COLOR] [-f|--fg-color FG_COLOR] [-W|--image-width IMAGE_WIDTH] [-H|--image-height IMAGE_HEIGHT] [-s|--font-size FONT_SIZE]
+#>
+#> Generate placeholder SVG image in base64 encoding, e.g. white rectangle 100x100.
+#>
+#> Options:
+#>   -b|--bg-color BG_COLOR          set background color for image, e.g. "white", or "black", or "transparent". Default value is "white".
+#>   -f|--fg-color FG_COLOR          set foreground color for text, eg. "rgba(0,0,0,0.5)" or "#666". Default value is "gray".
+#>   -W|--image-width IMAGE_WIDTH    set image width in pixels. Default value is "600".
+#>   -H|--image-height IMAGE_HEIGHT  set image height in pixels. Default value is "400".
+#>   -s|--font-size FONT_SIZE        set font size. Default value is "30",
+#>
+#> Example:
+#>
+#>   mk-svg-placeholder -b gray -fg white -W 100 -H 100 -s 20
