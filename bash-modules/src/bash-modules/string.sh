@@ -49,6 +49,20 @@ string::trim_spaces_at_right() {
 }
 
 #>>
+#>> * string::insert VARIABLE POSITION VALUE
+#>    Insert VALUE into VARIABLE at given POSITION.
+#>    Example: v="abba" ; string::insert v 2 "cc" # v="abccba"
+string::insert() {
+  local -n __string__VAR="$1"
+  local __string__POSITION="$2"
+  local __string__VALUE="${3:-}"
+
+  __string__VALUE="${__string__VAR::$__string__POSITION}${__string__VALUE}${__string__VAR:$__string__POSITION}"
+
+  __string__VAR="$__string__VALUE"
+}
+
+#>>
 #>> * string::split_by_delimiter ARRAY DELIMITERS VALUE
 #>    Split value by delimiter(s) and assign result to array. Use
 #>    backslash to escape delimiter in string.
