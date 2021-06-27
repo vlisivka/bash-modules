@@ -11,7 +11,7 @@
 
 #>>
 #>> * unit::assertYes VALUE [MESSAGE]              Show error message, when VALUE is not equal to "yes".
-unit::assertYes() {
+unit::assert_yes() {
   local VALUE="${1:-}"
   local MESSAGE="${2:-Value is not \"yes\".}"
 
@@ -22,8 +22,8 @@ unit::assertYes() {
 }
 
 #>>
-#>> * unit::assertNo VALUE [MESSAGE]               Show error message, when VALUE is not equal to "no".
-unit::assertNo() {
+#>> * unit::assert_no VALUE [MESSAGE]               Show error message, when VALUE is not equal to "no".
+unit::assert_no() {
   local VALUE="$1"
   local MESSAGE="${2:-Value is not \"no\".}"
 
@@ -34,8 +34,8 @@ unit::assertNo() {
 }
 
 #>>
-#>> * unit::assertNotEmpty VALUE [MESSAGE]         Show error message, when VALUE is empty.
-unit::assertNotEmpty() {
+#>> * unit::assert_not_empty VALUE [MESSAGE]         Show error message, when VALUE is empty.
+unit::assert_not_empty() {
   local VALUE="${1:-}"
   local MESSAGE="${2:-Value is empty.}"
 
@@ -46,8 +46,8 @@ unit::assertNotEmpty() {
 }
 
 #>>
-#>> * unit::assertEqual VALUE1 VALUE2 [MESSAGE]    Show error message, when VALUEs are not equal.
-unit::assertEqual() {
+#>> * unit::assert_equal VALUE1 VALUE2 [MESSAGE]    Show error message, when VALUEs are not equal.
+unit::assert_equal() {
   local ACTUAL="${1:-}"
   local EXPECTED="${2:-}"
   local MESSAGE="${3:-Values are not equal.}"
@@ -59,8 +59,8 @@ unit::assertEqual() {
 }
 
 #>>
-#>> * unit::assertArraysAreEqual MESSAGE VALUES1... -- VALUES2... - show error message when arrays are not equal in size or content.
-unit::assertArraysAreEqual() {
+#>> * unit::assert_arrays_are_equal MESSAGE VALUES1... -- VALUES2... - show error message when arrays are not equal in size or content.
+unit::assert_arrays_are_equal() {
   local MESSAGE="${1:-Arrays are not equal.}" ; shift
   local ARGS=( $@ )
 
@@ -98,8 +98,8 @@ unit::assertArraysAreEqual() {
 }
 
 #>>
-#>> * unit::assertNotEqual VALUE1 VALUE2 [MESSAGE] Show error message, when VALUEs are equal.
-unit::assertNotEqual() {
+#>> * unit::assert_not_equal VALUE1 VALUE2 [MESSAGE] Show error message, when VALUEs are equal.
+unit::assert_not_equal() {
   local VALUE1="${1:-}"
   local VALUE2="${2:-}"
   local MESSAGE="${3:-values are equal but must not.}"
@@ -132,33 +132,33 @@ unit::fail() {
 #>>
 #>> * unit::run_test_cases [OPTIONS] [--] [ARGUMENTS]   Execute all functions with
 #>>    test* prefix in name in alphabetic order
-#>>
-#>>  OPTIONS:
-#>>
-#>>    -t | --test TEST_CASE   execute single test case
-#>>    -q | --quiet            do not print informational messages and dots
-#>>    --debug                 enable stack traces
-#>>
-#>>  After execution of run_test_cases, following variables will be assigned:
-#>>    NUMBER_OF_TEST_CASES - total number of test cases executed
-#>>    NUMBER_OF_FAILED_TEST_CASES - number of failed test cases
-#>>    FAILED_TEST_CASES - names of functions of failed tests cases
-#>>
-#>>  All arguments, which are passed to run_test_cases, are passed then to
-#>>  unit::setUp, unit::tearDown and test cases using ARGUMENTS array, so you
-#>>  can parametrize your test cases. You can call run_test_cases more than
-#>>  once with different arguments. Use "--" to strictly separate arguments
-#>>  from options.
-#>>
-#>>  If you want to ignore some test case, just prefix them with
-#>>  underscore, so unit::run_test_cases will not see them.
-#>>
-#>>  If you want to run few subsets of test cases in one file, define each
-#>>  subset in it own subshell and execute unit::run_test_cases in each subshell.
-#>>
-#>>  Each test case is executed in it own subshell, so you can call "exit"
-#>>  in test case or assign variables without any effect on subsequent test
-#>>  cases.
+#>
+#>  OPTIONS:
+#>
+#>    -t | --test TEST_CASE   execute single test case
+#>    -q | --quiet            do not print informational messages and dots
+#>    --debug                 enable stack traces
+#>
+#>  After execution of run_test_cases, following variables will be assigned:
+#>    NUMBER_OF_TEST_CASES - total number of test cases executed
+#>    NUMBER_OF_FAILED_TEST_CASES - number of failed test cases
+#>    FAILED_TEST_CASES - names of functions of failed tests cases
+#>
+#>  All arguments, which are passed to run_test_cases, are passed then to
+#>  unit::set_up, unit::tear_down and test cases using ARGUMENTS array, so you
+#>  can parametrize your test cases. You can call run_test_cases more than
+#>  once with different arguments. Use "--" to strictly separate arguments
+#>  from options.
+#>
+#>  If you want to ignore some test case, just prefix them with
+#>  underscore, so unit::run_test_cases will not see them.
+#>
+#>  If you want to run few subsets of test cases in one file, define each
+#>  subset in it own subshell and execute unit::run_test_cases in each subshell.
+#>
+#>  Each test case is executed in it own subshell, so you can call "exit"
+#>  in test case or assign variables without any effect on subsequent test
+#>  cases.
 unit::run_test_cases() {
 
   NUMBER_OF_TEST_CASES=0
@@ -181,9 +181,9 @@ unit::run_test_cases() {
 
   local __TEST __EXIT_CODE=0
 
-  ( set -ue ; FIRST_TEAR_DOWN=yes ; unit::tearDown "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" ) || {
+  ( set -ue ; FIRST_TEAR_DOWN=yes ; unit::tear_down "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" ) || {
       __EXIT_CODE=$?
-      log::error "FAIL" "tearDown before first test case is failed."
+      log::error "FAIL" "tear_down before first test case is failed."
     }
 
   for __TEST in "${__TEST_CASES[@]:+${__TEST_CASES[@]}}"
@@ -195,9 +195,9 @@ unit::run_test_cases() {
       set -ue
       __EXIT_CODE=0
 
-      unit::setUp "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" || {
+      unit::set_up "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" || {
         __EXIT_CODE=$?
-        log::error "FAIL" "setUp before test case #$NUMBER_OF_TEST_CASES ($__TEST) failed."
+        log::error "FAIL" "set_up before test case #$NUMBER_OF_TEST_CASES ($__TEST) failed."
       }
 
       ( set -ueo pipefail ; "$__TEST" "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" ) || {
@@ -205,7 +205,7 @@ unit::run_test_cases() {
         log::error "FAIL" "Test case #$NUMBER_OF_TEST_CASES ($__TEST) failed."
       }
 
-      ( set -ueo pipefail ; unit::tearDown "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" ) || {
+      ( set -ueo pipefail ; unit::tear_down "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" ) || {
         __EXIT_CODE=$?
         log::error "FAIL" "Cleanup after test case #$NUMBER_OF_TEST_CASES ($__TEST) failed."
       }
@@ -228,26 +228,26 @@ unit::run_test_cases() {
   return $__EXIT_CODE
 }
 
-#>>
-#>>  log::run_test_cases will also call log::setUp and log::tearDown functions before and
-#>>  after each test case. By default, they do nothing. Override them to do
-#>>  something useful.
+#>
+#> unit::run_test_cases will also call unit::set_up and unit::tear_down
+#> functions before and after each test case. By default, they do nothing.
+#> Override them to do something useful.
 
 #>>
-#>>  * unit::setUp - can set variables which are available for following
-#>>  test case and tearDown. It also can alter ARGUMENTS array. Test case
-#>>  and tearDown are executed in their own subshell, so they cannot change
-#>>  outer variables.
-unit::setUp() {
+#>> * unit::set_up - can set variables which are available for following
+#>  test case and tear_down. It also can alter ARGUMENTS array. Test case
+#>  and tear_down are executed in their own subshell, so they cannot change
+#>  outer variables.
+unit::set_up() {
   return 0
 }
 
 #>>
-#>>  * unit::tearDown is called first, before first setUp of first test case, to
-#>>  cleanup after possible failed run of previous test case. When it
-#>>  called for first time, FIRST_TEAR_DOWN variable with value "yes" is
-#>>  available.
-unit::tearDown() {
+#>> * unit::tear_down is called first, before first set_up of first test case, to
+#>  cleanup after possible failed run of previous test case. When it
+#>  called for first time, FIRST_TEAR_DOWN variable with value "yes" is
+#>  available.
+unit::tear_down() {
   return 0
 }
 

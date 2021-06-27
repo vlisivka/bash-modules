@@ -13,7 +13,7 @@ test_import_from_single_file() {
 
   settings::import "$FILE"
 
-  unit::assertEqual "${TEST:-}" "foo"
+  unit::assert_equal "${TEST:-}" "foo"
 
   rm -f "$FILE"
 }
@@ -26,8 +26,8 @@ test_import_from_multiple_files() {
 
   settings::import "$FILE1" "$FILE2"
 
-  unit::assertEqual "${TEST1:-}" "foo"
-  unit::assertEqual "${TEST2:-}" "bar"
+  unit::assert_equal "${TEST1:-}" "foo"
+  unit::assert_equal "${TEST2:-}" "bar"
 
   rm -f "$FILE1" "$FILE2"
 }
@@ -41,8 +41,8 @@ test_import_from_dir() {
 
   settings::import "$DIR"
 
-  unit::assertEqual "${TEST1:-}" "foo"
-  unit::assertEqual "${TEST2:-}" "bar"
+  unit::assert_equal "${TEST1:-}" "foo"
+  unit::assert_equal "${TEST2:-}" "bar"
 
   rm -rf "$DIR"
 }

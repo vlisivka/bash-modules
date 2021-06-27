@@ -203,6 +203,7 @@ strings::find_string_with_prefix() {
   return 1
 }
 
+#>>
 #>> * strings::contains STRING SUBSTRING
 #>    returns zero exit code (true), when STRING contains substring
 strings::contains() {

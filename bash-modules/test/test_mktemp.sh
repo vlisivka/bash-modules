@@ -80,7 +80,7 @@ mktemp_test_file_worker() {
 
   for((I=0; I<NUMBER_OF_FILES; I++))
   do
-    unit::assertEqual "$(cat "${FILES[I]}")" "$WORKER_NUMBER:$I" "Incorrect content of file \"${FILES[I]}\"."
+    unit::assert_equal "$(cat "${FILES[I]}")" "$WORKER_NUMBER:$I" "Incorrect content of file \"${FILES[I]}\"."
     rm -f "${FILES[I]}"
   done
 }
@@ -110,7 +110,7 @@ mktemp_test_dir_worker() {
 
   for((I=0; I<NUMBER_OF_DIRS; I++))
   do
-    unit::assertEqual "$(cat "${DIRS[I]}"/foo.txt)" "$WORKER_NUMBER:$I" "Incorrect content of file in directory \"${DIRS[I]}\"."
+    unit::assert_equal "$(cat "${DIRS[I]}"/foo.txt)" "$WORKER_NUMBER:$I" "Incorrect content of file in directory \"${DIRS[I]}\"."
     rm -rf "${DIRS[I]}"
   done
 }

@@ -14,7 +14,7 @@ test_boolean_argument() {
     error "Cannot parse boolean argument."
     return 1
   }
-  unit::assertEqual "$FOO" "yes" "Boolean argument parsed incorrectly."
+  unit::assert_equal "$FOO" "yes" "Boolean argument parsed incorrectly."
 }
 
 test_string_argument() {
@@ -23,9 +23,9 @@ test_string_argument() {
     error "Cannot parse string argument."
     return 1
   }
-  unit::assertEqual "$FOO" "foo" "String option foo parsed incorrectly."
-  unit::assertEqual "$BAR" "bar" "String option bar parsed incorrectly."
-  unit::assertEqual "$BAZ" "baz" "String option baz parsed incorrectly."
+  unit::assert_equal "$FOO" "foo" "String option foo parsed incorrectly."
+  unit::assert_equal "$BAR" "bar" "String option bar parsed incorrectly."
+  unit::assert_equal "$BAZ" "baz" "String option baz parsed incorrectly."
 }
 
 test_numeric_argument() {
@@ -34,9 +34,9 @@ test_numeric_argument() {
     error "Cannot parse numeric argument."
     return 1
   }
-  unit::assertEqual "$FOO" "1" "Numeric option foo parsed incorrectly."
-  unit::assertEqual "$BAR" "2" "Numeric option bar parsed incorrectly."
-  unit::assertEqual "$BAZ" "3" "Numeric option baz parsed incorrectly."
+  unit::assert_equal "$FOO" "1" "Numeric option foo parsed incorrectly."
+  unit::assert_equal "$BAR" "2" "Numeric option bar parsed incorrectly."
+  unit::assert_equal "$BAZ" "3" "Numeric option baz parsed incorrectly."
 }
 
 test_required_option() {
@@ -53,8 +53,8 @@ test_option_postcondition() {
     error "Cannot parse numeric argument with option postcondition."
     return 1
   }
-  unit::assertEqual "$FOO" "3" "Numeric option foo parsed incorrectly."
-  unit::assertEqual "$BAR" "4" "Numeric option bar parsed incorrectly."
+  unit::assert_equal "$FOO" "3" "Numeric option foo parsed incorrectly."
+  unit::assert_equal "$BAR" "4" "Numeric option bar parsed incorrectly."
 }
 
 test_option_postcondition_failed() {
@@ -71,9 +71,9 @@ test_array_argument() {
     error "Cannot parse array argument."
     return 1
   }
-  unit::assertEqual "${#FOO[@]}" "2" "Array argument parsed incorrectly: wrong count of elements."
-  unit::assertEqual "${FOO[0]}" "bar" "Array  argument parsed incorrectly: wrong first value."
-  unit::assertEqual "${FOO[1]}" "baz" "Array  argument parsed incorrectly: wrong second value."
+  unit::assert_equal "${#FOO[@]}" "2" "Array argument parsed incorrectly: wrong count of elements."
+  unit::assert_equal "${FOO[0]}" "bar" "Array  argument parsed incorrectly: wrong first value."
+  unit::assert_equal "${FOO[1]}" "baz" "Array  argument parsed incorrectly: wrong second value."
 }
 
 test_incremental_argument() {
@@ -82,7 +82,7 @@ test_incremental_argument() {
     error "Cannot parse array argument."
     return 1
   }
-  unit::assertEqual "$FOO" "3" "Incremental argument parsed incorrectly: wrong count of options."
+  unit::assert_equal "$FOO" "3" "Incremental argument parsed incorrectly: wrong count of options."
 }
 
 unit::run_test_cases "$@"

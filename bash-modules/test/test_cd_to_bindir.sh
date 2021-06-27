@@ -11,12 +11,12 @@ test_cwdir() {
   local original_dir=$(pwd)
   . import.sh cd_to_bindir
 
-  unit::assertEqual "$( pwd )" "$original_dir"
+  unit::assert_equal "$( pwd )" "$original_dir"
 
   cd /
-  cd_to_bindir || panic "Cannot cd to this script directory"
+  cd_to_bindir || fail "Cannot cd to this script directory"
 
-  unit::assertEqual "$( pwd )" "$original_dir"
+  unit::assert_equal "$( pwd )" "$original_dir"
 }
 
 unit::run_test_cases "$@"
