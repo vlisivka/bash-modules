@@ -7,19 +7,39 @@ export PATH="$APP_DIR/../src:$PATH"
 ###############################################
 # Test cases
 
-test_trim_spaces_with_multiple_spaces_at_both_sides() {
-  string::trim_spaces BAR "   aaaa   "
+test_trim() {
+  string::trim BAR "   aaaa   "
   unit::assert_equal "$BAR" "aaaa"
-}
 
-test_trim_spaces_with_multiple_spaces_at_left_side() {
-  string::trim_spaces BAR "   aaaa   *"
+  string::trim BAR "   aaaa   *"
   unit::assert_equal "$BAR" "aaaa   *"
+
+  string::trim BAR "&   aaaa   "
+  unit::assert_equal "$BAR" "&   aaaa"
 }
 
-test_trim_spaces_with_multiple_spaces_at_right_side() {
-  string::trim_spaces BAR "&   aaaa   "
-  unit::assert_equal "$BAR" "&   aaaa"
+test_trim_start() {
+  string::trim_start BAR "   aaaa   "
+  unit::assert_equal "$BAR" "aaaa   "
+}
+
+test_trim_end() {
+  string::trim_end BAR "   aaaa   "
+  unit::assert_equal "$BAR" "   aaaa"
+}
+
+test_insert() {
+  v="abba"
+  string::insert v 0 "cc"
+  unit::assert_equal "$v" "ccabba"
+
+  v="abba"
+  string::insert v 2 "cc"
+  unit::assert_equal "$v" "abccba"
+
+  v="abba"
+  string::insert v 4 "cc"
+  unit::assert_equal "$v" "abbacc"
 }
 
 test_split_by_delimiter() {

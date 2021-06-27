@@ -10,7 +10,7 @@
 #>>
 #>> * string::trim_spaces VARIABLE VALUE
 #>    Trim white space characters around value and assign result to variable.
-string::trim_spaces() {
+string::trim() {
   local -n __string__VAR="$1"
   local __string__VALUE="${2:-}"
 
@@ -23,9 +23,9 @@ string::trim_spaces() {
 }
 
 #>>
-#>> * string::trim_spaces_at_left VARIABLE VALUE
-#>    Trim white space characters at begining of value and assign result to variable.
-string::trim_spaces_at_left() {
+#>> * string::trim_start VARIABLE VALUE
+#>    Trim white space characters at begining of the value and assign result to the variable.
+string::trim_start() {
   local -n __string__VAR="$1"
   local __string__VALUE="${2:-}"
 
@@ -37,8 +37,8 @@ string::trim_spaces_at_left() {
 
 #>>
 #>> * string::trim_spaces_at_right VARIABLE VALUE
-#>    Trim white space characters at end of value and assign result to variable.
-string::trim_spaces_at_right() {
+#>    Trim white space characters at the end of the value and assign result to the variable.
+string::trim_end() {
   local -n __string__VAR="$1"
   local __string__VALUE="${2:-}"
 
