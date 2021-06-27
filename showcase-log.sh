@@ -1,5 +1,5 @@
 #!/bin/bash
-. import.sh log arguments
+. import.sh strict log arguments
 
 main() {
   debug "A debug message (use --debug option to show debug messages)."
@@ -15,8 +15,9 @@ main() {
   unimplemented "Not implemented."
 }
 
-arguments::parse -- "$@" || panic "Cannot parse arguments"
+arguments::parse -- "$@" || panic "Cannot parse arguments."
 
 dbg ARGUMENTS
 
 main "${ARGUMENTS[@]}"
+exit
