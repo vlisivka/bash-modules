@@ -65,7 +65,7 @@ mktemp() {
       fi
 
       # When use temporary dir, use only last path element of template
-      [ "$USE_TMP_DIR" == "no" ] || strings::basename TEMPLATE "$TEMPLATE"
+      [ "$USE_TMP_DIR" == "no" ] || string::basename TEMPLATE "$TEMPLATE"
 
       # Create private owned files and directories (0700)
       umask 077
@@ -76,29 +76,29 @@ mktemp() {
       do
         local FILE_NAME="" RANDOM_STRING
         case "$TEMPLATE" in
-          *XXXXXXXXXXXXXXXXXXXXXXXXX*) strings::random_string RANDOM_STRING 25 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXXXXXXXXXXXXX*)  strings::random_string RANDOM_STRING 24 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXXXXXXXXXXXX*)   strings::random_string RANDOM_STRING 23 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXXXXXXXXXXX*)    strings::random_string RANDOM_STRING 22 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXXXXXXXXXX*)     strings::random_string RANDOM_STRING 21 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXXXXXXXXX*)      strings::random_string RANDOM_STRING 20 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXXXXXXXX*)       strings::random_string RANDOM_STRING 19 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXXXXXXX*)        strings::random_string RANDOM_STRING 18 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXXXXXX*)         strings::random_string RANDOM_STRING 17 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXXXXX*)          strings::random_string RANDOM_STRING 16 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXXXX*)           strings::random_string RANDOM_STRING 15 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXXX*)            strings::random_string RANDOM_STRING 14 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXXX*)             strings::random_string RANDOM_STRING 13 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXXX*)              strings::random_string RANDOM_STRING 12 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXXX*)               strings::random_string RANDOM_STRING 11 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXXX*)                strings::random_string RANDOM_STRING 10 ; FILE_NAME=${TEMPLATE//XXXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXXX*)                 strings::random_string RANDOM_STRING  9 ; FILE_NAME=${TEMPLATE//XXXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXXX*)                  strings::random_string RANDOM_STRING  8 ; FILE_NAME=${TEMPLATE//XXXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXXX*)                   strings::random_string RANDOM_STRING  7 ; FILE_NAME=${TEMPLATE//XXXXXXX/$RANDOM_STRING} ;;
-          *XXXXXX*)                    strings::random_string RANDOM_STRING  6 ; FILE_NAME=${TEMPLATE//XXXXXX/$RANDOM_STRING} ;;
-          *XXXXX*)                     strings::random_string RANDOM_STRING  5 ; FILE_NAME=${TEMPLATE//XXXXX/$RANDOM_STRING} ;;
-          *XXXX*)                      strings::random_string RANDOM_STRING  4 ; FILE_NAME=${TEMPLATE//XXXX/$RANDOM_STRING} ;;
-          *XXX*)                       strings::random_string RANDOM_STRING  3 ; FILE_NAME=${TEMPLATE//XXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXXXXXXXXXXXXX*) string::random_string RANDOM_STRING 25 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXXXXXXXXXXXX*)  string::random_string RANDOM_STRING 24 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXXXXXXXXXXX*)   string::random_string RANDOM_STRING 23 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXXXXXXXXXX*)    string::random_string RANDOM_STRING 22 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXXXXXXXXX*)     string::random_string RANDOM_STRING 21 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXXXXXXXX*)      string::random_string RANDOM_STRING 20 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXXXXXXX*)       string::random_string RANDOM_STRING 19 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXXXXXX*)        string::random_string RANDOM_STRING 18 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXXXXX*)         string::random_string RANDOM_STRING 17 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXXXX*)          string::random_string RANDOM_STRING 16 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXXX*)           string::random_string RANDOM_STRING 15 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXXX*)            string::random_string RANDOM_STRING 14 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXXX*)             string::random_string RANDOM_STRING 13 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXXX*)              string::random_string RANDOM_STRING 12 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXXX*)               string::random_string RANDOM_STRING 11 ; FILE_NAME=${TEMPLATE//XXXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXXX*)                string::random_string RANDOM_STRING 10 ; FILE_NAME=${TEMPLATE//XXXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXXX*)                 string::random_string RANDOM_STRING  9 ; FILE_NAME=${TEMPLATE//XXXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXXX*)                  string::random_string RANDOM_STRING  8 ; FILE_NAME=${TEMPLATE//XXXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXXX*)                   string::random_string RANDOM_STRING  7 ; FILE_NAME=${TEMPLATE//XXXXXXX/$RANDOM_STRING} ;;
+          *XXXXXX*)                    string::random_string RANDOM_STRING  6 ; FILE_NAME=${TEMPLATE//XXXXXX/$RANDOM_STRING} ;;
+          *XXXXX*)                     string::random_string RANDOM_STRING  5 ; FILE_NAME=${TEMPLATE//XXXXX/$RANDOM_STRING} ;;
+          *XXXX*)                      string::random_string RANDOM_STRING  4 ; FILE_NAME=${TEMPLATE//XXXX/$RANDOM_STRING} ;;
+          *XXX*)                       string::random_string RANDOM_STRING  3 ; FILE_NAME=${TEMPLATE//XXX/$RANDOM_STRING} ;;
           *)
             error "Bad template string. TEMPLATE must contain at least 3 consecutive \"X\"s."
             exit 1
@@ -137,7 +137,7 @@ mktemp() {
       return 1
     }
 
-    . import.sh log arguments strings
+    . import.sh log arguments string
     arguments::parse \
         "-d|--directory)CREATE_DIR;B" \
         "-u|--dry-run)DRY_RUN;B" \
