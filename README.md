@@ -3,7 +3,9 @@ bash-modules
 
 ## Simple module system for bash.
 
-Main goal of the project is to provide developers with set of bash subroutines, which are:
+License: LGPL2+ (you are not allowed to include code of this project into an your non-GPL project, but are free to use, modify, or distribute it as a separate lib).
+
+My vision for the project is to provide developers with set of bash subroutines, which are:
 
   * useful;
   * work in strict mode (set -ue);
@@ -11,6 +13,7 @@ Main goal of the project is to provide developers with set of bash subroutines, 
   * covered by test cases;
   * use as little external commands as possible;
   * well documented.
+
 
 Our goals:
 
