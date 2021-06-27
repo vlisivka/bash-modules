@@ -9,7 +9,7 @@
 
 #>>
 #>> * strings::trim_spaces VARIABLE VALUE
-#>>    Trim white space characters around value and assign result to variable.
+#>    Trim white space characters around value and assign result to variable.
 strings::trim_spaces() {
   local -n __strings__VAR="$1"
   local __strings__VALUE="${2:-}"
@@ -24,7 +24,7 @@ strings::trim_spaces() {
 
 #>>
 #>> * strings::trim_spaces_at_left VARIABLE VALUE
-#>>    Trim white space characters at begining of value and assign result to variable.
+#>    Trim white space characters at begining of value and assign result to variable.
 strings::trim_spaces_at_left() {
   local -n __strings__VAR="$1"
   local __strings__VALUE="${2:-}"
@@ -37,7 +37,7 @@ strings::trim_spaces_at_left() {
 
 #>>
 #>> * strings::trim_spaces_at_right VARIABLE VALUE
-#>>    Trim white space characters at end of value and assign result to variable.
+#>    Trim white space characters at end of value and assign result to variable.
 strings::trim_spaces_at_right() {
   local -n __strings__VAR="$1"
   local __strings__VALUE="${2:-}"
@@ -50,9 +50,9 @@ strings::trim_spaces_at_right() {
 
 #>>
 #>> * strings::split_by_delimiter ARRAY DELIMITERS VALUE
-#>>    Split value by delimiter(s) and assign result to array. Use
-#>>    backslash to escape delimiter in string.
-#>>    NOTE: Temporary file will be used.
+#>    Split value by delimiter(s) and assign result to array. Use
+#>    backslash to escape delimiter in string.
+#>    NOTE: Temporary file will be used.
 strings::split_by_delimiter() {
   local __strings__VAR="$1"
   local IFS="$2"
@@ -67,8 +67,8 @@ strings::split_by_delimiter() {
 
 #>>
 #>> * strings::basename VARIABLE FILE [EXT]
-#>>    Strip path and optional extension from  full file name and store
-#>>    file name in variable.
+#>    Strip path and optional extension from  full file name and store
+#>    file name in variable.
 strings::basename() {
   local -n __strings__VAR="$1"
   local __strings__FILE="${2:-}"
@@ -82,7 +82,7 @@ strings::basename() {
 
 #>>
 #>> * strings::dirname VARIABLE FILE
-#>>    Strip file name from path and store directory name in variable.
+#>    Strip file name from path and store directory name in variable.
 strings::dirname() {
   local -n __strings__VAR="$1"
   local __strings__FILE="${2:-}"
@@ -94,7 +94,6 @@ strings::dirname() {
     ;;
     *)
       __strings__DIR="."
-
     ;;
   esac
 
@@ -103,8 +102,8 @@ strings::dirname() {
 
 #>>
 #>> * strings::random_string VARIABLE LENGTH
-#>>    Generate random string of given length using [a-zA-Z0-9]
-#>>    characters and store it into variable.
+#>    Generate random string of given length using [a-zA-Z0-9]
+#>    characters and store it into variable.
 strings::random_string() {
   local -n __strings__VAR="$1"
   local __strings__LENGTH="${2:-8}"
@@ -123,7 +122,7 @@ strings::random_string() {
 
 #>>
 #>> * strings::chr VARIABLE CHAR_CODE
-#>>    Convert decimal character code to its ASCII representation.
+#>    Convert decimal character code to its ASCII representation.
 strings::chr() {
   local __strings__VAR="$1"
   local __strings__CODE="$2"
@@ -135,7 +134,7 @@ strings::chr() {
 
 #>>
 #>> * strings::ord VARIABLE CHAR
-#>>    converts ASCII character to its decimal value.
+#>    converts ASCII character to its decimal value.
 strings::ord() {
   local __strings__VAR="$1"
   local __strings__CHAR="$2"
@@ -155,7 +154,7 @@ strings::ord() {
 
 #>>
 #>> * strings::quote_to_bash_format VARIABLE STRING
-#>>    Quote the argument in a way that can be reused as shell input.
+#>    Quote the argument in a way that can be reused as shell input.
 strings::quote_to_bash_format() {
   local __strings__VAR="$1"
   local __strings__STRING="$2"
@@ -165,7 +164,7 @@ strings::quote_to_bash_format() {
 
 #>>
 #>> * strings::unescape_backslash_sequences VARIABLE STRING
-#>>    Expand backslash escape sequences.
+#>    Expand backslash escape sequences.
 strings::unescape_backslash_sequences() {
   local __strings__VAR="$1"
   local __strings__STRING="$2"
@@ -175,7 +174,7 @@ strings::unescape_backslash_sequences() {
 
 #>>
 #>> * strings::to_identifier VARIABLE STRING
-#>>    Replace all non-alphanumeric characters in string by underscore character.
+#>    Replace all non-alphanumeric characters in string by underscore character.
 strings::to_identifier() {
   local -n __strings__VAR="$1"
   local __strings__STRING="$2"
@@ -187,7 +186,7 @@ strings::to_identifier() {
 
 #>>
 #>> * strings::find_string_with_prefix VAR PREFIX [STRINGS...]
-#>>    Find first string with given prefix and assign it to VAR.
+#>    Find first string with given prefix and assign it to VAR.
 strings::find_string_with_prefix() {
   local -n __strings__VAR="$1"
   local __strings__PREFIX="$2"
@@ -202,4 +201,13 @@ strings::find_string_with_prefix() {
     }
   done
   return 1
+}
+
+#>> * strings::contains STRING SUBSTRING
+#>    returns zero exit code (true), when STRING contains substring
+strings::contains() {
+  case "$1" in
+    *"$2"*) return 0 ;;
+    *) return 1 ;;
+  esac
 }

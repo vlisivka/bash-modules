@@ -105,4 +105,14 @@ test_to_identifier() {
   unit::assertEqual "$FOO" "Hello__world_"
 }
 
+test_contains() {
+  strings::contains 'aba' 'b' || panic "String \"aba\" contains substring \"b\"."
+  strings::contains 'ab*a' '*' || panic "String \"ab*a\" contains substring \"*\"."
+  strings::contains 'aba\' '\' || panic "String \"aba\\\" contains substring \"\\\"."
+
+  strings::contains 'aba' 'c' && panic "String \"aba\" doesn't contain substring \"c\"." || :
+  strings::contains 'aba' '*' && panic "String \"aba\" doesn't contain substring \"*\"." || :
+  strings::contains 'aba' '\' && panic "String \"aba\" doesn't contain substring \"\\\"." || :
+}
+
 unit::run_test_cases "$@"

@@ -2,13 +2,13 @@
 # Copyright (c) 2009-2021 Volodymyr M. Lisivka <vlisivka@gmail.com>, All Rights Reserved
 # License: LGPL2+
 
-#>>> settigngs -import settings from files and directories (AKA .d pattern)."
+#>>> settigngs - import settings from files and directories (AKA .d pattern).
 
-#>> * settings::import [-e|--ext EXTENSION] FILE|DIR...
-#>>
-#>> Import settings (source them into current program as shell script) when
-#>> file or directory exists. For directories, all files with given extension
-#>> (".sh" by default) are imported, without recursion.
+#>> * settings::import [-e|--ext EXTENSION] FILE|DIRECTORY...
+#>
+#> Import settings (source them into current program as shell script) when
+#> file or directory exists. For directories, all files with given extension
+#> (".sh" by default) are imported, without recursion.
 settings::import() {
   local __settings_EXTENSION="sh"
   if [ "$1" == "-e" -o "$1" == "--ext" ]

@@ -11,4 +11,4 @@ Usage:
 
 Bash modules should work OK wih -u (nounset) and -e (errexit) shell
 options. It is good idea to always use "set -ueo pipefail" in your own
-applications.
+applications (or use "strict" module).
