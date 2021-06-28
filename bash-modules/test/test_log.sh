@@ -31,8 +31,8 @@ test_log_error() {
   unit::assert_equal "$( log::error foo Test 2>&1 1>/dev/null )" "[test_log.sh] foo: Test"
 }
 
-test_log_panic() {
-  unit::assert_equal "$( log::panic foo 42 Test 2>&1 1>/dev/null | head -n 1)" "[test_log.sh] foo: Test"
+test_log_fatal() {
+  unit::assert_equal "$( log::fatal foo Test 2>&1 1>/dev/null | head -n 1)" "[test_log.sh] foo: Test"
 }
 
 test_panic() {

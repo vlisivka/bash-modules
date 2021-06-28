@@ -39,7 +39,7 @@ error() {
   if [ -t 2 ]
   then
     # STDERR is tty
-    local __log_ERROR_BEGIN=$'\033[31m'
+    local __log_ERROR_BEGIN=$'\033[91m'
     local __log_ERROR_END=$'\033[39m'
     echo "[$__log__APP] ${__log_ERROR_BEGIN}ERROR${__log_ERROR_END}: ${*:-}" >&2
   else
@@ -54,7 +54,7 @@ warn() {
   if [ -t 2 ]
   then
     # STDERR is tty
-    local __log_WARN_BEGIN=$'\033[33m'
+    local __log_WARN_BEGIN=$'\033[93m'
     local __log_WARN_END=$'\033[39m'
     echo "[$__log__APP] ${__log_WARN_BEGIN}WARN${__log_WARN_END}: ${*:-}" >&2
   else
@@ -69,7 +69,7 @@ info() {
   if [ -t 1 ]
   then
     # STDOUT is tty
-    local __log_INFO_BEGIN=$'\033[32m'
+    local __log_INFO_BEGIN=$'\033[92m'
     local __log_INFO_END=$'\033[39m'
     echo "[$__log__APP] ${__log_INFO_BEGIN}INFO${__log_INFO_END}: ${*:-}"
   else
@@ -84,13 +84,28 @@ debug() {
 }
 
 #>>
+#>> * log::fatal LEVEL MESSAGE... - print a fatal-like LEVEL: MESSAGE to STDERR.
+log::fatal() {
+  local LEVEL="$1" ; shift
+  if [ -t 2 ]
+  then
+    # STDERR is tty
+    local __log_ERROR_BEGIN=$'\033[95m'
+    local __log_ERROR_END=$'\033[39m'
+    echo "[$__log__APP] ${__log_ERROR_BEGIN}$LEVEL${__log_ERROR_END}: ${*:-}" >&2
+  else
+    echo "[$__log__APP] $LEVEL: ${*:-}" >&2
+  fi
+}
+
+#>>
 #>> * log::error LEVEL MESSAGE... - print error-like LEVEL: MESSAGE to STDERR.
 log::error() {
   local LEVEL="$1" ; shift
   if [ -t 2 ]
   then
     # STDERR is tty
-    local __log_ERROR_BEGIN=$'\033[31m'
+    local __log_ERROR_BEGIN=$'\033[91m'
     local __log_ERROR_END=$'\033[39m'
     echo "[$__log__APP] ${__log_ERROR_BEGIN}$LEVEL${__log_ERROR_END}: ${*:-}" >&2
   else
@@ -105,7 +120,7 @@ log::warn() {
   if [ -t 2 ]
   then
   # STDERR is tty
-    local __log_WARN_BEGIN=$'\033[33m'
+    local __log_WARN_BEGIN=$'\033[93m'
     local __log_WARN_END=$'\033[39m'
     echo "[$__log__APP] ${__log_WARN_BEGIN}$LEVEL${__log_WARN_END}: ${*:-}" >&2
   else
@@ -120,7 +135,7 @@ log::info() {
   if [ -t 1 ]
   then
     # STDOUT is tty
-    local __log_INFO_BEGIN=$'\033[32m'
+    local __log_INFO_BEGIN=$'\033[92m'
     local __log_INFO_END=$'\033[39m'
     echo "[$__log__APP] ${__log_INFO_BEGIN}${LEVEL}${__log_INFO_END}: ${*:-}"
   else
@@ -129,22 +144,9 @@ log::info() {
 }
 
 #>>
-#>> * log::panic LEVEL EXIT_CODE MESAGE... - print error message with backtrace, then exit with exit code.
-log::panic() {
-  local LEVEL="$1"
-  local EXIT_CODE="$2"
-  shift 2
-
-  log::error "$LEVEL" "${*:-}"
-  log::enable_backtrace
-  log::backtrace 2
-  exit "$EXIT_CODE"
-}
-
-#>>
 #>> * panic MESAGE... - print error message and backtrace, then exit with error code 1.
 panic() {
-  log::error "PANIC"  "${*:-}"
+  log::fatal "PANIC"  "${*:-}"
   log::enable_backtrace
   log::backtrace 2
   exit 1
@@ -153,7 +155,7 @@ panic() {
 #>>
 #>> * unimplemented MESAGE... - print error message and backtrace, then exit with error code 42.
 unimplemented() {
-  log::error "UNIMPLEMENTED" "${*:-}"
+  log::fatal "UNIMPLEMENTED" "${*:-}"
   log::enable_backtrace
   log::backtrace 2
   exit 42
@@ -163,7 +165,7 @@ unimplemented() {
 #>>
 #>> * todo MESAGE... - print todo message and backtrace.
 todo() {
-  log::error "TODO" "${*:-}"
+  log::warn "TODO" "${*:-}"
   local __log__BACKTRACE="yes"
   log::backtrace 2
 }
