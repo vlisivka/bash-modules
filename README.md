@@ -1,3 +1,16 @@
+- [bash-modules](#bash-modules)
+  * [Simple module system for bash.](#simple-module-system-for-bash)
+  * [Syntax](#syntax)
+  * [Example](#example)
+  * [License](#license)
+  * [Vision](#vision)
+  * [Features:](#features-)
+  * [TODO:](#todo-)
+  * [Showcase - log module](#showcase---log-module)
+  * [Showcase - arguments module](#showcase---arguments-module)
+  * [Error handling](#error-handling)
+
+
 bash-modules
 ============
 
@@ -11,9 +24,19 @@ bash-modules is developed at Fedora Linux and requires bash 4 or higher.
 
 ## Syntax
 
-```bash
+To include module(s) into your script (note the "." at the beginning of the line):
+
+```
 . import.sh MODULE[...]
 ```
+
+To list available modules and show their documentation call import.sh as a command:
+
+```
+import.sh [OPTIONS]
+```
+
+NOTE: Don't be confused by `import` (without `.sh`) command from `ImageMagick` package. `bash-modules` uses `import.sh`, not `import`.
 
 ## Example
 
@@ -27,7 +50,7 @@ See more examples in [bash-modules/examples](bash-modules/examples) directory.
 
 ## License
 
-Bash-modules is licensed under terms of LGPL2+ license, like glibc. You are not allowed to copy-paste the code of this project into an your non-GPL project, but are free to use, modify, or distribute it as a separate library.
+`bash-modules` is licensed under terms of LGPL2+ license, like glibc. You are not allowed to copy-paste the code of this project into an your non-GPL-ed project, but you are free to use, modify, or distribute `bash-modules` as a separate library.
 
 ## Vision
 
@@ -41,19 +64,20 @@ My vision for the project is to create a loadable set of bash subroutines, which
   * well documented;
   * well covered by test cases.
 
-## Features:
+## Features
 
 * module for logging;
 * module for parsing of arguments;
 * module for unit testing;
 * full support for unofficial strict mode.
 
-## TODO:
+## TODO
 
-* [x] implement module loader;
-* [x] implement few modules with frequently used functions and routines;
-* [ ] implement a repository for extra modules;
-* [ ] implement a package manager for modules or integrate with an existing PM.
+* [x] Implement module loader.
+* [x] Implement few modules with frequently used functions and routines.
+* [ ] Cooperate with other bash-related projects.
+* [ ] Implement a repository for extra modules.
+* [ ] Implement a package manager for modules or integrate with an existing PM.
 
 ## Showcase - log module
 
@@ -82,6 +106,9 @@ dbg ARGUMENTS
 main "${ARGUMENTS[@]}"
 ```
 
+![Output](https://raw.githubusercontent.com/vlisivka/bash-modules/master/images/showcase-log-1.png)
+
+![Output](https://raw.githubusercontent.com/vlisivka/bash-modules/master/images/showcase-log-2.png)
 
 ## Showcase - arguments module
 
@@ -128,3 +155,64 @@ exit
 #>>
 ```
 
+![Output](https://raw.githubusercontent.com/vlisivka/bash-modules/master/images/showcase-arguments-1.png)
+
+
+![Output](https://raw.githubusercontent.com/vlisivka/bash-modules/master/images/showcase-arguments-2.png)
+
+
+![Output](https://raw.githubusercontent.com/vlisivka/bash-modules/master/images/showcase-arguments-3.png)
+
+## Error handling
+
+`bash-modules` `log` module supports two strategies to handle errors:
+
+### Chain of errors
+
+The first, strategy is to report the error to user, and then return error code from the function, to produce chain of errors. This technique allows for system administrator to understand faster - why script failed and what it tried to achieve.
+
+```bash
+#!/bin/bash
+. import.sh strict log
+foo() {
+  xxx || { error "Cannot execute xxx."; return 1; }
+}
+
+bar() {
+  foo || { error "Cannot perform foo."; return 1; }
+}
+
+main() {
+  bar || { error "Cannot perform bar."; return 1; }
+}
+
+main "$@"
+exit
+```
+
+```text
+$ ./chain-of-errors.sh
+./chain-of-errors.sh: line 4: xxx: command not found
+[chain-of-errors.sh] ERROR: Cannot execute xxx.
+[chain-of-errors.sh] ERROR: Cannot perform foo.
+[chain-of-errors.sh] ERROR: Cannot perform bar.
+```
+
+### Panic
+
+The second strategy is just to panic, when error happened, and abort script. Backtrace is printed automatically in this case.
+
+```bash
+#!/bin/bash
+. import.sh strict log
+xxx || panic "Cannot execute xxx."
+```
+
+```text
+$ ./simple-panic.sh
+./simple-panic.sh: line 3: xxx: command not found
+[simple-panic.sh] PANIC: Cannot execute xxx.
+		at main(./simple-panic.sh:3)
+```
+
+NOTE: If error happened in a subshell, then script author need to add another panic handler after end of subshell, e.g. `( false || panic "foo" ) || panic "bar"`.
