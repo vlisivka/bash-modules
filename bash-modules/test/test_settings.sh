@@ -2,7 +2,7 @@
 APP_DIR="$(dirname "$0")"
 export __IMPORT__BASE_PATH="$APP_DIR/../src/bash-modules"
 export PATH="$APP_DIR/../src:$PATH"
-. import.sh strict log unit mktemp settings
+. import.sh strict log unit settings
 
 ###############################################
 # Test cases

@@ -126,13 +126,33 @@ test_to_identifier() {
 }
 
 test_contains() {
-  string::contains 'aba' 'b' || unit::fail "String \"aba\" contains substring \"b\"."
-  string::contains 'ab*a' '*' || unit::fail "String \"ab*a\" contains substring \"*\"."
-  string::contains 'aba\' '\' || unit::fail "String \"aba\\\" contains substring \"\\\"."
+  unit::assert "String contains substring" "string::contains 'aba' 'b'"
+  unit::assert "String contains substring" "string::contains 'ab*a' '*'"
+  unit::assert "String contains substring" "string::contains 'aba\\' '\\'"
 
-  string::contains 'aba' 'c' && unit::fail "String \"aba\" doesn't contain substring \"c\"." || :
-  string::contains 'aba' '*' && unit::fail "String \"aba\" doesn't contain substring \"*\"." || :
-  string::contains 'aba' '\' && unit::fail "String \"aba\" doesn't contain substring \"\\\"." || :
+  unit::assert "String doesn't contain substring" "! string::contains 'aba' 'c'"
+  unit::assert "String doesn't contain substring" "! string::contains 'aba' '*'"
+  unit::assert "String doesn't contain substring" "! string::contains 'aba' '\\'"
+}
+
+test_starts_with() {
+  unit::assert "String starts with substring" "string::starts_with 'abac' 'a'"
+  unit::assert "String starts with substring" "string::starts_with '*aba' '*'"
+  unit::assert "String starts with substring" "string::starts_with '\\aba' '\\'"
+
+  unit::assert "String doesn't start with substring" "! string::starts_with 'aba' 'c'"
+  unit::assert "String doesn't start with substring" "! string::starts_with 'aba' '*'"
+  unit::assert "String doesn't start with substring" "! string::starts_with 'aba' '\\'"
+}
+
+test_ends_with() {
+  unit::assert "String ends with substring" "string::ends_with 'caba' 'a'"
+  unit::assert "String ends with substring" "string::ends_with 'aba*' '*'"
+  unit::assert "String ends with substring" "string::ends_with 'aba\\' '\\'"
+
+  unit::assert "String doesn't end with substring" "! string::ends_with 'aba' 'c'"
+  unit::assert "String doesn't end with substring" "! string::ends_with 'aba' '*'"
+  unit::assert "String doesn't end with substring" "! string::ends_with 'aba' '\\'"
 }
 
 unit::run_test_cases "$@"

@@ -219,10 +219,30 @@ string::find_string_with_prefix() {
 
 #>>
 #>> * string::contains STRING SUBSTRING
-#>    returns zero exit code (true), when STRING contains substring
+#>    returns zero exit code (true), when string contains substring
 string::contains() {
   case "$1" in
     *"$2"*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+#>>
+#>> * string::starts_with STRING SUBSTRING
+#>    returns zero exit code (true), when string starts with substring
+string::starts_with() {
+  case "$1" in
+    "$2"*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+#>>
+#>> * string::ends_with STRING SUBSTRING
+#>    returns zero exit code (true), when string ends with substring
+string::ends_with() {
+  case "$1" in
+    *"$2") return 0 ;;
     *) return 1 ;;
   esac
 }
