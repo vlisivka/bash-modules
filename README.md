@@ -80,5 +80,3 @@ exit $?
 #>   * ./hw.sh --name user
 #>   * HW_NAME="user" ./hw.sh
 ```
-
-#bash

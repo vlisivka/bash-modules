@@ -7,16 +7,45 @@ export PATH=$(readlink -f "$APP_DIR/../src")":$PATH"
 ###############################################
 # Test cases
 
+SCRIPT_DIR=$(mktemp -d)
+SCRIPT_NAME="test_cd_to_bindir-test-script.sh"
+
+[ -d "$SCRIPT_DIR" ] || panic "Temporary directory is not created."
+
+unit::set_up() {
+  set -ue
+
+  mkdir -p "$SCRIPT_DIR" || panic "Cannot create temporary directory."
+
+  cat > "$SCRIPT_DIR/$SCRIPT_NAME" <<END_OF_SCRIPT || panic "Cannot create script file in temporary directory."
+#!/bin/bash
+__IMPORT__BASE_PATH=( $(readlink -f "$APP_DIR/../src/bash-modules") )
+PATH="$PATH"
+
+# Import cd_to_bindir module, to change working directory
+. import.sh cd_to_bindir
+
+# Just print current working directory
+pwd
+
+END_OF_SCRIPT
+
+  chmod a+x "$SCRIPT_DIR/$SCRIPT_NAME" || panic "Cannot chmod \"$SCRIPT_DIR/$SCRIPT_NAME\" file."
+}
+
+unit::tear_down() {
+  set -ue
+
+  rm -rf "$SCRIPT_DIR" || panic "Cannot remove \"$SCRIPT_DIR\" directory."
+}
+
 test_cwdir() {
-  local original_dir=$(pwd)
-  . import.sh cd_to_bindir
+  unit::assert_equal "$( "$SCRIPT_DIR/$SCRIPT_NAME" )" "$SCRIPT_DIR" "cd_to_bindir doesn't change directory when called by absolute path."
+  unit::assert_equal "$( cd "$SCRIPT_DIR" ; "./$SCRIPT_NAME" )" "$SCRIPT_DIR" "cd_to_bindir doesn't change directory when called by relative path."
+  unit::assert_equal "$( cd / ; "./$SCRIPT_DIR/$SCRIPT_NAME" )" "$SCRIPT_DIR" "cd_to_bindir doesn't change directory when called by relative path."
 
-  unit::assert_equal "$( pwd )" "$original_dir"
-
-  cd /
-  cd_to_bindir || fail "Cannot cd to this script directory"
-
-  unit::assert_equal "$( pwd )" "$original_dir"
+  PATH="$SCRIPT_DIR:$PATH"
+  unit::assert_equal "$( "$SCRIPT_NAME" )" "$SCRIPT_DIR"  "cd_to_bindir doesn't change directory when called by PATH."
 }
 
 unit::run_test_cases "$@"

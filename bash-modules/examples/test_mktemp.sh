@@ -96,19 +96,23 @@ mktemp_test_file_worker() {
   done
 }
 
-# Heavy test case. Remove DISABLED_ to enable it.
+# Heavy test case. Remove DISABLED_ prefix to enable it.
+#
+# Create 4 parallel processes. Each process will write 1200 temporary
+# files to save directory, and then check is file content was overwritten # or not.
+# In case of filename conflict, bash will print error:
+# /mktemp.sh: line 79: /tmp/test_mktemp_in_parallel_mode_for_files.x5m: cannot overwrite existing file
 DISABLED_test_mktemp_in_parallel_mode_for_files() {
-  # Create 4 parallel processes. Each process will write 1200 temporary
-  # files to save directory, and then check is file content was overwritten
-  # or not.
-  # In case of filename conflict, bash will print error:
-  # /mktemp.sh: line 79: /tmp/test_mktemp_in_parallel_mode_for_files.x5m: cannot overwrite existing file
+  . import.sh elapsed_time
+
   mktemp_test_file_worker 1 1200 /tmp/test_mktemp_in_parallel_mode_for_files.XXX &
   mktemp_test_file_worker 2 1200 /tmp/test_mktemp_in_parallel_mode_for_files.XXX &
   mktemp_test_file_worker 3 1200 /tmp/test_mktemp_in_parallel_mode_for_files.XXX &
   mktemp_test_file_worker 4 1200 /tmp/test_mktemp_in_parallel_mode_for_files.XXX
 
   wait
+
+  elapsed_time::print
 }
 
 unit::run_test_cases "$@"

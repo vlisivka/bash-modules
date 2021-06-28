@@ -10,7 +10,7 @@
 #>> Functions:
 
 #>>
-#>> * unit::assertYes VALUE [MESSAGE]              Show error message, when VALUE is not equal to "yes".
+#>> * unit::assert_yes VALUE [MESSAGE]              Show error message, when VALUE is not equal to "yes".
 unit::assert_yes() {
   local VALUE="${1:-}"
   local MESSAGE="${2:-Value is not \"yes\".}"
@@ -167,10 +167,10 @@ unit::run_test_cases() {
 
   local __QUIET=no __TEST_CASES=(  )
 
-  arguments::parse "-t|test)__TEST_CASES;A" "-q|--quiet)__QUIET;B" -- "$@" || {
-    error "Cannot parse arguments. Command line: $@"
-    return 1
-  }
+  arguments::parse \
+    "-t|test)__TEST_CASES;A" \
+    "-q|--quiet)__QUIET;B" \
+    -- "$@" || panic "Cannot parse arguments. Arguments: $*"
 
   # If no test cases are given via options
   [ "${#__TEST_CASES[@]}" -gt 0 ] || {
@@ -235,18 +235,18 @@ unit::run_test_cases() {
 
 #>>
 #>> * unit::set_up - can set variables which are available for following
-#>  test case and tear_down. It also can alter ARGUMENTS array. Test case
-#>  and tear_down are executed in their own subshell, so they cannot change
-#>  outer variables.
+#>>  test case and tear_down. It also can alter ARGUMENTS array. Test case
+#>>  and tear_down are executed in their own subshell, so they cannot change
+#>>  outer variables.
 unit::set_up() {
   return 0
 }
 
 #>>
 #>> * unit::tear_down is called first, before first set_up of first test case, to
-#>  cleanup after possible failed run of previous test case. When it
-#>  called for first time, FIRST_TEAR_DOWN variable with value "yes" is
-#>  available.
+#>>  cleanup after possible failed run of previous test case. When it
+#>>  called for first time, FIRST_TEAR_DOWN variable with value "yes" is
+#>>  available.
 unit::tear_down() {
   return 0
 }
