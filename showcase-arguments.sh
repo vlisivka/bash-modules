@@ -17,7 +17,7 @@ arguments::parse \
   "-n|--name)NAME;String,Required" \
   "-a|--age)AGE;Number,(( AGE >= 18 ))" \
   "-m|--married)MARRIED;Boolean" \
-  -- "$@" || panic "Cannot parse arguments."
+  -- "$@" || panic "Cannot parse arguments. Use \"--help\" to show options."
 
 main "${ARGUMENTS[@]}"
 exit

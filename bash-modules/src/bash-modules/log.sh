@@ -54,7 +54,7 @@ warn() {
   if [ -t 2 ]
   then
     # STDERR is tty
-    local __log_WARN_BEGIN=$'\033[93m'
+    local __log_WARN_BEGIN=$'\033[96m'
     local __log_WARN_END=$'\033[39m'
     echo "[$__log__APP] ${__log_WARN_BEGIN}WARN${__log_WARN_END}: ${*:-}" >&2
   else
@@ -120,7 +120,7 @@ log::warn() {
   if [ -t 2 ]
   then
   # STDERR is tty
-    local __log_WARN_BEGIN=$'\033[93m'
+    local __log_WARN_BEGIN=$'\033[96m'
     local __log_WARN_END=$'\033[39m'
     echo "[$__log__APP] ${__log_WARN_BEGIN}$LEVEL${__log_WARN_END}: ${*:-}" >&2
   else
@@ -178,7 +178,7 @@ dbg() {
   if [ -t 2 ]
   then
     # STDERR is tty
-    local __log_DBG_BEGIN=$'\033[33m'
+    local __log_DBG_BEGIN=$'\033[96m'
     local __log_DBG_END=$'\033[39m'
     echo "[$__log__APP] ${__log_DBG_BEGIN}DBG${__log_DBG_END}: ${__dbg_OUT//declare -? /}" >&2
   else
