@@ -3,7 +3,7 @@
 
 MKTEMP="./mktemp.sh"
 
-setUp() {
+unit::set_up() {
   unset TMPDIR
 }
 
@@ -11,7 +11,7 @@ setUp() {
 # Test cases
 
 test_mktemp_without_options() {
-  file_name="$($MKTEMP)"
+  local file_name="$($MKTEMP)"
 
   unit::assert "File was not created by mktemp." [ -f "$file_name" ]
   unit::assert "Temporary file must be placed in /tmp." "string::starts_with '$file_name' '/tmp/'"
@@ -21,7 +21,7 @@ test_mktemp_without_options() {
 }
 
 test_mktemp_with_dry_run_option() {
-  file_name="$($MKTEMP --dry-run)"
+  local file_name="$($MKTEMP --dry-run)"
 
   unit::assert "File must not be created by mktemp with --dry-run option." '[ !  -f "$file_name" ]'
   unit::assert "Temporary file must be placed in /tmp." "string::starts_with '$file_name' '/tmp/'"
@@ -29,7 +29,7 @@ test_mktemp_with_dry_run_option() {
 }
 
 test_mktemp_with_template() {
-  file_name="$($MKTEMP /var/tmp/foooXXXXXXXXX.bar)"
+  local file_name="$($MKTEMP /var/tmp/foooXXXXXXXXX.bar)"
 
   unit::assert_not_equal "$file_name" "/var/tmp/foooXXXXXXXXX.bar" "XXXXX in template is not replaced by random string."
   unit::assert "File was not created by mktemp." '[ -f "$file_name" ]'
@@ -40,7 +40,7 @@ test_mktemp_with_template() {
 }
 
 test_mktemp_with_d_option() {
-  dir_name="$($MKTEMP -d)"
+  local dir_name="$($MKTEMP -d)"
 
   unit::assert "Directory was not created by mktemp." '[ -d "$dir_name" ]'
   unit::assert "Template must be replaced by a random string." "! string::contains '$dir_name' 'XXX'"
@@ -50,7 +50,7 @@ test_mktemp_with_d_option() {
 
 test_mktemp_with_t_option() {
   # Option -t is deprecated in mktemp, because it's confusing.
-  file_name="$($MKTEMP -t /var/var/foooXXXXXXXXX.bar)"
+  local file_name="$($MKTEMP -t /var/var/foooXXXXXXXXX.bar)"
 
   unit::assert "File was not created by mktemp." '[ -f "$file_name" ]'
   unit::assert "Temporary file must be placed in /tmp in this case." "string::starts_with '$file_name' '/tmp/'"
@@ -60,7 +60,7 @@ test_mktemp_with_t_option() {
 }
 
 test_mktemp_with_tmpdir_option() {
-  file_name="$($MKTEMP --tmpdir=/var/tmp /tmp/foooXXXXXXXXX.bar)"
+  local file_name="$($MKTEMP --tmpdir=/var/tmp /tmp/foooXXXXXXXXX.bar)"
 
   unit::assert "File was not created by mktemp." [ -f "$file_name" ]
   unit::assert "Temporary file must be placed in /var/tmp in this case." "string::starts_with '$file_name' '/var/tmp/fooo'"
