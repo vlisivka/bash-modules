@@ -11,23 +11,33 @@
 #>> * arguments::parse [-S|--FULL)VARIABLE;FLAGS[,COND]...]... -- [ARGUMENTS]...
 #>
 #> Where:
+#>
 #>   -S       - short option name.
+#>
 #>   --FULL   - long option name.
+#>
 #>   VARIABLE - shell variable name to assign value.
+#>
 #>   FLAGS    - one of (case sensitive):
-#>     B | Bul | Boolean     - boolean (no value);
-#>     I | Inc | Incremental - incremental (no value) - increment variable by one;
+#>     Y | Yes               - set variable value to "yes";
+#>     No                    - set variable value to "no";
+#>     I | Inc | Incremental - incremental (no value) - increment variable value by one;
 #>     S | Str | String      - string value;
 #>     N | Num | Number      - numeric value;
-#>     A | Array             - array of string values (multiple options);
+#>     A | Arr | Array       - array of string values (multiple options);
+#>     C | Com | Command     - option name will be assigned to the variable.
+#>
 #>   COND -  post conditions:
 #>     R | Req | Required - option value must be not empty after end of parsing.
 #>                          Set initial value to empty value to require this option;
 #>     any code           - executed after option parsing to check post conditions, e.g. "(( FOO > 3 )), (( FOO > BAR ))".
-#>   -- - separator between option descriptions and commandline arguments
-#>   ARGUMENTS - command line arguments to parse
+#>
+#>   --       - the separator between option descriptions and script commandline arguments.
+#>
+#>   ARGUMENTS - command line arguments to parse.
 #>
 #> LIMITATION:
+#>
 #> Value for option can be set as -opt VALUE or as -opt=VALUE, but this
 #> will work for last option name in case of multiple options. If option
 #> description is "-b|--bar", then --bar=VALUE will work, but -b=VALUE will
@@ -36,6 +46,7 @@
 #> descriptions for that to work in both cases.
 #>
 #> LIMITATION:
+#>
 #> Grouping of one-letter options is NOT supported. -abc will be parsed as
 #> option -abc, not as -a -b -c.
 #>
@@ -53,12 +64,9 @@
 #>
 #> Example:
 #>
-#>   arguments::parse "-f|--foo)FOO;Boolean" "-b|--bar)BAR;String;Required" "-B|--baz)BAZ;Array" "-i|--inc)TIMES;Incremental,((TIMES<3))" -- "${@:+$@}"
-#>   echo "Foo: $FOO, Bar: $BAR."
-#>   IND=0; for I in "${BAZ[@]}"; do let IND++; echo "BAZ[$IND]=$I"; done
-#>   echo "--inc option used $TIMES times."
-#>   echo "Arguments count: ${#ARGUMENTS[@]}."
-#>   echo "Arguments: ${ARGUMENTS[@]:+${ARGUMENTS[@]}}."
+#>   arguments::parse "-f|--foo)FOO;Yes" "-b|--bar)BAR;String;Required" "-B|--baz)BAZ;Array" "-i|--inc)TIMES;Incremental,((TIMES<3))" -- "${@:+$@}"
+#>   dbg FOO BAR BAZ TIMES ARGUMENTS
+#>
 arguments::parse() {
 
   # Global array to hold command line arguments
@@ -120,9 +128,10 @@ arguments::generate_parser() {
     IFS=',' read -a OPTION_OPTIONS <<<"$OPTION_FLAGS" # Convert string into array: 'a,b,c' -> [ a b c ]
     OPTION_TYPE="${OPTION_OPTIONS[0]:-}" ; unset OPTION_OPTIONS[0] ; # First element of array is option type
 
-    # Generate option parser for boolean variable
+    # Generate the parser for option
     case "$OPTION_TYPE" in
-     B|Bool|Boolean) # Boolean - "yes" or "no"
+
+     Y|Yes) # set "yes", no arguments
         OPTIONS_PARSER="$OPTIONS_PARSER
         $OPTION_CASE)
           $OPTION_VARIABLE=\"yes\"
@@ -130,6 +139,26 @@ arguments::generate_parser() {
         ;;
         "
       ;;
+
+     No) # set "no", no arguments
+        OPTIONS_PARSER="$OPTIONS_PARSER
+        $OPTION_CASE)
+          $OPTION_VARIABLE=\"no\"
+          shift 1
+        ;;
+        "
+      ;;
+
+     C|Com|Command) # set name of the option, no arguments
+        OPTIONS_PARSER="$OPTIONS_PARSER
+        $OPTION_CASE)
+          $OPTION_VARIABLE=\"$OPTION_CASE\"
+          shift 1
+        ;;
+        "
+      ;;
+
+
      I|Incr|Incremental) # Incremental - any use of this option will increment variable by 1
         OPTIONS_PARSER="$OPTIONS_PARSER
         $OPTION_CASE)
@@ -138,6 +167,7 @@ arguments::generate_parser() {
         ;;
         "
       ;;
+
       S|Str|String) # Regular strings
         OPTIONS_PARSER="$OPTIONS_PARSER
         $OPTION_CASE)
@@ -150,6 +180,7 @@ arguments::generate_parser() {
         ;;
         "
       ;;
+
       N|Num|Number) # Same as string
         OPTIONS_PARSER="$OPTIONS_PARSER
         $OPTION_CASE)
@@ -162,7 +193,8 @@ arguments::generate_parser() {
         ;;
         "
       ;;
-      A|Array) # Array of strings
+
+      A|Arr|Array) # Array of strings
         OPTIONS_PARSER="$OPTIONS_PARSER
         $OPTION_CASE)
           ${OPTION_VARIABLE}[\${#${OPTION_VARIABLE}[@]}]=\"\${2:?Value is required for \\\"$OPTION_CASE\\\". See --help for details.}\"
@@ -174,6 +206,7 @@ arguments::generate_parser() {
         ;;
         "
       ;;
+
       *)
         echo "ERROR: Unknown option type: \"$OPTION_TYPE\"." >&2
         return 1

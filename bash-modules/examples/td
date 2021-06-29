@@ -1,0 +1,327 @@
+#!/bin/bash
+. import.sh strict log arguments
+
+# User favorite editor. Default value is "vi".
+EDITOR="${EDITOR:-vi}"
+
+# Name of file with TODO items. Default value is "TODO.md"
+TODO_FILE="${TODO_FILE:-TODO.md}"
+
+# Don't go up after reaching of this directory.
+TOPMOST_DIRECTORY="$HOME"
+
+# Command to execute. Will be filled by arguments::parse.
+COMMAND=""
+
+VERBOSE="no"
+
+# Marks for TODO items.
+ITEM_NOT_DONE_MARK="* [ ] "
+ITEM_DONE_MARK="* [x] "
+ITEM_WIP_MARK="* [.] "
+ITEM_CANCELED_MARK="* [-] "
+
+#  Try to find required file in upper directories by doing `cd ..` and checking
+# for the file.
+find_file_in_upper_dir() {
+  local file="$1"
+
+  while ! [ -f "$file" ]
+  do
+    local current_dir="$(pwd)"
+    case "$current_dir" in
+      "$TOPMOST_DIRECTORY") return 1 ;;
+      "/") return 2 ;;
+    esac
+
+    cd .. || return 3
+  done
+
+  [[ "$VERBOSE" == "no" ]] || info "\"$TODO_FILE\" is found in \"$(pwd)\" directory."
+  return 0
+}
+
+find_todo_file() {
+  find_file_in_upper_dir "$TODO_FILE" || { error "Cannot find \"$TODO_FILE\" file in current or upper directories." ; return 1 ; }
+}
+
+create_new_file() {
+  if [ -f "$TODO_FILE" ] ; then
+    info "\"$TODO_FILE\" file is already exists."
+  else
+    : > "$TODO_FILE" || { error "Cannot create \"$TODO_FILE\" file in the current directory,"; return 1; }
+    info "\"$TODO_FILE\" is created."
+  fi
+}
+
+# Append mark and TODO text to the file.
+create_new_todo_item() {
+  find_todo_file || return 1
+
+  local IFS=" "
+  echo "$ITEM_NOT_DONE_MARK$*" >>"$TODO_FILE" || { error "Cannot append TODO item to \"$TODO_FILE\" file." ; return 1 ; }
+  echo "$ITEM_NOT_DONE_MARK$*"
+}
+
+# Show content of the file.
+list_todo_items() {
+  find_todo_file || return 1
+
+  if [ -s "$TODO_FILE" ] ; then
+    cat "$TODO_FILE" || { error "Cannot read from\"$TODO_FILE\" file." ; return 1; }
+  else
+    info "\"$TODO_FILE\" file is empty."
+  fi
+}
+
+# Read file line by line and try to find first line with item not done or
+# item in progress.
+show_first_todo_item() {
+  find_todo_file || return 1
+
+  while read -rs LINE
+  do
+    case "$LINE" in
+      "$ITEM_NOT_DONE_MARK"* | "$ITEM_WIP_MARK"*)
+        printf "%s\n" "$LINE"
+        break
+      ;;
+    esac
+  done < "$TODO_FILE"
+}
+
+# Read file into memory, then update first todo item, then write file back.
+mark_wip() {
+  find_todo_file || return 1
+
+  local -a file_lines
+  mapfile file_lines < "$TODO_FILE" || { error "Cannot read text from \"$TODO_FILE\" file." ; return 1 ; }
+
+  local i line changed="no"
+  for((i=0; i < ${#file_lines[@]}; i++))
+  do
+    line="${file_lines[$i]}"
+
+    case "$line" in
+      "$ITEM_NOT_DONE_MARK"*)
+        line="$ITEM_WIP_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        file_lines[$i]="$line"
+        changed="yes"
+
+        printf "%s\n" "$line"
+        break
+      ;;
+      "$ITEM_WIP_MARK"*)
+        info "Top TODO item is already in progress."
+        printf "%s" "$line"
+        break
+      ;;
+    esac
+  done
+
+  # Write file back, when it content is changed.
+  [[ "$changed" == "no" ]] || {
+    printf "%s" "${file_lines[@]}" > "$TODO_FILE"
+  }
+}
+
+# Find first item in no done or wip state, and mark it as done.
+mark_done() {
+  find_todo_file || return 1
+
+  local -a file_lines
+  mapfile file_lines < "$TODO_FILE" || { error "Cannot read text from \"$TODO_FILE\" file." ; return 1 ; }
+
+  local i line changed="no"
+  for((i=0; i < ${#file_lines[@]}; i++))
+  do
+    line="${file_lines[$i]}"
+
+    case "$line" in
+      "$ITEM_NOT_DONE_MARK"* | "$ITEM_WIP_MARK"*)
+        line="$ITEM_DONE_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        file_lines[$i]="$line"
+        changed="yes"
+
+        printf "%s" "$line"
+        break
+      ;;
+    esac
+  done
+
+  # Write file back, when it content is changed.
+  [[ "$changed" == "no" ]] || {
+    printf "%s" "${file_lines[@]}" > "$TODO_FILE"
+  }
+
+  # Shown a next item to do
+  show_first_todo_item || return 1
+}
+
+# Starting from the end of file, find first item which is in done,
+# wip, or canceled state, and mark it as not done
+unmark_done() {
+  find_todo_file || return 1
+
+  local -a file_lines
+  mapfile file_lines < "$TODO_FILE" || { error "Cannot read text from \"$TODO_FILE\" file." ; return 1 ; }
+
+  local i line changed="no"
+  for((i=${#file_lines[@]}-1; i >= 0; i--))
+  do
+    line="${file_lines[$i]}"
+
+    case "$line" in
+      "$ITEM_DONE_MARK"* | "$ITEM_CANCELED_MARK"* | "$ITEM_WIP_MARK"*)
+        line="$ITEM_NOT_DONE_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        file_lines[$i]="$line"
+        changed="yes"
+
+        printf "%s" "$line"
+        break
+      ;;
+    esac
+  done
+
+  # Write file back, when it content is changed.
+  [[ "$changed" == "no" ]] || {
+    printf "%s" "${file_lines[@]}" > "$TODO_FILE"
+  }
+}
+
+# Find first item in no done or wip state, and mark it failed.
+mark_failed() {
+  find_todo_file || return 1
+
+  local -a file_lines
+  mapfile file_lines < "$TODO_FILE" || { error "Cannot read text from \"$TODO_FILE\" file." ; return 1 ; }
+
+  local i line changed="no"
+  for((i=0; i < ${#file_lines[@]}; i++))
+  do
+    line="${file_lines[$i]}"
+
+    case "$line" in
+      "$ITEM_NOT_DONE_MARK"* | "$ITEM_WIP_MARK"*)
+        line="$ITEM_CANCELED_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        file_lines[$i]="$line"
+        changed="yes"
+
+        printf "%s" "$line"
+        break
+      ;;
+    esac
+  done
+
+  # Write file back, when it content is changed.
+  [[ "$changed" == "no" ]] || {
+    printf "%s" "${file_lines[@]}" > "$TODO_FILE"
+  }
+
+  # Shown a next item to do
+  show_first_todo_item || return 1
+}
+
+# Open TODO file in user favorite editor.
+run_editor() {
+  find_todo_file || return 1
+
+  exec $EDITOR "$TODO_FILE" || { error "Cannot open \"$TODO_FILE\" file using \"$EDITOR\" editor." ; return 1 ; }
+}
+
+main() {
+  echo
+
+  case "$COMMAND" in
+    "-l") list_todo_items || return 1 ;;
+    "-w") mark_wip        || return 1 ;;
+    "-d") mark_done       || return 1 ;;
+    "-u") unmark_done     || return 1 ;;
+    "-c") mark_failed     || return 1 ;;
+    "-e") run_editor      || return 1 ;;
+    "-n") create_new_file || return 1 ;;
+    *)
+      if (( $# > 0 )) ; then
+        create_new_todo_item "$@" || return 1
+      else
+        show_first_todo_item || return 1
+      fi
+    ;;
+  esac
+
+  echo
+}
+
+# Parse command line options and arguments.
+# Command will be stored in the COMMAND variable.
+# Arguments will be stored into the ARGUMENTS array.
+arguments::parse \
+  "-l)COMMAND;Command" \
+  "-w)COMMAND;Command" \
+  "-d)COMMAND;Command" \
+  "-u)COMMAND;Command" \
+  "-c)COMMAND;Command" \
+  "-e)COMMAND;Command" \
+  "-n)COMMAND;Command" \
+  "-v|--verbose)VERBOSE;Yes" \
+  -- "$@" || panic "Cannot parse arguments. Use \"--help\" to show options."
+
+main "${ARGUMENTS[@]}"
+exit
+
+#>>> Simple todo manager for one man projects.
+#>>
+#>> Usage: td [OPTIONS] [A TODO MESSAGE]
+#>>
+#>> By default, script will search for a TODO.md file  in current
+#>> directory or, if file is missing, in top directories, up to "$HOME"
+#>> directory, and will show first TODO item only in a `[ ]` or `[.]` state.
+#>>
+#>> If arguments are supplied, then script will create new TODO item in
+#>> an existing file. If the file is not found, then error message will be
+#>> shown. If you need a new TODO.md file, then create it manually, using
+#>> command `touch [PATH_TO_FILE]TODO.md` or `td -n`.
+#>>
+#>> OPTIONS
+#>>
+#>>   -l  show all TODO items in the file.
+#>>   -w  mark top TODO item as "work in progress": `[.]`.
+#>>   -d  mark top TODO item as "done": `[x]`.
+#>>   -u  unmark last done TODO item: `[ ]`.
+#>>   -c  mark top TODO item as "canceled": `[-]`.
+#>>   -e  run your $EDITOR to rearrange TODO items.
+#>>   -n  create new empty TODO.md file in current directory.
+#>>   -v | --verbose  print location of TODO file found.
+#>>
+#> ENVIRONMENT VARIABLES
+#>
+#>    EDITOR  the editor to open TODO file with. Default value: "vi".
+#>
+#>    TODO_FILE  name of the TODO file. Defaul value: "TODO.md".
+#>
+#> RATIONALE
+#>
+#> Often, a simple plain text TODO file is more than enough to manage
+#> tasks, but process of opening the TODO file and editing of it content can
+#> cause distraction, so here is attempt to create a distraction free TODO
+#> manager script, which tries to focus user at one task at a time.
+#>
+#> STRATEGY
+#>
+#> When you are in a directory, and you have a task to do later, create
+#> `TODO.md` file in this directory using command `td -n`. Then add a new
+#> todo item(s) using command `td a todo text`.
+#>
+#> When you have time to work on TODO items, use `td` to show top TODO item.
+#> Mark it as "work in progress" using command `td -w`, then start working.
+#>
+#> When work is done, mark item as done using command `td -d` or, if item
+#> cannot be completed, cancel TODO item using command `td -c`.
+#>
+#> Now, you can start work on a next item, if any.
+#>
+#> If you see that you cannot excute the top TODO item, because it is too
+#> big, then you should fire a editor and split it into bunch of smaller
+#> tasks, which you can execute. Cherry-picking of tasks to do is not
+#> recommended.
+#>

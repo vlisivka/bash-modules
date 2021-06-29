@@ -5,4 +5,3 @@
 #>>> strict - unofficial strict mode for bash
 
 set -euo pipefail
-IFS=$'\n\t'

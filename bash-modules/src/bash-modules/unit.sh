@@ -168,15 +168,15 @@ unit::run_test_cases() {
   local __QUIET=no __TEST_CASES=(  )
 
   arguments::parse \
-    "-t|test)__TEST_CASES;A" \
-    "-q|--quiet)__QUIET;B" \
+    "-t|test)__TEST_CASES;Array" \
+    "-q|--quiet)__QUIET;Yes" \
     -- "$@" || panic "Cannot parse arguments. Arguments: $*"
 
   # If no test cases are given via options
   [ "${#__TEST_CASES[@]}" -gt 0 ] || {
     # Then generate list of test cases using compgen
     # As alternative, declare -F | cut -d ' ' -f 3 | grep '^test' can be used
-    __TEST_CASES=( $(compgen -A function test) )
+    __TEST_CASES=( $(compgen -A function test) ) || panic "No test cases are found. Create a function with test_ prefix in the name."
   }
 
   local __TEST __EXIT_CODE=0
