@@ -1,5 +1,5 @@
 #!/bin/bash
-. import.sh strict log unit string
+. import.sh strict log unit string cd_to_bindir
 
 MKTEMP="./mktemp.sh"
 

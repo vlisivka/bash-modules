@@ -94,11 +94,11 @@ main() {
 }
 
 arguments::parse \
-    "-d|--directory)CREATE_DIR;B" \
-    "-u|--dry-run)DRY_RUN;B" \
-    "-q|--quiet)QUIET;B" \
-    "-t|--tmpdir)USE_TMP_DIR;B" \
-    "--tmpdir)TEMPORARY_DIR;S" \
+    "-d|--directory)CREATE_DIR;Yes" \
+    "-u|--dry-run)DRY_RUN;Yes" \
+    "-q|--quiet)QUIET;Yes" \
+    "-t|--tmpdir)USE_TMP_DIR;Yes" \
+    "--tmpdir)TEMPORARY_DIR;String" \
     -- "${@:+$@}" || {
   error "Cannot parse mktemp command line arguments."
   mktemp::usage
