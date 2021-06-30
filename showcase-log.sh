@@ -19,5 +19,4 @@ arguments::parse -- "$@" || panic "Cannot parse arguments."
 
 dbg ARGUMENTS
 
-main "${ARGUMENTS[@]}"
-exit
+main "${ARGUMENTS[@]}" || exit
