@@ -36,7 +36,7 @@ string::trim_start() {
 }
 
 #>>
-#>> * string::trim_spaces_at_right VARIABLE VALUE
+#>> * string::trim_end VARIABLE VALUE
 #>    Trim white space characters at the end of the value and assign result to the variable.
 string::trim_end() {
   local -n __string__VAR="$1"

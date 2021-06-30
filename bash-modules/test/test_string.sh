@@ -26,6 +26,9 @@ test_trim_start() {
 test_trim_end() {
   string::trim_end BAR "   aaaa   "
   unit::assert_equal "$BAR" "   aaaa"
+
+  string::trim_end BAR "   aaaa   "$'\n'
+  unit::assert_equal "$BAR" "   aaaa"
 }
 
 test_insert() {

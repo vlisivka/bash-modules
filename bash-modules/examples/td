@@ -1,5 +1,5 @@
 #!/bin/bash
-. import.sh strict log arguments
+. import.sh strict log arguments string
 
 # User favorite editor. Default value is "vi".
 EDITOR="${EDITOR:-vi}"
@@ -20,6 +20,8 @@ ITEM_NOT_DONE_MARK="* [ ] "
 ITEM_DONE_MARK="* [x] "
 ITEM_WIP_MARK="* [.] "
 ITEM_CANCELED_MARK="* [-] "
+
+IFS=" \t\n"
 
 #  Try to find required file in upper directories by doing `cd ..` and checking
 # for the file.
@@ -58,7 +60,6 @@ create_new_file() {
 create_new_todo_item() {
   find_todo_file || return 1
 
-  local IFS=" "
   echo "$ITEM_NOT_DONE_MARK$*" >>"$TODO_FILE" || { error "Cannot append TODO item to \"$TODO_FILE\" file." ; return 1 ; }
   echo "$ITEM_NOT_DONE_MARK$*"
 }
@@ -104,7 +105,15 @@ mark_wip() {
 
     case "$line" in
       "$ITEM_NOT_DONE_MARK"*)
-        line="$ITEM_WIP_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        if (( $# != 0 )) ; then
+          # Message is supplied
+          string::trim_end line "$line" || panic "Cannot trime line \"$line\"."
+          line="$ITEM_WIP_MARK${line:${#ITEM_NOT_DONE_MARK}} - $*"$'\n'
+        else
+          # No message
+          line="$ITEM_WIP_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        fi
+
         file_lines[$i]="$line"
         changed="yes"
 
@@ -139,7 +148,15 @@ mark_done() {
 
     case "$line" in
       "$ITEM_NOT_DONE_MARK"* | "$ITEM_WIP_MARK"*)
-        line="$ITEM_DONE_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        if (( $# != 0 )) ; then
+          # Message is supplied
+          string::trim_end line "$line" || panic "Cannot trime line \"$line\"."
+          line="$ITEM_DONE_MARK${line:${#ITEM_NOT_DONE_MARK}} - $*"$'\n'
+        else
+          # No message
+          line="$ITEM_DONE_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        fi
+
         file_lines[$i]="$line"
         changed="yes"
 
@@ -173,7 +190,15 @@ unmark_done() {
 
     case "$line" in
       "$ITEM_DONE_MARK"* | "$ITEM_CANCELED_MARK"* | "$ITEM_WIP_MARK"*)
-        line="$ITEM_NOT_DONE_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        if (( $# != 0 )) ; then
+          # Message is supplied
+          string::trim_end line "$line" || panic "Cannot trime line \"$line\"."
+          line="$ITEM_NOT_DONE_MARK${line:${#ITEM_NOT_DONE_MARK}} - $*"$'\n'
+        else
+          # No message
+          line="$ITEM_NOT_DONE_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        fi
+
         file_lines[$i]="$line"
         changed="yes"
 
@@ -189,8 +214,9 @@ unmark_done() {
   }
 }
 
-# Find first item in no done or wip state, and mark it failed.
-mark_failed() {
+# Find first item in no done or wip state, and mark it canceled.
+# Also, append explanation to the end of line, if any.
+mark_canceled() {
   find_todo_file || return 1
 
   local -a file_lines
@@ -203,7 +229,15 @@ mark_failed() {
 
     case "$line" in
       "$ITEM_NOT_DONE_MARK"* | "$ITEM_WIP_MARK"*)
-        line="$ITEM_CANCELED_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        if (( $# != 0 )) ; then
+          # Explanation is supplied
+          string::trim_end line "$line" || panic "Cannot trime line \"$line\"."
+          line="$ITEM_CANCELED_MARK${line:${#ITEM_NOT_DONE_MARK}} - $*"$'\n'
+        else
+          # No explanation
+          line="$ITEM_CANCELED_MARK${line:${#ITEM_NOT_DONE_MARK}}"
+        fi
+
         file_lines[$i]="$line"
         changed="yes"
 
@@ -224,22 +258,23 @@ mark_failed() {
 
 # Open TODO file in user favorite editor.
 run_editor() {
+  local editor="${1:-$EDITOR}"
   find_todo_file || return 1
 
-  exec $EDITOR "$TODO_FILE" || { error "Cannot open \"$TODO_FILE\" file using \"$EDITOR\" editor." ; return 1 ; }
+  exec $editor "$TODO_FILE" || { error "Cannot open \"$TODO_FILE\" file using \"$EDITOR\" editor." ; return 1 ; }
 }
 
 main() {
   echo
 
   case "$COMMAND" in
-    "-l") list_todo_items || return 1 ;;
-    "-w") mark_wip        || return 1 ;;
-    "-d") mark_done       || return 1 ;;
-    "-u") unmark_done     || return 1 ;;
-    "-c") mark_failed     || return 1 ;;
-    "-e") run_editor      || return 1 ;;
-    "-n") create_new_file || return 1 ;;
+    "-l") list_todo_items    || return 1 ;;
+    "-w") mark_wip "$@"      || return 1 ;;
+    "-d") mark_done "$@"     || return 1 ;;
+    "-u") unmark_done        || return 1 ;;
+    "-c") mark_canceled "$@" || return 1 ;;
+    "-e") run_editor "$@"    || return 1 ;;
+    "-n") create_new_file    || return 1 ;;
     *)
       if (( $# > 0 )) ; then
         create_new_todo_item "$@" || return 1
@@ -284,13 +319,29 @@ exit
 #>>
 #>> OPTIONS
 #>>
-#>>   -l  show all TODO items in the file.
-#>>   -w  mark top TODO item as "work in progress": `[.]`.
-#>>   -d  mark top TODO item as "done": `[x]`.
+#>>   -h | --help  show this help screen.
+#>>
+#>>   --man  show manual.
+#>>
+#>>   -l  list all TODO items in the file.
+#>>
+#>>   -w [MESSAGE]  mark top TODO item as "work in progress": `[.]`, and
+#>>                 add an optional message to the end of item line, e.g.
+#>>                 time of the start of the work.
+#>>
+#>>   -d [MESSAGE]  mark top TODO item as "done": `[x]`, and add an optional
+#>>                 message to the end of item line, e.g. time of the end of
+#>>                 the work.
+#>>
 #>>   -u  unmark last done TODO item: `[ ]`.
-#>>   -c  mark top TODO item as "canceled": `[-]`.
-#>>   -e  run your $EDITOR to rearrange TODO items.
+#>>
+#>>   -c [EXPLANATION]  mark top TODO item as "canceled": `[-]`, and add
+#>>                     the explanation to the end of item line, if any.
+#>>
+#>>   -e [EDITOR]  run your $EDITOR to rearrange TODO items.
+#>>
 #>>   -n  create new empty TODO.md file in current directory.
+#>>
 #>>   -v | --verbose  print location of TODO file found.
 #>>
 #> ENVIRONMENT VARIABLES
@@ -325,3 +376,59 @@ exit
 #> tasks, which you can execute. Cherry-picking of tasks to do is not
 #> recommended.
 #>
+#> EXAMPLE
+#>
+#> ```
+#> # Create TODO.md file in the current directory for the first time
+#>
+#> $ td -n
+#>
+#> [td] INFO: "TODO.md" is created.
+#>
+#> # Create a new todo item
+#>
+#> $ td Make a coffee
+#>
+#> * [ ] Make a coffee
+#>
+#> $ td Make a sandwich
+#>
+#> * [ ] Make a sandwich
+#>
+#> # Check for top todo item
+#>
+#> $ td
+#>
+#> * [ ] Make a coffee
+#>
+#> # Mark it as work-in-progres
+#>
+#> $ td -w 16:15
+#>
+#> * [.] Make a coffee - 16:15
+#>
+#> # Mark it as done
+#>
+#> $ td -d 16:20
+#>
+#> * [x] Make a coffee - 16:15 - 16:20
+#> * [ ] Make a sandwich
+#>
+#> # Cancel next item, because of no time for that
+#>
+#> $ td -c No time for sandwich
+#>
+#> * [-] Make a sandwich - No time for sandwich
+#>
+#> # List todo items
+#>
+#> $ td -l
+#>
+#> * [x] Make a coffee - 16:15 - 16:20
+#> * [-] Make a sandwich - No time for sandwich
+#>
+#> # Run nano editor to delete old todo items
+#>
+#> $ td -e nano
+#>
+#> ```
