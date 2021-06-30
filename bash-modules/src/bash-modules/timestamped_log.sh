@@ -3,7 +3,7 @@
 # License: LGPL2+
 
 # Import log module and then override some functions
-. import.sh log date
+. import.sh log date meta
 
 
 #>>> timestamped_log - print timestamped logs. Drop-in replacement for log module.
@@ -26,46 +26,20 @@ timestamped_log::set_format() {
   __timestamped_log_format="$1"
 }
 
-#>
-#> * timestamped_log::wrap BEFORE AFTER FUNCTION_NAME[...]
-#>    Create wrapper for a function(s). Execute given commands before and after
-#>    each function. Original function is available as timestamped_log::orig_FUNCTION_NAME.
-timestamped_log::wrap() {
-  local BEFORE="$1"
-  local AFTER="$2"
-  shift 2
-  local FUNCTION_NAME
-  for FUNCTION_NAME in "$@"
-  do
-    eval "
-# Rename original function
-function timestamped_log::orig_$(declare -fp $FUNCTION_NAME)
-
-# Redefine function
-function $FUNCTION_NAME() {
-  $BEFORE
-
-  # Call original function
-  timestamped_log::orig_$FUNCTION_NAME \"\$@\"
-
-  $AFTER
-}
-"
-  done
-}
-
 #>>
 #>> Wrapped functions:
+#>>
 #>> log::info, info, debug - print timestamp to stdout and then log message.
-timestamped_log::wrap \
+meta::wrap \
   'date::print_current_datetime "$__timestamped_log_format"' \
   '' \
   log::info \
   info \
   debug
 
+#>>
 #>> log::error, log::warn, error, warn - print timestamp to stderr and then log message.
-timestamped_log::wrap \
+meta::wrap \
   'date::print_current_datetime "$__timestamped_log_format" >&2' \
   '' \
   log::error \

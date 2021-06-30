@@ -66,7 +66,7 @@
       read -a "$__string__VAR" <<<"${__string__VALUE:-}"
     }
     __split_by_delimiter __BASH_MODULES_PATH_ARRAY ':' "${BASH_MODULES_PATH:+$BASH_MODULES_PATH}"
-    unset __split_by_delimiter
+    unset -f __split_by_delimiter
   else
     __BASH_MODULES_PATH_ARRAY=( "${BASH_MODULES_PATH:+$BASH_MODULES_PATH}" )
   fi
