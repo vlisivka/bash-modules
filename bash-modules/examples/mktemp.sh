@@ -111,8 +111,7 @@ arguments::parse \
   exit 1
 }
 
-main "${ARGUMENTS[@]:+${ARGUMENTS[@]}}"
-exit
+main "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" || exit $?
 
 
 #>>> mktemp - implementation of mktemp in pure bash for portability.

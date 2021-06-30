@@ -28,8 +28,7 @@ arguments::parse \
     '-m|--more)TIMES_TO_GRIT;Incremental,((TIMES_TO_GRIT<=3))' \
     -- "$@" || panic "Cannot parse arguments."
 
-main "${ARGUMENTS[@]}"
-exit $?
+main "${ARGUMENTS[@]}" || exit $?
 
 # "#>" is doc comment, which will be shown by --man option.
 # "#>>" is help comment, which will be shown by --help and --man.

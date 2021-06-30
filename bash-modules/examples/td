@@ -261,7 +261,7 @@ run_editor() {
   local editor="${1:-$EDITOR}"
   find_todo_file || return 1
 
-  exec $editor "$TODO_FILE" || { error "Cannot open \"$TODO_FILE\" file using \"$EDITOR\" editor." ; return 1 ; }
+  "$editor" "$TODO_FILE" || { error "Cannot open \"$TODO_FILE\" file using \"$editor\" editor." ; return 1 ; }
 }
 
 main() {
@@ -301,8 +301,7 @@ arguments::parse \
   "-v|--verbose)VERBOSE;Yes" \
   -- "$@" || panic "Cannot parse arguments. Use \"--help\" to show options."
 
-main "${ARGUMENTS[@]}"
-exit
+main "${ARGUMENTS[@]}" || exit $?
 
 #>>> Simple todo manager for one man projects.
 #>>

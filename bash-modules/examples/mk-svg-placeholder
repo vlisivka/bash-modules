@@ -28,7 +28,7 @@ arguments::parse \
   "-s|--font-size)FONT_SIZE;Number" \
   -- "${@:+$@}" || panic "Cannot parse arguments."
 
-main "${ARGUMENTS[@]:+${ARGUMENTS[@]}}"; exit $?
+main "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" || exit $?
 
 #>> Usage: mk-svg-placeholder [-h|--help|--man] | [-b|--bg-color BG_COLOR] [-f|--fg-color FG_COLOR] [-W|--image-width IMAGE_WIDTH] [-H|--image-height IMAGE_HEIGHT] [-s|--font-size FONT_SIZE]
 #>

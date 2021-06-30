@@ -16,5 +16,4 @@ main() {
   bar || { error "Cannot perform bar."; return 1; }
 }
 
-main "$@"
-exit
+main "$@" || exit $?
