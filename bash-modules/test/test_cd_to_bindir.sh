@@ -1,7 +1,7 @@
 #!/bin/bash
 APP_DIR="$(dirname "$0")"
 export __IMPORT__BASE_PATH=( $(readlink -f "$APP_DIR/../src/bash-modules") )
-export PATH=$(readlink -f "$APP_DIR/../src")":$PATH"
+export PATH="$(readlink -f "$APP_DIR/../src"):$PATH"
 . import.sh strict log unit
 
 ###############################################
