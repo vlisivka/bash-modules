@@ -21,6 +21,13 @@ date::current_datetime() {
 }
 
 #>>
+#>> date::print_current_datetime FORMAT - print current date time in given format.
+#> See `man 3 strftime` for details.
+date::print_current_datetime() {
+  printf "%($1)T" "-1"
+}
+
+#>>
 #>> date::datetime VARIABLE FORMAT TIMESTAMP - return current date time in given format.
 #> See `man 3 strftime` for details.
 date::datetime() {

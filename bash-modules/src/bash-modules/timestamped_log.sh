@@ -3,7 +3,7 @@
 # License: LGPL2+
 
 # Import log module and then override some functions
-. import.sh log
+. import.sh log date
 
 
 #>>> timestamped_log - print timestamped logs. Drop-in replacement for log module.
@@ -14,7 +14,7 @@
 
 #>
 #> * __timestamped_log_format - format of timestamp. Default value: "%F %T" (full date and time).
-__timestamped_log_format="%F %T"
+__timestamped_log_format="%F %T "
 
 
 #>>
@@ -58,7 +58,7 @@ function $FUNCTION_NAME() {
 #>> Wrapped functions:
 #>> log::info, info, debug - print timestamp to stdout and then log message.
 timestamped_log::wrap \
-  'echo -n "$(date "+$__timestamped_log_format")"' \
+  'date::print_current_datetime "$__timestamped_log_format"' \
   '' \
   log::info \
   info \
@@ -66,7 +66,7 @@ timestamped_log::wrap \
 
 #>> log::error, log::warn, error, warn - print timestamp to stderr and then log message.
 timestamped_log::wrap \
-  'echo -n "$(date "+$__timestamped_log_format")" >&2' \
+  'date::print_current_datetime "$__timestamped_log_format" >&2' \
   '' \
   log::error \
   log::warn \
