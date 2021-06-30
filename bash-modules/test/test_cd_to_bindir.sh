@@ -13,8 +13,6 @@ SCRIPT_NAME="test_cd_to_bindir-test-script.sh"
 [ -d "$SCRIPT_DIR" ] || panic "Temporary directory is not created."
 
 unit::set_up() {
-  set -ue
-
   mkdir -p "$SCRIPT_DIR" || panic "Cannot create temporary directory."
 
   cat > "$SCRIPT_DIR/$SCRIPT_NAME" <<END_OF_SCRIPT || panic "Cannot create script file in temporary directory."
@@ -34,8 +32,6 @@ END_OF_SCRIPT
 }
 
 unit::tear_down() {
-  set -ue
-
   rm -rf "$SCRIPT_DIR" || panic "Cannot remove \"$SCRIPT_DIR\" directory."
 }
 

@@ -17,18 +17,27 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with bash-modules  If not, see <http://www.gnu.org/licenses/>.
 
-#>>> import.sh - import bash modules into scripts or interactive shell.
+#> NAME
 #>>
-#>> Syntax:
-#>>     source import.sh MODULE[...]       - import module(s) into script or shell
-#>>     import.sh --help|-h                - print help text
-#>>     import.sh --man                    - show documentation
-#>>     import.sh --list                   - list modules
-#>>     import.sh --summary|-s [MODULE...] - list module(s) with summary
-#>>     import.sh --usage|-u MODULE[...]   - print module help text
-#>>     import.sh --doc|-d MODULE[...]     - print module documentation
+#>>> import.sh - import bash modules into scripts or into interactive shell
 #>
-#> Description:
+#> SYNOPSIS:
+#>>
+#>>   In a scipt:
+#>>
+#>>     . import.sh MODULE[...]             import module(s) into script or shell
+#>>
+#>>
+#>>   At command line:
+#>>
+#>>     import.sh --help|-h                 print this help text
+#>>     import.sh --man                     show manual
+#>>     import.sh --list                    list modules with their path
+#>>     import.sh --summary|-s [MODULE...]  list module(s) with summary
+#>>     import.sh --usage|-u MODULE[...]    print module help text
+#>>     import.sh --doc|-d MODULE[...]      print module documentation
+#>>
+#> DESCRIPTION
 #>
 #> Imports given module(s) into current shell.
 #>
@@ -48,45 +57,61 @@
     exit 80
   }
 
+  # If BASH_MODULES_PATH variable contains a ':' separator, then split it into array
+  if [[ "${BASH_MODULES_PATH:-}" == *':'* ]]; then
+    __split_by_delimiter() {
+      local __string__VAR="$1"
+      local IFS="$2"
+      local __string__VALUE="${3:-}"
+      read -a "$__string__VAR" <<<"${__string__VALUE:-}"
+    }
+    __split_by_delimiter __BASH_MODULES_PATH_ARRAY ':' "${BASH_MODULES_PATH:+$BASH_MODULES_PATH}"
+    unset __split_by_delimiter
+  else
+    __BASH_MODULES_PATH_ARRAY=( "${BASH_MODULES_PATH:+$BASH_MODULES_PATH}" )
+  fi
+
   #>
-  #> Configuration:
+  #> CONFIGURATION
 
   #>
   #> * BASH_MODULES_PATH - (variable with single path entry, at present time).
-  # TODO: split BASH_MODULES_PATH environment variable at ":", to allow multiple entries
+  #> BASH_MODULES_PATH can contain multiple directories separated by ":".
   #>
   #> * __IMPORT__BASE_PATH - array with list of your own directories with modules,
   #> which will be prepended to module search path. You can set __IMPORT__BASE_PATH array in
   #> script at begining, in /etc/bash-modules/config.sh, or in ~/.bash-modules/config.sh file.
-  __IMPORT__BASE_PATH=( "${BASH_MODULES_PATH:+$BASH_MODULES_PATH}" "${__IMPORT__BASE_PATH[@]:+${__IMPORT__BASE_PATH[@]}}" "/usr/share/bash-modules" )
+  __IMPORT__BASE_PATH=( "${__BASH_MODULES_PATH_ARRAY[@]:+${__BASH_MODULES_PATH_ARRAY[@]}}" "${__IMPORT__BASE_PATH[@]:+${__IMPORT__BASE_PATH[@]}}" "/usr/share/bash-modules" )
+  unset __BASH_MODULES_PATH_ARRAY
 
   #>
   #> * /etc/bash-modules/config.sh - system wide configuration file.
   #> WARNING: Code in this script will affect all scripts.
   #>
-  #> Example code:
-  #>     set -ueEo pipefail # Force strict mode for all scripts.
-  #>     trap 'panic "Uncaught error."' ERR # Enable stack traces for uncaught errors.
-  #>     __log__BACKTRACE=="yes" # Enable stack traces for catched errors.
+  #> Example configration:
+  #>     # Enable stack trace printing for warnings and errors, like with --debug option:
+  #>     __log__BACKTRACE=="yes"
+  #>
+  #>     # Add additional directory to module search path:
+  #>     BASH_MODULES_PATH="/usr/share/my-app-modules"
   [ ! -s /etc/bash-modules/config.sh ] || source /etc/bash-modules/config.sh || {
     echo "[import.sh] WARN: Cannot import \"/etc/bash-modules/config.sh\" or an error in this file." >&2
   }
 
   #>
-  #> Variables:
+  #> VARIABLES
 
   #>
-  #> * IMPORT__BIN_FILE -  main file name, so it will be available to all modules and script functions.
+  #> * IMPORT__BIN_FILE -  main file name, e.g. "/usr/bin/my-script".
   __IMPORT_INDEX="${#BASH_SOURCE[*]}"
   IMPORT__BIN_FILE="${BASH_SOURCE[__IMPORT_INDEX-1]}"
   unset __IMPORT_INDEX
 
   #>
-  #> Functions:
+  #> FUNCTIONS
 
   #>
-  #> * import::import_module() - import single module only.
-  #> Argument: module name, without absolute path and without .sh extension, e.g. "log".
+  #> * import::import_module MODULE - import single module only.
   import::import_module() {
     local __MODULE="${1:?Argument is required: module name, without path and without .sh extension, e.g. "log".}"
 
@@ -96,7 +121,8 @@
       [ -f "$__PATH/$__MODULE.sh" ] || continue
 
       # Don't import module twice, to avoid loops.
-      local -n __IMPORT_MODULE_DEFINED="__${__MODULE}__DEFINED" # Variable reference
+      # Replace "/" in the module name by "_".
+      local -n __IMPORT_MODULE_DEFINED="__${__MODULE//\//_}__DEFINED" # Variable reference
       [ "${__IMPORT_MODULE_DEFINED:-}" != "yes" ] || return 0 # Already imported
       __IMPORT_MODULE_DEFINED="yes"
       unset -n __IMPORT_MODULE_DEFINED # Unset reference
@@ -111,8 +137,7 @@
   }
 
   #>
-  #> * import::import_modules() - import list of modules at once and return error code.
-  #> Arguments: module names (without absolute path and without .sh extension), e.g. "log arguments".
+  #> * import::import_modules MODULE[...] - import module(s).
   import::import_modules() {
     local __MODULE __ERROR_CODE=0
     for __MODULE in "$@"
@@ -122,13 +147,11 @@
     return $__ERROR_CODE
   }
 
-# TODO: Move this function to separate module.
   #>
-  #> * import::list_modules() - print various information about module(s).
-  #> Arguments: first argument is function to call on each module.
+  #> * import::list_modules FUNC [MODULE]... - print various information about module(s).
+  #> FUNC is a function to call on each module. Function will be called with two arguments:
+  #> path to module and module name.
   #> Rest of arguments are module names. No arguments means all modules.
-  #>
-  #> Function called with two arguments: path to module and module name (without .sh extension).
   import::list_modules() {
     local __FUNC="${1:?ERROR: Argument is required: function to call with module name.}"
     shift
@@ -190,10 +213,14 @@
     done
   }
 
-# TODO: Move this function to separate module.
+  #>
+  #> * import::show_documentation LEVEL PARSER FILE - print module built-in documentation.
+  #> LEVEL - 1 - for manual (#> and #>> and #>>>), 2 - for usage (#>> and #>>>), 3 - for one line summary (#>>>).
+  #> PARSER - is a command or a function to convert documentation into a nicer format, or just a "cat".
+  #> FILE - path to file with built-in documentation.
   import::show_documentation() {
-    local LEVEL="${1:?ERROR: Argument is required: level of documentation: 1 for all documentation, 2 for summary.}"
-    local PARSER="${2:?ERROR: Argument is required: command to parse documentation text, e.g. cat, more, less, nroff.}"
+    local LEVEL="${1:?ERROR: Argument is required: level of documentation: 1 for all documentation, 2 for usage, 3 for one line summary.}"
+    local PARSER="${2:?ERROR: Argument is required: command to parse documentation text, e.g. cat, more, less, nroff, pandoc.}"
     local FILE="${3:?ERRROR: Argument is required: file to parse documentation from.}"
 
     [ -e "$FILE" ] || {
@@ -223,7 +250,7 @@
     local line
     while read line
     do
-      if [[ "$line" =~ ^\s*"$PREFIX"\>*\s*(.*)$ ]]
+      if [[ "$line" =~ ^\s*"$PREFIX"\>*\ ?(.*)$ ]]
       then
         echo "${BASH_REMATCH[1]}"
       fi
@@ -236,15 +263,22 @@
 # If this is top level code and program name is .../import.sh
 if [ "${FUNCNAME:+x}" == "" -a "${0##*/}" == "import.sh" ]
 then
+  show_module_info() {
+    local module_path="$1"
+    local module_name="$2"
+
+    printf "%-24s\t%s\n" "$module_name" "$module_path"
+  }
+
   # import.sh called as standalone program
   if  [ "$#" -eq 0 ]
   then
-    import::show_documentation 3 cat "$IMPORT__BIN_FILE"
+    import::show_documentation 2 cat "$IMPORT__BIN_FILE"
   else
     case "$1" in
       --list|-l)
         shift 1
-        import::list_modules "echo" "${@:+$@}"
+        import::list_modules "show_module_info" "${@:+$@}"
       ;;
       --summary|-s)
         shift 1

@@ -7,7 +7,7 @@
 
 
 #>>> timestamped_log - print timestamped logs. Drop-in replacement for log module.
-#>>> Warning: call to logging function will invokes `date` command to generate timestamp.
+#>> Warning: call to logging function will invokes `date` command to generate timestamp.
 
 #>
 #> Variables:

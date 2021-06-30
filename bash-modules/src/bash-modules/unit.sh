@@ -157,7 +157,7 @@ unit::fail() {
 #>  subset in it own subshell and execute unit::run_test_cases in each subshell.
 #>
 #>  Each test case is executed in it own subshell, so you can call "exit"
-#>  in test case or assign variables without any effect on subsequent test
+#>  in the test case or assign variables without any effect on subsequent test
 #>  cases.
 unit::run_test_cases() {
 
@@ -181,7 +181,7 @@ unit::run_test_cases() {
 
   local __TEST __EXIT_CODE=0
 
-  ( set -ue ; FIRST_TEAR_DOWN=yes ; unit::tear_down "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" ) || {
+  ( set -ueEo pipefail ; FIRST_TEAR_DOWN=yes ; unit::tear_down "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" ) || {
       __EXIT_CODE=$?
       log::error "FAIL" "tear_down before first test case is failed."
     }
@@ -192,22 +192,21 @@ unit::run_test_cases() {
     [ "$__QUIET" == "yes" ] || echo -n "."
 
     (
-      set -ue
       __EXIT_CODE=0
 
       unit::set_up "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" || {
         __EXIT_CODE=$?
-        log::error "FAIL" "set_up before test case #$NUMBER_OF_TEST_CASES ($__TEST) failed."
+        unit::fail "unit::set_up failed before test case #$NUMBER_OF_TEST_CASES ($__TEST)."
       }
 
-      ( set -ueo pipefail ; "$__TEST" "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" ) || {
+      ( "$__TEST" "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" ) || {
         __EXIT_CODE=$?
-        log::error "FAIL" "Test case #$NUMBER_OF_TEST_CASES ($__TEST) failed."
+        unit::fail "Test case #$NUMBER_OF_TEST_CASES ($__TEST) failed."
       }
 
-      ( set -ueo pipefail ; unit::tear_down "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" ) || {
+      unit::tear_down "${ARGUMENTS[@]:+${ARGUMENTS[@]}}" || {
         __EXIT_CODE=$?
-        log::error "FAIL" "Cleanup after test case #$NUMBER_OF_TEST_CASES ($__TEST) failed."
+        unit::fail "unit::tear_down failed after test case #$NUMBER_OF_TEST_CASES ($__TEST)."
       }
       exit $__EXIT_CODE # Exit from subshell
     ) || {

@@ -112,10 +112,12 @@ test_array_argument() {
 
 test_incremental_argument() {
   local FOO=0
+
   arguments::parse '-f|-fo|--foo)FOO;I' -- -f --foo -fo || {
     error "Cannot parse array argument."
     return 1
   }
+
   unit::assert_equal "$FOO" "3" "Incremental option parsed incorrectly: wrong count of options."
 }
 
