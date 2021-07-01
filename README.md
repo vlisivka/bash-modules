@@ -4,11 +4,13 @@
   * [Example](#example)
   * [License](#license)
   * [Vision](#vision)
-  * [Features:](#features-)
-  * [TODO:](#todo-)
+  * [Features](#features)
+  * [TODO](#todo)
   * [Showcase - log module](#showcase---log-module)
   * [Showcase - arguments module](#showcase---arguments-module)
   * [Error handling](#error-handling)
+    + [Chain of errors](#chain-of-errors)
+    + [Panic](#panic)
 
 
 bash-modules
@@ -135,8 +137,7 @@ arguments::parse \
   "-m|--married)MARRIED;Boolean" \
   -- "$@" || panic "Cannot parse arguments. Use \"--help\" to show options."
 
-main "${ARGUMENTS[@]}"
-exit
+main "${ARGUMENTS[@]}" || exit $?
 
 # Comments marked by "#>>" are shown by --help.
 # Comments marked by "#>" and "#>>" are shown by --man.
@@ -186,8 +187,7 @@ main() {
   bar || { error "Cannot perform bar."; return 1; }
 }
 
-main "$@"
-exit
+main "$@" || exit $?
 ```
 
 ```text
