@@ -15,13 +15,16 @@ main() {
   <!-- For mobile devices -->
   <meta name="viewport" content="initial-scale=1.0, maximum-scale=1, width=device-width">
 
+  <!-- jquery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" crossorigin="anonymous"></script>
+
   <!-- nanogallery2 -->
-  <link  href="https://cdn.jsdelivr.net/npm/nanogallery2@3/dist/css/nanogallery2.min.css" rel="stylesheet" type="text/css">
-  <script  type="text/javascript" src="https://cdn.jsdelivr.net/npm/nanogallery2@3/dist/jquery.nanogallery2.min.js"></script>
+  <link  href="https://cdn.jsdelivr.net/npm/nanogallery2@3/dist/css/nanogallery2.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
+  <script  type="text/javascript" src="https://cdn.jsdelivr.net/npm/nanogallery2@3/dist/jquery.nanogallery2.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
-<div id="nanogallery2">gallery_made_with_nanogallery2</div>
+<div id="nanogallery2">A gallery made with nanogallery2.</div>
 
 <script>
    jQuery(document).ready(function () {
@@ -62,7 +65,7 @@ END_OF_HEADER
         convert -thumbnail 150x "$file" "$thumb" || panic "Cannot generate thumbnail for \"$file\"."
       }
 
-      printf "{src: '%s', srct: '%s', title: '%s' },\n" "$file" "$thumb" "$title"
+      printf "{src: '%s', srct: '%s', title: '%s' },\n" "${file//\'/\\\'}" "${thumb//\'/\\\'}" "${title//\'/\\\'}"
     done >>index.html
   done
 
