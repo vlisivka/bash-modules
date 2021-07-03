@@ -305,7 +305,7 @@ main "${ARGUMENTS[@]}" || exit $?
 
 #>>> Simple todo manager for one man projects.
 #>>
-#>> Usage: td [OPTIONS] [A TODO MESSAGE]
+#>> Usage: td [OPTIONS] [--] [A TODO MESSAGE]
 #>>
 #>> By default, script will search for a TODO.md file  in current
 #>> directory or, if file is missing, in top directories, up to "$HOME"
@@ -342,6 +342,8 @@ main "${ARGUMENTS[@]}" || exit $?
 #>>   -n  create new empty TODO.md file in current directory.
 #>>
 #>>   -v | --verbose  print location of TODO file found.
+#>>
+#>> Use `--` to strictly separate options and arguments, e.g. `td -- -12.5`.
 #>>
 #> ENVIRONMENT VARIABLES
 #>
