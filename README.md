@@ -164,6 +164,30 @@ main "${ARGUMENTS[@]}" || exit $?
 
 ![Output](https://raw.githubusercontent.com/vlisivka/bash-modules/master/images/showcase-arguments-3.png)
 
+## Showcase - strict mode
+
+```bash
+#!/bin/bash
+. import.sh strict log
+a() {
+  b
+}
+b() {
+  c
+}
+c() {
+  d
+}
+d() {
+  false
+}
+
+a
+
+```
+
+![Output](https://raw.githubusercontent.com/vlisivka/bash-modules/master/images/showcase-strict-mode.png)
+
 ## Error handling
 
 `bash-modules` `log` module supports two strategies to handle errors:
