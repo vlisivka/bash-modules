@@ -11,7 +11,7 @@
 * [ ] Release version 4.0.0beta.
 * [ ] Ask other bash-scripters for peer review.
 * [ ] Publish an article at linux.org.ua and Fedora Magazine.
-* [ ] Create gen-gallery.sh example.
 * [ ] Report bug in bash 5.1.0.
 * [ ] Ask bash developers for strict mode support, like in zsh, because it's critical for this project.
 * [ ] Add path module.
+* [ ] Use realpath instead of readlink -f, when possible.

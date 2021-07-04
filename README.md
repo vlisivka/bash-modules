@@ -1,17 +1,17 @@
-- [bash-modules](#bash-modules)
-  * [Simple module system for bash.](#simple-module-system-for-bash)
-  * [Syntax](#syntax)
-  * [Example](#example)
-  * [License](#license)
-  * [Vision](#vision)
-  * [Features](#features)
-  * [TODO](#todo)
-  * [Showcase - log module](#showcase---log-module)
-  * [Showcase - arguments module](#showcase---arguments-module)
-  * [Error handling](#error-handling)
-    + [Chain of errors](#chain-of-errors)
-    + [Panic](#panic)
-
+* [bash-modules](#bash-modules)
+   * [Simple module system for bash.](#simple-module-system-for-bash)
+   * [Syntax](#syntax)
+   * [Example](#example)
+   * [License](#license)
+   * [Vision](#vision)
+   * [Features](#features)
+   * [TODO](#todo)
+   * [Showcase - log module](#showcase---log-module)
+   * [Showcase - arguments module](#showcase---arguments-module)
+   * [Showcase - strict mode](#showcase---strict-mode)
+   * [Error handling](#error-handling)
+      * [Chain of errors](#chain-of-errors)
+      * [Panic](#panic)
 
 bash-modules
 ============
@@ -20,7 +20,7 @@ bash-modules
 
 Module loader and collection of modules for bash scripts, to quickly write safe bash scripts in unofficial bash strict mode.
 
-Currentyl, bash-modules are targetting users of Linux OS, such as system administrators.
+Currentyl, bash-modules project is targetting users of Linux OS, such as system administrators.
 
 bash-modules is developed at Fedora Linux and requires bash 4 or higher.
 
