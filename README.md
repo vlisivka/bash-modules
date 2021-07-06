@@ -73,6 +73,13 @@ My vision for the project is to create a loadable set of bash subroutines, which
 * module for unit testing;
 * full support for unofficial strict mode.
 
+## Installation
+
+Use `install.sh` script in bash-modules directory to install bash-modules
+to `~/.local` (default for a user) or `/usr/local/bin` (default for a
+root user). See `./install.sh --help` for options.
+
+
 ## TODO
 
 * [x] Implement module loader.

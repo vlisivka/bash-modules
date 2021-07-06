@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Copyright (c) 2009-2013 Volodymyr M. Lisivka <vlisivka@gmail.com>, All Rights Reserved
 #
@@ -80,7 +80,7 @@
   #>
   #> * __IMPORT__BASE_PATH - array with list of your own directories with modules,
   #> which will be prepended to module search path. You can set __IMPORT__BASE_PATH array in
-  #> script at begining, in /etc/bash-modules/config.sh, or in ~/.bash-modules/config.sh file.
+  #> script at begining, in /etc/bash-modules/config.sh, or in ~/.config/bash-modules/config.sh file.
   __IMPORT__BASE_PATH=( "${__BASH_MODULES_PATH_ARRAY[@]:+${__BASH_MODULES_PATH_ARRAY[@]}}" "${__IMPORT__BASE_PATH[@]:+${__IMPORT__BASE_PATH[@]}}" "/usr/share/bash-modules" )
   unset __BASH_MODULES_PATH_ARRAY
 
@@ -96,6 +96,13 @@
   #>     BASH_MODULES_PATH="/usr/share/my-app-modules"
   [ ! -s /etc/bash-modules/config.sh ] || source /etc/bash-modules/config.sh || {
     echo "[import.sh] WARN: Cannot import \"/etc/bash-modules/config.sh\" or an error in this file." >&2
+  }
+
+  #>
+  #> * ~/.config/bash-modules/config.sh - user configuration file.
+  #> WARNING: Code in this script will affect all user scripts.
+  [ ! -s "$HOME/.config/bash-modules/config.sh" ] || source "$HOME/.config/bash-modules/config.sh" || {
+    echo "[import.sh] WARN: Cannot import \"$HOME/.config/bash-modules/config.sh\" or an error in this file." >&2
   }
 
   #>
