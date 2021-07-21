@@ -1,6 +1,6 @@
 
 Name:           bash-modules
-Version:        4.0.0beta1
+Version:        4.0.0beta2
 Release:        1%{?dist}
 Summary:        Modules for bash
 
