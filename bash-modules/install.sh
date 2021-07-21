@@ -19,10 +19,10 @@ main() {
   echo "Bin directory: \"$BIN_DIR\"."
 
   mkdir -p "$MODULES_DIR" || { echo "ERROR: Cannot create directory \"$MODULES_DIR\"." >&2 ; return 1 ;}
-  install -vt "$MODULES_DIR" src/bash-modules/*.sh || { echo "ERROR: Cannot install modules to directory \"$MODULES_DIR\"." >&2 ; return 1 ;}
+  install -t "$MODULES_DIR" src/bash-modules/*.sh || { echo "ERROR: Cannot install modules to directory \"$MODULES_DIR\"." >&2 ; return 1 ;}
 
   mkdir -p "$BIN_DIR" || { echo "ERROR: Cannot create directory \"$BIN_DIR\"." >&2 ; return 1 ;}
-  install -vD src/import.sh "$BIN_DIR/import.sh" || { echo "ERROR: Cannot install import.sh script to \"$MODULES_DIR\"." >&2 ; return 1 ;}
+  install -D src/import.sh "$BIN_DIR/import.sh" || { echo "ERROR: Cannot install import.sh script to \"$MODULES_DIR\"." >&2 ; return 1 ;}
 
   # Update hardcoded path to directory with modules
   sed -i "s@/usr/share/bash-modules@$MODULES_DIR@g" "$BIN_DIR/import.sh" \

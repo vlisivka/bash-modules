@@ -16,8 +16,13 @@
 * [x] Update path to modules and configuration in import.sh during installation.
 * [x] Add support for configuration file in other places than /etc.
 * [x] Add an Install section to README.
+* [x] Add dispatch function.
+* [ ] Add path module.
+* [ ] Add lock module.
+* [ ] Add is module.
 * [ ] Publish an article in Fedora Magazine.
 * [ ] Report bug in bash 5.1.0.
 * [ ] Ask bash developers for strict mode support, like in zsh, because it's critical for this project.
-* [ ] Add path module.
 * [ ] Use realpath instead of readlink -f, when possible.
+* [ ] Write a package manager for bash: bapt, for strict bash code only.
+* [ ] SPDX-License-Identifier: LGPL-2.1-or-later

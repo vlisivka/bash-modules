@@ -52,3 +52,33 @@ function $FUNCTION_NAME() {
 meta::functions_with_prefix() {
   compgen -A function "$1"
 }
+
+#>>
+#>> * meta::is_function FUNC_NAME Checks is given name corresponds to a function.
+meta::is_function() {
+  declare -F "$1" >/dev/null
+}
+
+#>>
+#>> * meta::dispatch PREFIX COMMAND [ARGUMENTS...] - execute function `PREFIX__COMMAND [ARGUMENTS]`
+#>
+#> For example, it can be used to execute functions (commands) by name, e.g.
+#> `main() { meta::dispatch command__ "$@" ; }`, when called as `man hw world` will execute
+#> `command_hw "$world"`. When command handler function is not found, dispatcher will try
+#> to call `PREFIX__DEFAULT` function instead, or return error code, if defaulf handler is not found.
+meta::dispatch() {
+  local prefix="${1:?Prefix is required.}"
+  local command="${2:?Command is required.}"
+  shift 2
+
+  local fn="${prefix}${command}"
+
+  # Is handler function exists?
+  meta::is_function "$fn" || {
+    # Is default handler function exists?
+    meta::is_function "${prefix}__DEFAULT" || { echo "ERROR: Function \"$fn\" is not found." >&2; return 1; }
+    fn="${prefix}__DEFAULT"
+  }
+
+  "$fn" "${@:+$@}" || return $?
+}
