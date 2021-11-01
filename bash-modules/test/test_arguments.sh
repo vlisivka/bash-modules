@@ -33,7 +33,7 @@ test_no_option() {
 test_command_option() {
   local FOO=""
 
-  arguments::parse 'foo)FOO;Command' -- foo || {
+  arguments::parse 'b|foo|bar)FOO;Command' -- foo || {
     error "Cannot parsee Command option."
     return 1
   }
@@ -45,6 +45,19 @@ test_string_option() {
   local FOO="" BAR="" BAZ=""
 
   arguments::parse '--foo)FOO;S' '--bar)BAR;Str' '--baz)BAZ;String' -- --foo foo --bar=bar --baz baz || {
+    error "Cannot parse String option."
+    return 1
+  }
+
+  unit::assert_equal "$FOO" "foo" "String option foo parsed incorrectly."
+  unit::assert_equal "$BAR" "bar" "String option bar parsed incorrectly."
+  unit::assert_equal "$BAZ" "baz" "String option baz parsed incorrectly."
+}
+
+test_string_option_with_multiple_variants() {
+  local FOO="" BAR="" BAZ=""
+
+  arguments::parse '-f|F|--foo)FOO;S' '-b|BAR|--bar)BAR;Str' '-B|--baz)BAZ;String' -- F foo -b=bar -B baz || {
     error "Cannot parse String option."
     return 1
   }

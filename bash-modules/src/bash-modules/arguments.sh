@@ -131,7 +131,7 @@ arguments::generate_parser() {
     # Generate the parser for option
     case "$OPTION_TYPE" in
 
-     Y|Yes) # set "yes", no arguments
+     Y|Yes) # Set variable to "yes", no arguments
         OPTIONS_PARSER="$OPTIONS_PARSER
         $OPTION_CASE)
           $OPTION_VARIABLE=\"yes\"
@@ -140,7 +140,7 @@ arguments::generate_parser() {
         "
       ;;
 
-     No) # set "no", no arguments
+     No) # Set variable to "no", no arguments
         OPTIONS_PARSER="$OPTIONS_PARSER
         $OPTION_CASE)
           $OPTION_VARIABLE=\"no\"
@@ -149,10 +149,10 @@ arguments::generate_parser() {
         "
       ;;
 
-     C|Com|Command) # set name of the option, no arguments
+     C|Com|Command) # Set variable to name of the option, no arguments
         OPTIONS_PARSER="$OPTIONS_PARSER
         $OPTION_CASE)
-          $OPTION_VARIABLE=\"$OPTION_CASE\"
+          $OPTION_VARIABLE=\"\$1\"
           shift 1
         ;;
         "
@@ -168,13 +168,13 @@ arguments::generate_parser() {
         "
       ;;
 
-      S|Str|String) # Regular strings
+      S|Str|String) # Regular option with string value
         OPTIONS_PARSER="$OPTIONS_PARSER
         $OPTION_CASE)
           $OPTION_VARIABLE=\"\${2:?ERROR: String value is required for \\\"$OPTION_CASE\\\" option. See --help for details.}\"
           shift 2
         ;;
-        $OPTION_CASE=*)
+        ${OPTION_CASE//|/=*|}=*)
           $OPTION_VARIABLE=\"\${1#*=}\"
           shift 1
         ;;
@@ -187,7 +187,7 @@ arguments::generate_parser() {
           $OPTION_VARIABLE=\"\${2:?ERROR: Numeric value is required for \\\"$OPTION_CASE\\\" option. See --help for details.}\"
           shift 2
         ;;
-        $OPTION_CASE=*)
+        ${OPTION_CASE//|/=*|}=*)
           $OPTION_VARIABLE=\"\${1#*=}\"
           shift 1
         ;;
@@ -200,7 +200,7 @@ arguments::generate_parser() {
           ${OPTION_VARIABLE}[\${#${OPTION_VARIABLE}[@]}]=\"\${2:?Value is required for \\\"$OPTION_CASE\\\". See --help for details.}\"
           shift 2
         ;;
-        $OPTION_CASE=*)
+        ${OPTION_CASE//|/=*|}=*)
           ${OPTION_VARIABLE}[\${#${OPTION_VARIABLE}[@]}]=\"\${1#*=}\"
           shift 1
         ;;
