@@ -291,13 +291,7 @@ main() {
 # Command will be stored in the COMMAND variable.
 # Arguments will be stored into the ARGUMENTS array.
 arguments::parse \
-  "-l)COMMAND;Command" \
-  "-w)COMMAND;Command" \
-  "-d)COMMAND;Command" \
-  "-u)COMMAND;Command" \
-  "-c)COMMAND;Command" \
-  "-e)COMMAND;Command" \
-  "-n)COMMAND;Command" \
+  "-l|-w|-d|-u|-c|-e|-n)COMMAND;Command" \
   "-v|--verbose)VERBOSE;Yes" \
   -- "$@" || panic "Cannot parse arguments. Use \"--help\" to show options."
 
