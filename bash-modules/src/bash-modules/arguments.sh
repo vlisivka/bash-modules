@@ -281,7 +281,7 @@ arguments::generate_parser() {
 arguments::help() {
   local LEVEL="${1:-3}"
   case "$LEVEL" in
-   2|3)  import::show_documentation "$LEVEL" "cat" "$IMPORT__BIN_FILE" ;;
-   1)  import::show_documentation "$LEVEL" "less" "$IMPORT__BIN_FILE" ;;
+   2|3)  import::show_documentation "$LEVEL" "$IMPORT__BIN_FILE" ;;
+   1)  import::show_documentation "$LEVEL" "$IMPORT__BIN_FILE" | less ;;
   esac
 }

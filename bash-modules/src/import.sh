@@ -223,12 +223,10 @@
   #>
   #> * import::show_documentation LEVEL PARSER FILE - print module built-in documentation.
   #> LEVEL - 1 - for manual (#> and #>> and #>>>), 2 - for usage (#>> and #>>>), 3 - for one line summary (#>>>).
-  #> PARSER - is a command or a function to convert documentation into a nicer format, or just a "cat".
   #> FILE - path to file with built-in documentation.
   import::show_documentation() {
     local LEVEL="${1:?ERROR: Argument is required: level of documentation: 1 for all documentation, 2 for usage, 3 for one line summary.}"
-    local PARSER="${2:?ERROR: Argument is required: command to parse documentation text, e.g. cat, more, less, nroff, pandoc.}"
-    local FILE="${3:?ERRROR: Argument is required: file to parse documentation from.}"
+    local FILE="${2:?ERRROR: Argument is required: file to parse documentation from.}"
 
     [ -e "$FILE" ] || {
       echo "ERROR: File \"$FILE\" is not exits." >&2
@@ -261,7 +259,7 @@
       then
         echo "${BASH_REMATCH[1]}"
       fi
-    done < "$FILE" | $PARSER
+    done < "$FILE"
   }
 
 
@@ -280,7 +278,7 @@ then
   # import.sh called as standalone program
   if  [ "$#" -eq 0 ]
   then
-    import::show_documentation 2 cat "$IMPORT__BIN_FILE"
+    import::show_documentation 2 "$IMPORT__BIN_FILE"
   else
     case "$1" in
       --list|-l)
@@ -289,23 +287,23 @@ then
       ;;
       --summary|-s)
         shift 1
-        import::list_modules "import::show_documentation 3 cat" "${@:+$@}"
+        import::list_modules "import::show_documentation 3" "${@:+$@}"
       ;;
       --usage|-u)
         shift 1
-        import::list_modules "import::show_documentation 2 cat" "${@:+$@}"
+        import::list_modules "import::show_documentation 2" "${@:+$@}"
       ;;
       --documentation|--doc|-d)
         shift 1
-        import::list_modules "import::show_documentation 1 less" "${@:+$@}"
+        import::list_modules "import::show_documentation 1" "${@:+$@}" | less
       ;;
       --man)
         shift 1
-        import::show_documentation 1 less "$IMPORT__BIN_FILE"
+        import::show_documentation 1 "$IMPORT__BIN_FILE" | less
       ;;
       --help|-h|*)
         shift 1
-        import::show_documentation 2 cat "$IMPORT__BIN_FILE"
+        import::show_documentation 2 "$IMPORT__BIN_FILE"
       ;;
     esac
   fi

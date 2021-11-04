@@ -17,6 +17,7 @@
 * [x] Add support for configuration file in other places than /etc.
 * [x] Add an Install section to README.
 * [x] Add dispatch function.
+* [x] Kill useless cat.
 * [ ] Add path module.
 * [ ] Add lock module.
 * [ ] Add is module.
@@ -26,3 +27,6 @@
 * [ ] Use realpath instead of readlink -f, when possible.
 * [ ] Write a package manager for bash: bapt, for strict bash code only.
 * [ ] SPDX-License-Identifier: LGPL-2.1-or-later
+* [ ] Update help function to support arbitrary prefixes for built-in documentation.
+* [ ] Add __END__ function, which will just exit, and support for line delimited built-in help, like in perl.
+* [ ] Write an markdown parser for terminal, to show built-in manual with colors.
