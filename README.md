@@ -20,7 +20,7 @@ bash-modules
 
 Module loader and collection of modules for bash scripts, to quickly write safe bash scripts in unofficial bash strict mode.
 
-Currentyl, bash-modules project is targetting users of Linux OS, such as system administrators.
+Currently, bash-modules project is targetting users of Linux OS, such as system administrators.
 
 bash-modules is developed at Fedora Linux and requires bash 4 or higher.
 
