@@ -64,7 +64,7 @@
 #>
 #> Example:
 #>
-#>   arguments::parse "-f|--foo)FOO;Yes" "-b|--bar)BAR;String;Required" "-B|--baz)BAZ;Array" "-i|--inc)TIMES;Incremental,((TIMES<3))" -- "${@:+$@}"
+#>   arguments::parse "-f|--foo)FOO;Yes" "-b|--bar)BAR;String,Required" "-B|--baz)BAZ;Array" "-i|--inc)TIMES;Incremental,((TIMES<3))" -- "${@:+$@}"
 #>   dbg FOO BAR BAZ TIMES ARGUMENTS
 #>
 arguments::parse() {
