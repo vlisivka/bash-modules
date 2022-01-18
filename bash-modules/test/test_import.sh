@@ -42,6 +42,8 @@ fn12() {
 #>
 #> A detailed documentation about test module 1.
 #>
+
+#a_prefix Alternative documentation 1.
 END_OF_MODULE
 
   # Create a test module 2.
@@ -169,7 +171,31 @@ A test function 12 desciption."
   [[ "$output" == "$expected_output" ]] || panic "Unexpected output: \"$output\"."
 }
 
-# TODO: Test module documentation
+test_module_documentation() {
+  export BASH_MODULES_PATH
+
+  local output="$(import.sh --doc a_mod_1)"
+  local expected_output="A test 1 module one-line summary.
+
+A test function 1 desciption.
+
+A test function 12 desciption.
+
+A detailed documentation about test module 1."
+
+  [[ "$output" == "$expected_output" ]] || panic "Unexpected output: \"$output\"."
+}
+
+test_alternatvive_module_documentation() {
+  export BASH_MODULES_PATH
+  . import.sh
+
+  local output="$(import::show_documentation "#a_prefix" "$DIR/a_mod_1.sh")"
+  local expected_output="Alternative documentation 1."
+
+  [[ "$output" == "$expected_output" ]] || panic "Unexpected output: \"$output\"."
+}
+
 
 run_test_cases() {
   local exit_code=0

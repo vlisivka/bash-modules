@@ -222,7 +222,8 @@
 
   #>
   #> * import::show_documentation LEVEL PARSER FILE - print module built-in documentation.
-  #> LEVEL - 1 - for manual (#> and #>> and #>>>), 2 - for usage (#>> and #>>>), 3 - for one line summary (#>>>).
+  #> This function scans given file for lines with "#>" prefix (or given prefix) and prints them to stdout with prefix stripped.
+  #> LEVEL - 1 - for manual (#> and #>> and #>>>), 2 - for usage (#>> and #>>>), 3 - for one line summary (#>>>), or arbitrary prefix, e.g. "##".
   #> FILE - path to file with built-in documentation.
   import::show_documentation() {
     local LEVEL="${1:?ERROR: Argument is required: level of documentation: 1 for all documentation, 2 for usage, 3 for one line summary.}"
@@ -247,8 +248,7 @@
       2)  PREFIX="#>>" ;;
       3)  PREFIX="#>>>" ;;
       *)
-        echo "ERROR: Incorrect level for documentation. Supported levels: 1, 2, 3." >&2
-        return 1
+        PREFIX="$LEVEL"
       ;;
     esac
 
