@@ -2,13 +2,15 @@
 # Copyright (c) 2009-2021 Volodymyr M. Lisivka <vlisivka@gmail.com>, All Rights Reserved
 # License: LGPL2+
 
+#>> ## NAME
+#>>
 #>>> string - various functions to manipulate strings.
 
 #>>
-#>> Functions:
+#>> ## FUNCTIONS
 
 #>>
-#>> * string::trim_spaces VARIABLE VALUE
+#>> * `string::trim_spaces VARIABLE VALUE`
 #>    Trim white space characters around value and assign result to variable.
 string::trim() {
   local -n __string__VAR="$1"
@@ -23,7 +25,7 @@ string::trim() {
 }
 
 #>>
-#>> * string::trim_start VARIABLE VALUE
+#>> * `string::trim_start VARIABLE VALUE`
 #>    Trim white space characters at begining of the value and assign result to the variable.
 string::trim_start() {
   local -n __string__VAR="$1"
@@ -36,7 +38,7 @@ string::trim_start() {
 }
 
 #>>
-#>> * string::trim_end VARIABLE VALUE
+#>> * `string::trim_end VARIABLE VALUE`
 #>    Trim white space characters at the end of the value and assign result to the variable.
 string::trim_end() {
   local -n __string__VAR="$1"
@@ -49,9 +51,15 @@ string::trim_end() {
 }
 
 #>>
-#>> * string::insert VARIABLE POSITION VALUE
-#>    Insert VALUE into VARIABLE at given POSITION.
-#>    Example: v="abba" ; string::insert v 2 "cc" # v="abccba"
+#>> * `string::insert VARIABLE POSITION VALUE`
+#>    Insert `VALUE` into `VARIABLE` at given `POSITION`.
+#>    Example:
+#>
+#>    ```bash
+#>    v="abba"
+#>    string::insert v 2 "cc"
+#>    # now v=="abccba"
+#>   ```
 string::insert() {
   local -n __string__VAR="$1"
   local __string__POSITION="$2"
@@ -63,7 +71,7 @@ string::insert() {
 }
 
 #>>
-#>> * string::split_by_delimiter ARRAY DELIMITERS VALUE
+#>> * `string::split_by_delimiter ARRAY DELIMITERS VALUE`
 #>    Split value by delimiter(s) and assign result to array. Use
 #>    backslash to escape delimiter in string.
 #>    NOTE: Temporary file will be used.
@@ -80,7 +88,7 @@ string::split_by_delimiter() {
 }
 
 #>>
-#>> * string::basename VARIABLE FILE [EXT]
+#>> * `string::basename VARIABLE FILE [EXT]`
 #>    Strip path and optional extension from  full file name and store
 #>    file name in variable.
 string::basename() {
@@ -95,7 +103,7 @@ string::basename() {
 }
 
 #>>
-#>> * string::dirname VARIABLE FILE
+#>> * `string::dirname VARIABLE FILE`
 #>    Strip file name from path and store directory name in variable.
 string::dirname() {
   local -n __string__VAR="$1"
@@ -115,7 +123,7 @@ string::dirname() {
 }
 
 #>>
-#>> * string::random_string VARIABLE LENGTH
+#>> * `string::random_string VARIABLE LENGTH`
 #>    Generate random string of given length using [a-zA-Z0-9]
 #>    characters and store it into variable.
 string::random_string() {
@@ -135,7 +143,7 @@ string::random_string() {
 }
 
 #>>
-#>> * string::chr VARIABLE CHAR_CODE
+#>> * `string::chr VARIABLE CHAR_CODE`
 #>    Convert decimal character code to its ASCII representation.
 string::chr() {
   local __string__VAR="$1"
@@ -147,8 +155,8 @@ string::chr() {
 }
 
 #>>
-#>> * string::ord VARIABLE CHAR
-#>    converts ASCII character to its decimal value.
+#>> * `string::ord VARIABLE CHAR`
+#>    Converts ASCII character to its decimal value.
 string::ord() {
   local __string__VAR="$1"
   local __string__CHAR="$2"
@@ -167,7 +175,7 @@ string::ord() {
 #  }
 
 #>>
-#>> * string::quote_to_bash_format VARIABLE STRING
+#>> * `string::quote_to_bash_format VARIABLE STRING`
 #>    Quote the argument in a way that can be reused as shell input.
 string::quote_to_bash_format() {
   local __string__VAR="$1"
@@ -177,7 +185,7 @@ string::quote_to_bash_format() {
 }
 
 #>>
-#>> * string::unescape_backslash_sequences VARIABLE STRING
+#>> * `string::unescape_backslash_sequences VARIABLE STRING`
 #>    Expand backslash escape sequences.
 string::unescape_backslash_sequences() {
   local __string__VAR="$1"
@@ -187,7 +195,7 @@ string::unescape_backslash_sequences() {
 }
 
 #>>
-#>> * string::to_identifier VARIABLE STRING
+#>> * `string::to_identifier VARIABLE STRING`
 #>    Replace all non-alphanumeric characters in string by underscore character.
 string::to_identifier() {
   local -n __string__VAR="$1"
@@ -199,7 +207,7 @@ string::to_identifier() {
 }
 
 #>>
-#>> * string::find_string_with_prefix VAR PREFIX [STRINGS...]
+#>> * `string::find_string_with_prefix VAR PREFIX [STRINGS...]`
 #>    Find first string with given prefix and assign it to VAR.
 string::find_string_with_prefix() {
   local -n __string__VAR="$1"
@@ -218,8 +226,8 @@ string::find_string_with_prefix() {
 }
 
 #>>
-#>> * string::contains STRING SUBSTRING
-#>    returns zero exit code (true), when string contains substring
+#>> * `string::contains STRING SUBSTRING`
+#>    Returns zero exit code (true), when string contains substring
 string::contains() {
   case "$1" in
     *"$2"*) return 0 ;;
@@ -228,8 +236,8 @@ string::contains() {
 }
 
 #>>
-#>> * string::starts_with STRING SUBSTRING
-#>    returns zero exit code (true), when string starts with substring
+#>> * `string::starts_with STRING SUBSTRING`
+#>    Returns zero exit code (true), when string starts with substring
 string::starts_with() {
   case "$1" in
     "$2"*) return 0 ;;
@@ -238,8 +246,8 @@ string::starts_with() {
 }
 
 #>>
-#>> * string::ends_with STRING SUBSTRING
-#>    returns zero exit code (true), when string ends with substring
+#>> * `string::ends_with STRING SUBSTRING`
+#>    Returns zero exit code (true), when string ends with substring
 string::ends_with() {
   case "$1" in
     *"$2") return 0 ;;

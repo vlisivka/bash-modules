@@ -2,25 +2,27 @@
 # Copyright (c) 2009-2021 Volodymyr M. Lisivka <vlisivka@gmail.com>, All Rights Reserved
 # License: LGPL2+
 
-#>>> log - various functions related to logging.
+#>> ## NAME
+#>>
+#>>> `log` - various functions related to logging.
 
 #>
-#> Variables:
+#> ## VARIABLES
 
 #export PS4='+${BASH_SOURCE}:${LINENO}:${FUNCNAME[0]:+${FUNCNAME[0]}}: '.
 
-#> * __log__APP - name of main file without path.
+#> * `__log__APP` - name of main file without path.
 __log__APP="${IMPORT__BIN_FILE##*/}" # Strip everything before last "/"
 
-#> * __log__DEBUG - set to yes to enable printing of debug messages and backtraces.
-#> * __log__BACKTRACE - set to yes to enable printing of backtraces.
+#> * `__log__DEBUG` - set to yes to enable printing of debug messages and backtraces.
+#> * `__log__BACKTRACE` - set to yes to enable printing of backtraces.
 
 #>>
-#>> Functions
+#>> ## FUNCTIONS
 
 #>>
-#>> * backtrace [INDEX] - display functions and source line numbers
-#>> starting from given index in stack trace, when debugging or back tracking is enabled.
+#>> * `backtrace [INDEX]` - display functions and source line numbers starting
+#>> from given index in stack trace, when debugging or back tracking is enabled.
 log::backtrace() {
   [ "${__log__DEBUG:-}" != "yes" -a "${__log__BACKTRACE:-}" != "yes" ] || {
     local BEGIN="${1:-1}" # Display line numbers starting from given index, e.g. to skip "log::backtrace" and "error" functions.
@@ -34,7 +36,7 @@ log::backtrace() {
 }
 
 #>>
-#>> * error MESAGE... - print error message and backtrace (if enabled).
+#>> * `error MESAGE...` - print error message and backtrace (if enabled).
 error() {
   if [ -t 2 ]
   then
@@ -49,7 +51,7 @@ error() {
 }
 
 #>>
-#>> * warn MESAGE... - print warning message and backtrace (if enabled).
+#>> * `warn MESAGE...` - print warning message and backtrace (if enabled).
 warn() {
   if [ -t 2 ]
   then
@@ -64,7 +66,7 @@ warn() {
 }
 
 #>>
-#>> * info MESAGE... - print info message.
+#>> * `info MESAGE...` - print info message.
 info() {
   if [ -t 1 ]
   then
@@ -78,13 +80,13 @@ info() {
 }
 
 #>>
-#>> * debug MESAGE... - print debug message, when debugging is enabled only.
+#>> * `debug MESAGE...` - print debug message, when debugging is enabled only.
 debug() {
  [ "${__log__DEBUG:-}" != yes ] || echo "[$__log__APP] DEBUG: ${*:-}"
 }
 
 #>>
-#>> * log::fatal LEVEL MESSAGE... - print a fatal-like LEVEL: MESSAGE to STDERR.
+#>> * `log::fatal LEVEL MESSAGE...` - print a fatal-like LEVEL: MESSAGE to STDERR.
 log::fatal() {
   local LEVEL="$1" ; shift
   if [ -t 2 ]
@@ -99,7 +101,7 @@ log::fatal() {
 }
 
 #>>
-#>> * log::error LEVEL MESSAGE... - print error-like LEVEL: MESSAGE to STDERR.
+#>> * `log::error LEVEL MESSAGE...` - print error-like LEVEL: MESSAGE to STDERR.
 log::error() {
   local LEVEL="$1" ; shift
   if [ -t 2 ]
@@ -114,7 +116,7 @@ log::error() {
 }
 
 #>>
-#>> * log::warn LEVEL MESSAGE... - print warning-like LEVEL: MESSAGE to STDERR.
+#>> * `log::warn LEVEL MESSAGE...` - print warning-like LEVEL: MESSAGE to STDERR.
 log::warn() {
   local LEVEL="${1:-WARN}" ; shift
   if [ -t 2 ]
@@ -129,7 +131,7 @@ log::warn() {
 }
 
 #>>
-#>> * log::info LEVEL MESSAGE... - print info-like LEVEL: MESSAGE to STDOUT.
+#>> * `log::info LEVEL MESSAGE...` - print info-like LEVEL: MESSAGE to STDOUT.
 log::info() {
   local LEVEL="${1:-INFO}" ; shift
   if [ -t 1 ]
@@ -144,7 +146,7 @@ log::info() {
 }
 
 #>>
-#>> * panic MESAGE... - print error message and backtrace, then exit with error code 1.
+#>> * `panic MESAGE...` - print error message and backtrace, then exit with error code 1.
 panic() {
   log::fatal "PANIC"  "${*:-}"
   log::enable_backtrace
@@ -153,7 +155,7 @@ panic() {
 }
 
 #>>
-#>> * unimplemented MESAGE... - print error message and backtrace, then exit with error code 42.
+#>> * `unimplemented MESAGE...` - print error message and backtrace, then exit with error code 42.
 unimplemented() {
   log::fatal "UNIMPLEMENTED" "${*:-}"
   log::enable_backtrace
@@ -163,7 +165,7 @@ unimplemented() {
 
 
 #>>
-#>> * todo MESAGE... - print todo message and backtrace.
+#>> * `todo MESAGE...` - print todo message and backtrace.
 todo() {
   log::warn "TODO" "${*:-}"
   local __log__BACKTRACE="yes"
@@ -171,7 +173,7 @@ todo() {
 }
 
 #>>
-#>> * dbg VARIABLE... - print name of variable and it content to stderr
+#>> * `dbg VARIABLE...` - print name of variable and it content to stderr
 dbg() {
   local __dbg_OUT=$( declare -p "$@" )
 
@@ -187,40 +189,33 @@ dbg() {
 }
 
 #>>
-#>> * log::enable_debug_mode - enable debug messages and stack traces.
+#>> * `log::enable_debug_mode` - enable debug messages and stack traces.
 log::enable_debug_mode() {
   __log__DEBUG="yes"
 }
 
 #>>
-#>> * log::disable_debug_mode - disable debug messages and stack traces.
+#>> * `log::disable_debug_mode` - disable debug messages and stack traces.
 log::disable_debug_mode() {
   __log__DEBUG="no"
 }
 
 #>>
-#>> * log::enable_backtrace - enable stack traces.
+#>> * `log::enable_backtrace` - enable stack traces.
 log::enable_backtrace() {
   __log__BACKTRACE="yes"
 }
 
 #>>
-#>> * log::disable_backtrace - disable stack traces.
+#>> * `log::disable_backtrace` - disable stack traces.
 log::disable_backtrace() {
   __log__BACKTRACE="no"
 }
 
 #>>
-#>> Notes:
-
+#>> ## NOTES
 #>>
-#>> If STDOUT is connected to tty, then info and info-like messages will be
-#>> printed with message level higlighted in green.
-
-#>>
-#>> If STDERR is connected to tty, then error and error-like messages will be
-#>> printed with message level higlighted in red.
-
-#>>
-#>> If STDERR is connected to tty, then warn and warn-like messages will be
-#>> printed with message level higlighted in yellow.
+#>> - If STDOUT is connected to tty, then
+#>>   * info and info-like messages will be printed with message level higlighted in green,
+#>>   * warn and warn-like messages will be printed with message level higlighted in yellow,
+#>>   * error and error-like messages will be printed with message level higlighted in red.

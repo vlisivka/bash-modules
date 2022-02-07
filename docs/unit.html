@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>unit</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      word-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">unit</h1>
+</header>
+<h2 id="name">NAME</h2>
+<p><code>unit</code> - functions for unit testing.</p>
+<h2 id="functions">FUNCTIONS</h2>
+<ul>
+<li><p><code>unit::assert_yes VALUE [MESSAGE]</code> - Show error message, when <code>VALUE</code> is not equal to <code>"yes"</code>.</p></li>
+<li><p><code>unit::assert_no VALUE [MESSAGE]</code> - Show error message, when <code>VALUE</code> is not equal to <code>"no"</code>.</p></li>
+<li><p><code>unit::assert_not_empty VALUE [MESSAGE]</code> - Show error message, when <code>VALUE</code> is empty.</p></li>
+<li><p><code>unit::assert_equal ACTUAL EXPECTED [MESSAGE]</code> - Show error message, when values are not equal.</p></li>
+<li><p><code>unit::assert_arrays_are_equal MESSAGE VALUE1... -- VALUE2...</code> - Show error message when arrays are not equal in size or content.</p></li>
+<li><p><code>unit::assert_not_equal ACTUAL_VALUE UNEXPECTED_VALUE [MESSAGE]</code> - Show error message, when values ARE equal.</p></li>
+<li><p><code>unit::assert MESSAGE TEST[...]</code> - Evaluate test and show error message when it returns non-zero exit code.</p></li>
+<li><p><code>unit::fail [MESSAGE]</code> - Show error message.</p></li>
+<li><p><code>unit::run_test_cases [OPTIONS] [--] [ARGUMENTS]</code> - Execute all functions with test* prefix in name in alphabetic order</p>
+<ul>
+<li>OPTIONS:
+<ul>
+<li><code>-t | --test TEST_CASE</code> - execute single test case,</li>
+<li><code>-q | --quiet</code> - do not print informational messages and dots,</li>
+<li><code>--debug</code> - enable stack traces.</li>
+</ul></li>
+<li>ARGUMENTS - All arguments, which are passed to run_test_cases, are passed then to <code>unit::set_up</code>, <code>unit::tear_down</code> and test cases using <code>ARGUMENTS</code> array, so you can parametrize your test cases. You can call <code>run_test_cases</code> more than once with different arguments. Use <code>"--"</code> to strictly separate arguments from options.</li>
+</ul></li>
+</ul>
+<p>After execution of <code>run_test_cases</code>, following variables will have value:</p>
+<ul>
+<li><code>NUMBER_OF_TEST_CASES</code> - total number of test cases executed,</li>
+<li><code>NUMBER_OF_FAILED_TEST_CASES</code> - number of failed test cases,</li>
+<li><code>FAILED_TEST_CASES</code> - names of functions of failed tests cases.</li>
+</ul>
+<p>If you want to ignore some test case, just prefix them with underscore, so <code>unit::run_test_cases</code> will not see them.</p>
+<p>If you want to run few subsets of test cases in one file, define each subset in it own subshell and execute <code>unit::run_test_cases</code> in each subshell.</p>
+<p>Each test case is executed in it own subshell, so you can call <code>exit</code> in the test case or assign variables without any effect on subsequent test cases.</p>
+<p><code>unit::run_test_cases</code> will also call <code>unit::set_up</code> and <code>unit::tear_down</code> functions before and after each test case. By default, they do nothing. Override them to do something useful.</p>
+<ul>
+<li><p><code>unit::set_up</code> - can set variables which are available for following test case and <code>tear_down</code>. It also can alter <code>ARGUMENTS</code> array. Test case and tear_down are executed in their own subshell, so they cannot change outer variables.</p></li>
+<li><p><code>unit::tear_down</code> is called first, before first set_up of first test case, to cleanup after possible failed run of previous test case. When it called for first time, <code>FIRST_TEAR_DOWN</code> variable with value <code>"yes"</code> is available.</p></li>
+</ul>
+<h2 id="notes">NOTES</h2>
+<p>All assert functions are executing <code>exit</code> instead of returning error code.</p>
+</body>
+</html>

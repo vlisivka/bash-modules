@@ -3,18 +3,23 @@
 # License: LGPL2+
 . import.sh log arguments
 
-#>>> settigngs - import settings from configuration files and configuration directories (AKA .d pattern).
+#>> ## NAME
+#>>
+#>>> `settigngs` - import settings from configuration files and configuration directories.
+#>> Also known as "configuration directory" pattern.
 
-#>> * settings::import [-e|--ext EXTENSION] FILE|DIRECTORY...
-#>
-#> Import settings (source them into current program as shell script) when
+#>>
+#>> ## FUNCTIONS
+
+#>> * `settings::import [-e|--ext EXTENSION] FILE|DIRECTORY...` -  Import settings
+#> (source them into current program as shell script) when
 #> file or directory exists. For directories, all files with given extension
-#> (".sh" by default) are imported, without recursion.
+#> (`".sh"` by default) are imported, without recursion.
 #>
-#> WARNING: this method is powerful, but unsafe, because user can put any shell
-#> command into the configuration file.
+#> **WARNING:** this method is powerful, but unsafe, because user can put any shell
+#> command into the configuration file, which will be executed by script.
 #>
-#> TODO: Do parsing instead of sourcing.
+#> **TODO:** implement file parsing instead of sourcing.
 settings::import() {
   local __settings_EXTENSION="sh"
   arguments::parse '-e|--ext)__settings_EXTENSION;String,Required' -- "$@" || panic "Cannot parse arguments."

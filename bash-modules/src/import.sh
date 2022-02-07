@@ -17,37 +17,36 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with bash-modules  If not, see <http://www.gnu.org/licenses/>.
 
-#> NAME
+#> ## NAME
 #>>
-#>>> import.sh - import bash modules into scripts or into interactive shell
+#>>> `import.sh` - import bash modules into scripts or into interactive shell
 #>
-#> SYNOPSIS:
+#> ## SYNOPSIS
 #>>
-#>>   In a scipt:
+#>> ### In a scipt:
 #>>
-#>>     . import.sh MODULE[...]             import module(s) into script or shell
+#>> * `. import.sh MODULE[...]`      - import module(s) into script or shell
+#>> * `source import.sh MODULE[...]` - same as above, but with `source` instead of `.`
 #>>
 #>>
-#>>   At command line:
+#>> ### At command line:
 #>>
-#>>     import.sh --help|-h                 print this help text
-#>>     import.sh --man                     show manual
-#>>     import.sh --list                    list modules with their path
-#>>     import.sh --summary|-s [MODULE...]  list module(s) with summary
-#>>     import.sh --usage|-u MODULE[...]    print module help text
-#>>     import.sh --doc|-d MODULE[...]      print module documentation
+#>> * `import.sh --help|-h`                - print this help text
+#>> * `import.sh --man`                    - show manual
+#>> * `import.sh --list`                   - list modules with their path
+#>> * `import.sh --summary|-s [MODULE...]` - list module(s) with summary
+#>> * `import.sh --usage|-u MODULE[...]`   - print module help text
+#>> * `import.sh --doc|-d MODULE[...]`     - print module documentation
 #>>
-#> DESCRIPTION
+#> ## DESCRIPTION
 #>
 #> Imports given module(s) into current shell.
 #>
-#> Use "import.sh --list" to print list of available modules.
+#> Use:
 #>
-#> Use "import.sh --summary" to print list of available modules with short
-#> description.
-#>
-#> Use "import.sh --usage MODULE[...]\" to print longer description of
-#> given module(s).
+#> * `import.sh --list` - to print list of available modules.
+#> * `import.sh --summary` - to print list of available modules with short description.
+#> * `import.sh --usage MODULE[...]` - to print longer description of given module(s).
 
 [ "${__IMPORT__DEFINED:-}" == "yes" ] || {
   __IMPORT__DEFINED="yes"
@@ -72,53 +71,61 @@
   fi
 
   #>
-  #> CONFIGURATION
+  #> ## CONFIGURATION
 
   #>
-  #> * BASH_MODULES_PATH - (variable with single path entry, at present time).
-  #> BASH_MODULES_PATH can contain multiple directories separated by ":".
+  #> * `BASH_MODULES_PATH` - (variable with single path entry, at present time).
+  #> `BASH_MODULES_PATH` can contain multiple directories separated by ":".
   #>
-  #> * __IMPORT__BASE_PATH - array with list of your own directories with modules,
-  #> which will be prepended to module search path. You can set __IMPORT__BASE_PATH array in
-  #> script at begining, in /etc/bash-modules/config.sh, or in ~/.config/bash-modules/config.sh file.
+  #> * `__IMPORT__BASE_PATH` - array with list of your own directories with modules,
+  #> which will be prepended to module search path. You can set `__IMPORT__BASE_PATH` array in
+  #> script at begining, in `/etc/bash-modules/config.sh`, or in `~/.config/bash-modules/config.sh` file.
   __IMPORT__BASE_PATH=( "${__BASH_MODULES_PATH_ARRAY[@]:+${__BASH_MODULES_PATH_ARRAY[@]}}" "${__IMPORT__BASE_PATH[@]:+${__IMPORT__BASE_PATH[@]}}" "/usr/share/bash-modules" )
   unset __BASH_MODULES_PATH_ARRAY
 
   #>
-  #> * /etc/bash-modules/config.sh - system wide configuration file.
+  #> * `/etc/bash-modules/config.sh` - system wide configuration file.
   #> WARNING: Code in this script will affect all scripts.
   #>
-  #> Example configration:
-  #>     # Enable stack trace printing for warnings and errors, like with --debug option:
+  #> ### Example configration file
+  #>
+  #> Put following snippet into `~/.config/bash-modules/config.sh` file:
+  #>
+  #>```bash
+  #>
+  #>     # Enable stack trace printing for warnings and errors,
+  #>     # like with --debug option:
   #>     __log__BACKTRACE=="yes"
   #>
   #>     # Add additional directory to module search path:
-  #>     BASH_MODULES_PATH="/usr/share/my-app-modules"
+  #>     BASH_MODULES_PATH="/home/user/my-bash-modules"
+  #>
+  #>```
   [ ! -s /etc/bash-modules/config.sh ] || source /etc/bash-modules/config.sh || {
     echo "[import.sh] WARN: Cannot import \"/etc/bash-modules/config.sh\" or an error in this file." >&2
   }
 
   #>
-  #> * ~/.config/bash-modules/config.sh - user configuration file.
-  #> WARNING: Code in this script will affect all user scripts.
+  #> * `~/.config/bash-modules/config.sh` - user configuration file.
+  #> **WARNING:** Code in this script will affect all user scripts.
   [ ! -s "$HOME/.config/bash-modules/config.sh" ] || source "$HOME/.config/bash-modules/config.sh" || {
     echo "[import.sh] WARN: Cannot import \"$HOME/.config/bash-modules/config.sh\" or an error in this file." >&2
   }
 
   #>
-  #> VARIABLES
+  #> ## VARIABLES
 
   #>
-  #> * IMPORT__BIN_FILE -  main file name, e.g. "/usr/bin/my-script".
+  #> * `IMPORT__BIN_FILE` -  script main file name, e.g. `/usr/bin/my-script`, as in `$0` variable in main file.
   __IMPORT_INDEX="${#BASH_SOURCE[*]}"
   IMPORT__BIN_FILE="${BASH_SOURCE[__IMPORT_INDEX-1]}"
   unset __IMPORT_INDEX
 
   #>
-  #> FUNCTIONS
+  #> ## FUNCTIONS
 
   #>
-  #> * import::import_module MODULE - import single module only.
+  #> * `import::import_module MODULE` - import single module only.
   import::import_module() {
     local __MODULE="${1:?Argument is required: module name, without path and without .sh extension, e.g. "log".}"
 
@@ -144,7 +151,7 @@
   }
 
   #>
-  #> * import::import_modules MODULE[...] - import module(s).
+  #> * `import::import_modules MODULE[...]` - import module(s).
   import::import_modules() {
     local __MODULE __ERROR_CODE=0
     for __MODULE in "$@"
@@ -155,8 +162,8 @@
   }
 
   #>
-  #> * import::list_modules FUNC [MODULE]... - print various information about module(s).
-  #> FUNC is a function to call on each module. Function will be called with two arguments:
+  #> * `import::list_modules FUNC [MODULE]...` - print various information about module(s).
+  #> `FUNC` is a function to call on each module. Function will be called with two arguments:
   #> path to module and module name.
   #> Rest of arguments are module names. No arguments means all modules.
   import::list_modules() {
@@ -221,10 +228,14 @@
   }
 
   #>
-  #> * import::show_documentation LEVEL PARSER FILE - print module built-in documentation.
+  #> * `import::show_documentation LEVEL PARSER FILE` - print module built-in documentation.
   #> This function scans given file for lines with "#>" prefix (or given prefix) and prints them to stdout with prefix stripped.
-  #> LEVEL - 1 - for manual (#> and #>> and #>>>), 2 - for usage (#>> and #>>>), 3 - for one line summary (#>>>), or arbitrary prefix, e.g. "##".
-  #> FILE - path to file with built-in documentation.
+  #>   * `LEVEL` - documentation level (one line summary, usage, full manual):
+  #>      - 1 - for manual (`#>` and `#>>` and `#>>>`),
+  #>      - 2 - for usage (`#>>` and `#>>>`),
+  #>      - 3 - for one line summary (`#>>>`),
+  #>      - or arbitrary prefix, e.g. `##`.
+  #>   * `FILE` - path to file with built-in documentation.
   import::show_documentation() {
     local LEVEL="${1:?ERROR: Argument is required: level of documentation: 1 for all documentation, 2 for usage, 3 for one line summary.}"
     local FILE="${2:?ERRROR: Argument is required: file to parse documentation from.}"
