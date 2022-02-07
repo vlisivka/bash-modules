@@ -236,6 +236,7 @@
 </ul></li>
 </ul>
 <h1 id="bash-modules">bash-modules</h1>
+<p>See documentation in <a href="http://vlisivka.github.io/bash-modules/">HTML format</a>.</p>
 <h2 id="simple-module-system-for-bash.">Simple module system for bash.</h2>
 <p>Module loader and collection of modules for bash scripts, to quickly write safe bash scripts in unofficial bash strict mode.</p>
 <p>Currently, bash-modules project is targetting users of Linux OS, such as system administrators.</p>
@@ -408,7 +409,7 @@ Implement a package manager for modules or integrate with an existing PM.</li>
 [chain-of-errors.sh] ERROR: Cannot perform foo.
 [chain-of-errors.sh] ERROR: Cannot perform bar.</code></pre>
 <h3 id="panic">Panic</h3>
-<p>The second strategy is just to panic, when error happened, and abort script. Backtrace is printed automatically in this case.</p>
+<p>The second strategy is just to panic, when error happened, and abort script. Stacktrace is printed automatically in this case.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span> import.sh strict log</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">xxx</span> <span class="kw">||</span> <span class="ex">panic</span> <span class="st">&quot;Cannot execute xxx.&quot;</span></span></code></pre></div>

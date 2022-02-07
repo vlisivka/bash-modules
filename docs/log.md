@@ -4,17 +4,17 @@
 
 ## VARIABLES
 * `__log__APP` - name of main file without path.
-* `__log__DEBUG` - set to yes to enable printing of debug messages and backtraces.
-* `__log__BACKTRACE` - set to yes to enable printing of backtraces.
+* `__log__DEBUG` - set to yes to enable printing of debug messages and stacktraces.
+* `__log__STACKTRACE` - set to yes to enable printing of stacktraces.
 
 ## FUNCTIONS
 
-* `backtrace [INDEX]` - display functions and source line numbers starting
+* `stacktrace [INDEX]` - display functions and source line numbers starting
 from given index in stack trace, when debugging or back tracking is enabled.
 
-* `error MESAGE...` - print error message and backtrace (if enabled).
+* `error MESAGE...` - print error message and stacktrace (if enabled).
 
-* `warn MESAGE...` - print warning message and backtrace (if enabled).
+* `warn MESAGE...` - print warning message and stacktrace (if enabled).
 
 * `info MESAGE...` - print info message.
 
@@ -28,11 +28,11 @@ from given index in stack trace, when debugging or back tracking is enabled.
 
 * `log::info LEVEL MESSAGE...` - print info-like LEVEL: MESSAGE to STDOUT.
 
-* `panic MESAGE...` - print error message and backtrace, then exit with error code 1.
+* `panic MESAGE...` - print error message and stacktrace, then exit with error code 1.
 
-* `unimplemented MESAGE...` - print error message and backtrace, then exit with error code 42.
+* `unimplemented MESAGE...` - print error message and stacktrace, then exit with error code 42.
 
-* `todo MESAGE...` - print todo message and backtrace.
+* `todo MESAGE...` - print todo message and stacktrace.
 
 * `dbg VARIABLE...` - print name of variable and it content to stderr
 
@@ -40,9 +40,9 @@ from given index in stack trace, when debugging or back tracking is enabled.
 
 * `log::disable_debug_mode` - disable debug messages and stack traces.
 
-* `log::enable_backtrace` - enable stack traces.
+* `log::enable_stacktrace` - enable stack traces.
 
-* `log::disable_backtrace` - disable stack traces.
+* `log::disable_stacktrace` - disable stack traces.
 
 ## NOTES
 

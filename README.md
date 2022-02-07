@@ -16,6 +16,8 @@
 bash-modules
 ============
 
+See documentation in [HTML format](http://vlisivka.github.io/bash-modules/).
+
 ## Simple module system for bash.
 
 Module loader and collection of modules for bash scripts, to quickly write safe bash scripts in unofficial bash strict mode.

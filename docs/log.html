@@ -157,28 +157,28 @@
 <h2 id="variables">VARIABLES</h2>
 <ul>
 <li><code>__log__APP</code> - name of main file without path.</li>
-<li><code>__log__DEBUG</code> - set to yes to enable printing of debug messages and backtraces.</li>
-<li><code>__log__BACKTRACE</code> - set to yes to enable printing of backtraces.</li>
+<li><code>__log__DEBUG</code> - set to yes to enable printing of debug messages and stacktraces.</li>
+<li><code>__log__STACKTRACE</code> - set to yes to enable printing of stacktraces.</li>
 </ul>
 <h2 id="functions">FUNCTIONS</h2>
 <ul>
-<li><p><code>backtrace [INDEX]</code> - display functions and source line numbers starting from given index in stack trace, when debugging or back tracking is enabled.</p></li>
-<li><p><code>error MESAGE...</code> - print error message and backtrace (if enabled).</p></li>
-<li><p><code>warn MESAGE...</code> - print warning message and backtrace (if enabled).</p></li>
+<li><p><code>stacktrace [INDEX]</code> - display functions and source line numbers starting from given index in stack trace, when debugging or back tracking is enabled.</p></li>
+<li><p><code>error MESAGE...</code> - print error message and stacktrace (if enabled).</p></li>
+<li><p><code>warn MESAGE...</code> - print warning message and stacktrace (if enabled).</p></li>
 <li><p><code>info MESAGE...</code> - print info message.</p></li>
 <li><p><code>debug MESAGE...</code> - print debug message, when debugging is enabled only.</p></li>
 <li><p><code>log::fatal LEVEL MESSAGE...</code> - print a fatal-like LEVEL: MESSAGE to STDERR.</p></li>
 <li><p><code>log::error LEVEL MESSAGE...</code> - print error-like LEVEL: MESSAGE to STDERR.</p></li>
 <li><p><code>log::warn LEVEL MESSAGE...</code> - print warning-like LEVEL: MESSAGE to STDERR.</p></li>
 <li><p><code>log::info LEVEL MESSAGE...</code> - print info-like LEVEL: MESSAGE to STDOUT.</p></li>
-<li><p><code>panic MESAGE...</code> - print error message and backtrace, then exit with error code 1.</p></li>
-<li><p><code>unimplemented MESAGE...</code> - print error message and backtrace, then exit with error code 42.</p></li>
-<li><p><code>todo MESAGE...</code> - print todo message and backtrace.</p></li>
+<li><p><code>panic MESAGE...</code> - print error message and stacktrace, then exit with error code 1.</p></li>
+<li><p><code>unimplemented MESAGE...</code> - print error message and stacktrace, then exit with error code 42.</p></li>
+<li><p><code>todo MESAGE...</code> - print todo message and stacktrace.</p></li>
 <li><p><code>dbg VARIABLE...</code> - print name of variable and it content to stderr</p></li>
 <li><p><code>log::enable_debug_mode</code> - enable debug messages and stack traces.</p></li>
 <li><p><code>log::disable_debug_mode</code> - disable debug messages and stack traces.</p></li>
-<li><p><code>log::enable_backtrace</code> - enable stack traces.</p></li>
-<li><p><code>log::disable_backtrace</code> - disable stack traces.</p></li>
+<li><p><code>log::enable_stacktrace</code> - enable stack traces.</p></li>
+<li><p><code>log::disable_stacktrace</code> - disable stack traces.</p></li>
 </ul>
 <h2 id="notes">NOTES</h2>
 <ul>

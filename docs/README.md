@@ -16,6 +16,8 @@
 bash-modules
 ============
 
+See documentation in [HTML format](http://vlisivka.github.io/bash-modules/).
+
 ## Simple module system for bash.
 
 Module loader and collection of modules for bash scripts, to quickly write safe bash scripts in unofficial bash strict mode.
@@ -231,7 +233,7 @@ $ ./chain-of-errors.sh
 
 ### Panic
 
-The second strategy is just to panic, when error happened, and abort script. Backtrace is printed automatically in this case.
+The second strategy is just to panic, when error happened, and abort script. Stacktrace is printed automatically in this case.
 
 ```bash
 #!/bin/bash
