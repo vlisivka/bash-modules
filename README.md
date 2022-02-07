@@ -231,7 +231,7 @@ $ ./chain-of-errors.sh
 
 ### Panic
 
-The second strategy is just to panic, when error happened, and abort script. Backtrace is printed automatically in this case.
+The second strategy is just to panic, when error happened, and abort script. Stacktrace is printed automatically in this case.
 
 ```bash
 #!/bin/bash

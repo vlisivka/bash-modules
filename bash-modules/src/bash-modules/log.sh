@@ -14,18 +14,18 @@
 #> * `__log__APP` - name of main file without path.
 __log__APP="${IMPORT__BIN_FILE##*/}" # Strip everything before last "/"
 
-#> * `__log__DEBUG` - set to yes to enable printing of debug messages and backtraces.
-#> * `__log__BACKTRACE` - set to yes to enable printing of backtraces.
+#> * `__log__DEBUG` - set to yes to enable printing of debug messages and stacktraces.
+#> * `__log__STACKTRACE` - set to yes to enable printing of stacktraces.
 
 #>>
 #>> ## FUNCTIONS
 
 #>>
-#>> * `backtrace [INDEX]` - display functions and source line numbers starting
+#>> * `stacktrace [INDEX]` - display functions and source line numbers starting
 #>> from given index in stack trace, when debugging or back tracking is enabled.
-log::backtrace() {
-  [ "${__log__DEBUG:-}" != "yes" -a "${__log__BACKTRACE:-}" != "yes" ] || {
-    local BEGIN="${1:-1}" # Display line numbers starting from given index, e.g. to skip "log::backtrace" and "error" functions.
+log::stacktrace() {
+  [ "${__log__DEBUG:-}" != "yes" -a "${__log__STACKTRACE:-}" != "yes" ] || {
+    local BEGIN="${1:-1}" # Display line numbers starting from given index, e.g. to skip "log::stacktrace" and "error" functions.
     local I
     for(( I=BEGIN; I<${#FUNCNAME[@]}; I++ ))
     do
@@ -36,7 +36,7 @@ log::backtrace() {
 }
 
 #>>
-#>> * `error MESAGE...` - print error message and backtrace (if enabled).
+#>> * `error MESAGE...` - print error message and stacktrace (if enabled).
 error() {
   if [ -t 2 ]
   then
@@ -47,11 +47,11 @@ error() {
   else
     echo "[$__log__APP] ERROR: ${*:-}" >&2
   fi
-  log::backtrace 2
+  log::stacktrace 2
 }
 
 #>>
-#>> * `warn MESAGE...` - print warning message and backtrace (if enabled).
+#>> * `warn MESAGE...` - print warning message and stacktrace (if enabled).
 warn() {
   if [ -t 2 ]
   then
@@ -62,7 +62,7 @@ warn() {
   else
     echo "[$__log__APP] WARN: ${*:-}" >&2
   fi
-  log::backtrace 2
+  log::stacktrace 2
 }
 
 #>>
@@ -146,30 +146,30 @@ log::info() {
 }
 
 #>>
-#>> * `panic MESAGE...` - print error message and backtrace, then exit with error code 1.
+#>> * `panic MESAGE...` - print error message and stacktrace, then exit with error code 1.
 panic() {
   log::fatal "PANIC"  "${*:-}"
-  log::enable_backtrace
-  log::backtrace 2
+  log::enable_stacktrace
+  log::stacktrace 2
   exit 1
 }
 
 #>>
-#>> * `unimplemented MESAGE...` - print error message and backtrace, then exit with error code 42.
+#>> * `unimplemented MESAGE...` - print error message and stacktrace, then exit with error code 42.
 unimplemented() {
   log::fatal "UNIMPLEMENTED" "${*:-}"
-  log::enable_backtrace
-  log::backtrace 2
+  log::enable_stacktrace
+  log::stacktrace 2
   exit 42
 }
 
 
 #>>
-#>> * `todo MESAGE...` - print todo message and backtrace.
+#>> * `todo MESAGE...` - print todo message and stacktrace.
 todo() {
   log::warn "TODO" "${*:-}"
-  local __log__BACKTRACE="yes"
-  log::backtrace 2
+  local __log__STACKTRACE="yes"
+  log::stacktrace 2
 }
 
 #>>
@@ -201,15 +201,15 @@ log::disable_debug_mode() {
 }
 
 #>>
-#>> * `log::enable_backtrace` - enable stack traces.
-log::enable_backtrace() {
-  __log__BACKTRACE="yes"
+#>> * `log::enable_stacktrace` - enable stack traces.
+log::enable_stacktrace() {
+  __log__STACKTRACE="yes"
 }
 
 #>>
-#>> * `log::disable_backtrace` - disable stack traces.
-log::disable_backtrace() {
-  __log__BACKTRACE="no"
+#>> * `log::disable_stacktrace` - disable stack traces.
+log::disable_stacktrace() {
+  __log__STACKTRACE="no"
 }
 
 #>>

@@ -95,7 +95,7 @@
   #>
   #>     # Enable stack trace printing for warnings and errors,
   #>     # like with --debug option:
-  #>     __log__BACKTRACE=="yes"
+  #>     __log__STACKTRACE=="yes"
   #>
   #>     # Add additional directory to module search path:
   #>     BASH_MODULES_PATH="/home/user/my-bash-modules"

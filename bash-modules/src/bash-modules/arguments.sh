@@ -126,7 +126,7 @@ arguments::generate_parser() {
       *')'*';'*) ;; # OK
       *)
         error "Incorrect syntax of option: \"$OPTION_DESCRIPTION\". Option syntax: -S|--FULL)VARIABLE;TYPE[,CHECK]... . Example: '-f|--foo)FOO;String,Required'."
-        __log__DEBUG=yes; backtrace
+        __log__DEBUG=yes; stacktrace
         return 1
       ;;
     esac
