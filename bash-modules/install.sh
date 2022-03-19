@@ -26,7 +26,7 @@ main() {
 
   # Update hardcoded path to directory with modules
   sed -i "s@/usr/share/bash-modules@$MODULES_DIR@g" "$BIN_DIR/import.sh" \
-    || { echo "ERROR: Canno replace path to modules directory in \"$BIN_DIR/import.sh\" from \"/usr/share/bash-modules\" to \"$MODULES_DIR\"." >&2 ; return 1; }
+    || { echo "ERROR: Cannot replace path to modules directory in \"$BIN_DIR/import.sh\" from \"/usr/share/bash-modules\" to \"$MODULES_DIR\"." >&2 ; return 1; }
 }
 
 while (( $# > 0 ))
@@ -68,7 +68,7 @@ OPTIONS
 
   -b|--bin-dir DIR
 
-      Directory to store imort.sh script. Default value is \"@PREFIX/bin\".
+      Directory to store import.sh script. Default value is \"@PREFIX/bin\".
 
 "
     exit 0
