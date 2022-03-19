@@ -1,14 +1,14 @@
 #!/bin/bash
 . import.sh strict log arguments
 
-# Name of someone to grit
+# Name of someone to greet
 NAME="${HW_NAME:-world}"
 
-# Number of times to grit someone
-TIMES_TO_GRIT=1
+# Number of times to greet someone
+TIMES_TO_GREET=1
 
 hw() {
-  local name="${1:?ERROR: Argument is required: a name to grit.}"
+  local name="${1:?ERROR: Argument is required: a name to greet.}"
 
   info "Hello, $name!"
 
@@ -17,7 +17,7 @@ hw() {
 
 main() {
   local i
-  for((i=0; i<TIMES_TO_GRIT; i++))
+  for((i=0; i<TIMES_TO_GREET; i++))
   do
     hw "$NAME" || panic "Cannot greet \"$NAME\"."
   done
@@ -25,7 +25,7 @@ main() {
 
 arguments::parse \
     '-n|--name)NAME;String,Required' \
-    '-m|--more)TIMES_TO_GRIT;Incremental,((TIMES_TO_GRIT<=3))' \
+    '-m|--more)TIMES_TO_GREET;Incremental,((TIMES_TO_GREET<=3))' \
     -- "$@" || panic "Cannot parse arguments."
 
 main "${ARGUMENTS[@]}" || exit $?
@@ -43,7 +43,7 @@ main "${ARGUMENTS[@]}" || exit $?
 #>>
 #> Environment variables:
 #>
-#> HW_NAME - name of someone to grit. Default value: "world".
+#> HW_NAME - name of someone to greet. Default value: "world".
 #>
 #> Examples:
 #>   * ./hw.sh --name user
