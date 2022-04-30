@@ -112,6 +112,17 @@ test_import_of_module_from_subdir() {
   . import.sh subdir/an_empty_mod || panic "Cannot import module subdir/an_empty_mod."
 }
 
+test_import_of_module_with_bad_symbols() {
+
+  # Create empty "module" with bad symbols in bame in the directory
+  echo "# An empty module" > "$DIR/a-b@d-module.sh"
+  echo "# An empty module" > "$DIR/[]{}!@#\$%^&*()=+~\`\\,?|'\"-.sh"
+
+  # Try to import it
+  . import.sh "a-b@d-module" || panic "Cannot import module \"a-b@d-module\"."
+  . import.sh "[]{}!@#\$%^&*()=+~\`\\,?|'\"-" || panic "Cannot import module \"[]{}!@#\$%^&*()=+~\`\\,?|'\\\"-\"."
+}
+
 test_multiple_dirs_in_bash_module_path() {
   local subdir1="$DIR/subdir1"
   local subdir2="$DIR/subdir2"

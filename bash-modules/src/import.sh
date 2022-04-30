@@ -135,8 +135,8 @@
       [ -f "$__PATH/$__MODULE.sh" ] || continue
 
       # Don't import module twice, to avoid loops.
-      # Replace "/" in the module name by "_".
-      local -n __IMPORT_MODULE_DEFINED="__${__MODULE//\//_}__DEFINED" # Variable reference
+      # Replace some special symbols in the module name by "_".
+      local -n __IMPORT_MODULE_DEFINED="__${__MODULE//[\[\]\{\}\/!@#$%^&*()=+~\`\\,?|\'\"-]/_}__DEFINED" # Variable reference
       [ "${__IMPORT_MODULE_DEFINED:-}" != "yes" ] || return 0 # Already imported
       __IMPORT_MODULE_DEFINED="yes"
       unset -n __IMPORT_MODULE_DEFINED # Unset reference
