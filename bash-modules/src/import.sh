@@ -67,19 +67,22 @@
     __split_by_delimiter __BASH_MODULES_PATH_ARRAY ':' "${BASH_MODULES_PATH:+$BASH_MODULES_PATH}"
     unset -f __split_by_delimiter
   else
-    __BASH_MODULES_PATH_ARRAY=( "${BASH_MODULES_PATH:+$BASH_MODULES_PATH}" )
+    if [[ -n "${BASH_MODULES_PATH:-}" ]]; then
+      __BASH_MODULES_PATH_ARRAY=( "$BASH_MODULES_PATH" )
+    else
+      __BASH_MODULES_PATH_ARRAY=( )
+    fi
   fi
 
   #>
   #> ## CONFIGURATION
 
   #>
-  #> * `BASH_MODULES_PATH` - (variable with single path entry, at present time).
-  #> `BASH_MODULES_PATH` can contain multiple directories separated by ":".
-  #>
-  #> * `__IMPORT__BASE_PATH` - array with list of your own directories with modules,
+  #> * `BASH_MODULES_PATH` - ':' separated list of your own directories with modules,
   #> which will be prepended to module search path. You can set `__IMPORT__BASE_PATH` array in
   #> script at begining, in `/etc/bash-modules/config.sh`, or in `~/.config/bash-modules/config.sh` file.
+  #>
+  #> * `__IMPORT__BASE_PATH` - array with list of directories for module search. It's reserved for internal use by bash-modules.
   __IMPORT__BASE_PATH=( "${__BASH_MODULES_PATH_ARRAY[@]:+${__BASH_MODULES_PATH_ARRAY[@]}}" "${__IMPORT__BASE_PATH[@]:+${__IMPORT__BASE_PATH[@]}}" "/usr/share/bash-modules" )
   unset __BASH_MODULES_PATH_ARRAY
 
