@@ -146,7 +146,7 @@ test_that_import_path_contains_no_empty_element_by_default() {
   # Check content of module lookup path array
   local output=$(dbg __IMPORT__BASE_PATH 2>&1)
   [[ "$output" == "[test_import.sh] DBG: __IMPORT__BASE_PATH=([0]=\"/usr/share/bash-modules\")" ]] \
-    || panic "Unexpected value of __IMPORT__BASE_PATH: $out"
+    || panic "Unexpected value of __IMPORT__BASE_PATH: $output"
 }
 
 test_module_list() {
