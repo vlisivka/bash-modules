@@ -31,12 +31,11 @@ Use:
 
 ## CONFIGURATION
 
-* `BASH_MODULES_PATH` - (variable with single path entry, at present time).
-`BASH_MODULES_PATH` can contain multiple directories separated by ":".
-
-* `__IMPORT__BASE_PATH` - array with list of your own directories with modules,
+* `BASH_MODULES_PATH` - ':' separated list of your own directories with modules,
 which will be prepended to module search path. You can set `__IMPORT__BASE_PATH` array in
 script at begining, in `/etc/bash-modules/config.sh`, or in `~/.config/bash-modules/config.sh` file.
+
+* `__IMPORT__BASE_PATH` - array with list of directories for module search. It's reserved for internal use by bash-modules.
 
 * `/etc/bash-modules/config.sh` - system wide configuration file.
 WARNING: Code in this script will affect all scripts.

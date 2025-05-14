@@ -7,9 +7,6 @@
   <title>TODO</title>
   <style>
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
-      font-size: 20px;
       color: #1a1a1a;
       background-color: #fdfdfd;
     }
@@ -21,17 +18,23 @@
       padding-top: 50px;
       padding-bottom: 50px;
       hyphens: auto;
-      word-wrap: break-word;
+      overflow-wrap: break-word;
       text-rendering: optimizeLegibility;
       font-kerning: normal;
     }
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 1em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
       }
     }
     @media print {
+      html {
+        background-color: white;
+      }
       body {
         background-color: transparent;
         color: black;
@@ -81,9 +84,10 @@
       color: #606060;
     }
     code {
-      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
+      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -92,6 +96,7 @@
     pre code {
       padding: 0;
       overflow: visible;
+      overflow-wrap: normal;
     }
     .sourceCode {
      background-color: transparent;
@@ -133,15 +138,29 @@
     #TOC li {
       list-style: none;
     }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
     #TOC a:not(:hover) {
       text-decoration: none;
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <!--[if lt IE 9]>
@@ -153,76 +172,75 @@
 <h1 class="title">TODO</h1>
 </header>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Create test case for import.sh.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Create test case for documentation parser.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Create test case for install.sh script.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Add support for installation to a custom directory.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Add support for installation to HOME or HOME/.local.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Add datetime module</li>
-<li><input type="checkbox" disabled="" checked="" />
-Fix timestamped_log to use bash built-in for date instead of date command.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Move logic to wrap functions from timestamped_log to separate module.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Update TOC in top README.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Update examples in README.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Release version 4.0.0beta.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Ask other bash-scripters for peer review.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Publish an article at linux.org.ua.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Install to XDG dir or HOME/.local, when install run by user.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Install to /usr/local by default, when run by root.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Update path to modules and configuration in import.sh during installation.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Add support for configuration file in other places than /etc.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Add an Install section to README.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Add dispatch function.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Kill useless cat.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Update help function to support arbitrary prefixes for built-in documentation.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Generate documentation in markdown format and convert it to HTML.</li>
-<li><input type="checkbox" disabled="" />
-Formalize syntax for classes/objects: class::static_method, class.object_method self.</li>
-<li><input type="checkbox" disabled="" />
-Release version 4.0.</li>
-<li><input type="checkbox" disabled="" />
-Publish an article in Fedora Magazine.</li>
-<li><input type="checkbox" disabled="" />
-Report bug in bash 5.1.0.</li>
-<li><input type="checkbox" disabled="" />
-Ask bash developers for strict mode support, like in zsh, because it’s critical for this project.</li>
-<li><input type="checkbox" disabled="" />
-Use realpath instead of readlink -f, when possible.</li>
-<li><input type="checkbox" disabled="" />
-Write a package manager for bash: bum, for strict bash code only.</li>
-<li><input type="checkbox" disabled="" />
-SPDX-License-Identifier: LGPL-2.1-or-later</li>
-<li><input type="checkbox" disabled="" />
-Add <strong>END</strong> function, which will just exit, and support for line delimited built-in help, like in perl.</li>
-<li><input type="checkbox" disabled="" />
-Write an markdown parser for terminal, to show built-in manual with colors?</li>
-<li><input type="checkbox" disabled="" />
-Add path module.</li>
-<li><input type="checkbox" disabled="" />
-Add lock module.</li>
-<li><input type="checkbox" disabled="" />
-Add is module.</li>
+<li><label><input type="checkbox" checked="" />Create test case for
+import.sh.</label></li>
+<li><label><input type="checkbox" checked="" />Create test case for
+documentation parser.</label></li>
+<li><label><input type="checkbox" checked="" />Create test case for
+install.sh script.</label></li>
+<li><label><input type="checkbox" checked="" />Add support for
+installation to a custom directory.</label></li>
+<li><label><input type="checkbox" checked="" />Add support for
+installation to HOME or HOME/.local.</label></li>
+<li><label><input type="checkbox" checked="" />Add datetime
+module</label></li>
+<li><label><input type="checkbox" checked="" />Fix timestamped_log to
+use bash built-in for date instead of date command.</label></li>
+<li><label><input type="checkbox" checked="" />Move logic to wrap
+functions from timestamped_log to separate module.</label></li>
+<li><label><input type="checkbox" checked="" />Update TOC in top
+README.</label></li>
+<li><label><input type="checkbox" checked="" />Update examples in
+README.</label></li>
+<li><label><input type="checkbox" checked="" />Release version
+4.0.0beta.</label></li>
+<li><label><input type="checkbox" checked="" />Ask other bash-scripters
+for peer review.</label></li>
+<li><label><input type="checkbox" checked="" />Publish an article at
+linux.org.ua.</label></li>
+<li><label><input type="checkbox" checked="" />Install to XDG dir or
+HOME/.local, when install run by user.</label></li>
+<li><label><input type="checkbox" checked="" />Install to /usr/local by
+default, when run by root.</label></li>
+<li><label><input type="checkbox" checked="" />Update path to modules
+and configuration in import.sh during installation.</label></li>
+<li><label><input type="checkbox" checked="" />Add support for
+configuration file in other places than /etc.</label></li>
+<li><label><input type="checkbox" checked="" />Add an Install section to
+README.</label></li>
+<li><label><input type="checkbox" checked="" />Add dispatch
+function.</label></li>
+<li><label><input type="checkbox" checked="" />Kill useless
+cat.</label></li>
+<li><label><input type="checkbox" checked="" />Update help function to
+support arbitrary prefixes for built-in documentation.</label></li>
+<li><label><input type="checkbox" checked="" />Generate documentation in
+markdown format and convert it to HTML.</label></li>
+<li><label><input type="checkbox" />Formalize syntax for
+classes/objects: class::static_method, class.object_method
+self.</label></li>
+<li><label><input type="checkbox" />Release version 4.0.</label></li>
+<li><label><input type="checkbox" />Publish an article in Fedora
+Magazine.</label></li>
+<li><label><input type="checkbox" />Report bug in bash
+5.1.0.</label></li>
+<li><label><input type="checkbox" />Ask bash developers for strict mode
+support, like in zsh, because it’s critical for this
+project.</label></li>
+<li><label><input type="checkbox" />Use realpath instead of readlink -f,
+when possible.</label></li>
+<li><label><input type="checkbox" />Write a package manager for bash:
+bum, for strict bash code only.</label></li>
+<li><label><input type="checkbox" />SPDX-License-Identifier:
+LGPL-2.1-or-later</label></li>
+<li><label><input type="checkbox" />Add <strong>END</strong> function,
+which will just exit, and support for line delimited built-in help, like
+in perl.</label></li>
+<li><label><input type="checkbox" />Write an markdown parser for
+terminal, to show built-in manual with colors?</label></li>
+<li><label><input type="checkbox" />Add path module.</label></li>
+<li><label><input type="checkbox" />Add lock module.</label></li>
+<li><label><input type="checkbox" />Add is module.</label></li>
 </ul>
 </body>
 </html>

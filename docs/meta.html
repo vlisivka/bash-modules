@@ -7,9 +7,6 @@
   <title>meta</title>
   <style>
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
-      font-size: 20px;
       color: #1a1a1a;
       background-color: #fdfdfd;
     }
@@ -21,17 +18,23 @@
       padding-top: 50px;
       padding-bottom: 50px;
       hyphens: auto;
-      word-wrap: break-word;
+      overflow-wrap: break-word;
       text-rendering: optimizeLegibility;
       font-kerning: normal;
     }
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 1em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
       }
     }
     @media print {
+      html {
+        background-color: white;
+      }
       body {
         background-color: transparent;
         color: black;
@@ -81,9 +84,10 @@
       color: #606060;
     }
     code {
-      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
+      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -92,6 +96,7 @@
     pre code {
       padding: 0;
       overflow: visible;
+      overflow-wrap: normal;
     }
     .sourceCode {
      background-color: transparent;
@@ -133,15 +138,29 @@
     #TOC li {
       list-style: none;
     }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
     #TOC a:not(:hover) {
       text-decoration: none;
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <!--[if lt IE 9]>
@@ -156,12 +175,27 @@
 <p><code>meta</code> - functions for working with bash functions.</p>
 <h2 id="functions">FUNCTIONS</h2>
 <ul>
-<li><p><code>meta::copy_function FUNCTION_NAME NEW_FUNCTION_PREFIX</code> - copy function to new function with prefix in name. Create copy of function with new prefix. Old function can be redefined or <code>unset -f</code>.</p></li>
-<li><p><code>meta::wrap BEFORE AFTER FUNCTION_NAME[...]</code> - wrap function. Create wrapper for a function(s). Execute given commands before and after each function. Original function is available as meta::orig_FUNCTION_NAME.</p></li>
-<li><p><code>meta::functions_with_prefix PREFIX</code> - print list of functions with given prefix.</p></li>
-<li><p><code>meta::is_function FUNC_NAME</code> Checks is given name corresponds to a function.</p></li>
-<li><p><code>meta::dispatch PREFIX COMMAND [ARGUMENTS...]</code> - execute function <code>PREFIX__COMMAND [ARGUMENTS]</code></p>
-<p>For example, it can be used to execute functions (commands) by name, e.g. <code>main() { meta::dispatch command__ "$@" ; }</code>, when called as <code>man hw world</code> will execute <code>command_hw "$world"</code>. When command handler is not found, dispatcher will try to call <code>PREFIX__DEFAULT</code> function instead, or return error code when defaulf handler is not found.</p></li>
+<li><p><code>meta::copy_function FUNCTION_NAME NEW_FUNCTION_PREFIX</code>
+- copy function to new function with prefix in name. Create copy of
+function with new prefix. Old function can be redefined or
+<code>unset -f</code>.</p></li>
+<li><p><code>meta::wrap BEFORE AFTER FUNCTION_NAME[...]</code> - wrap
+function. Create wrapper for a function(s). Execute given commands
+before and after each function. Original function is available as
+meta::orig_FUNCTION_NAME.</p></li>
+<li><p><code>meta::functions_with_prefix PREFIX</code> - print list of
+functions with given prefix.</p></li>
+<li><p><code>meta::is_function FUNC_NAME</code> Checks is given name
+corresponds to a function.</p></li>
+<li><p><code>meta::dispatch PREFIX COMMAND [ARGUMENTS...]</code> -
+execute function <code>PREFIX__COMMAND [ARGUMENTS]</code></p>
+<p>For example, it can be used to execute functions (commands) by name,
+e.g. <code>main() { meta::dispatch command__ "$@" ; }</code>, when
+called as <code>man hw world</code> will execute
+<code>command_hw "$world"</code>. When command handler is not found,
+dispatcher will try to call <code>PREFIX__DEFAULT</code> function
+instead, or return error code when defaulf handler is not
+found.</p></li>
 </ul>
 </body>
 </html>
