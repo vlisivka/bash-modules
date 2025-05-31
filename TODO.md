@@ -20,16 +20,14 @@
 * [x] Kill useless cat.
 * [x] Update help function to support arbitrary prefixes for built-in documentation.
 * [x] Generate documentation in markdown format and convert it to HTML.
-* [ ] Formalize syntax for classes/objects: class::static_method, class.object_method self.
-* [ ] Release version 4.0.
 * [ ] Publish an article in Fedora Magazine.
-* [ ] Report bug in bash 5.1.0.
 * [ ] Ask bash developers for strict mode support, like in zsh, because it's critical for this project.
 * [ ] Use realpath instead of readlink -f, when possible.
-* [ ] Write a package manager for bash: bum, for strict bash code only.
+* [ ] Write a package manager for bash: bash-modules.
 * [ ] SPDX-License-Identifier: LGPL-2.1-or-later
 * [ ] Add __END__ function, which will just exit, and support for line delimited built-in help, like in perl.
 * [ ] Write an markdown parser for terminal, to show built-in manual with colors?
 * [ ] Add path module.
 * [ ] Add lock module.
 * [ ] Add is module.
+* [ ] Add log2file module.
