@@ -60,6 +60,10 @@
     img {
       max-width: 100%;
     }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
     h1, h2, h3, h4, h5, h6 {
       margin-top: 1.4em;
     }
@@ -163,9 +167,6 @@
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <header id="title-block-header">
@@ -174,13 +175,8 @@
 <h2 id="name">NAME</h2>
 <p><code>strict</code> - unofficial strict mode for bash</p>
 <p>Just import this module, to enabe strict mode:
-<code>set -euEo pipefail</code>.</p>
-<h2 id="note">NOTE</h2>
-<ul>
-<li>Option <code>-e</code> is not working when command is part of a
-compound command, or in subshell. See bash manual for details. For
-example, <code>-e</code> may not working in a <code>for</code>
-cycle.</li>
-</ul>
+<code>set -euEo pipefail</code> and
+<code>shopt -s inherit_errexit</code> . Also, it installs handler for
+ERR trap, to print stack trace on exit (requires log module).</p>
 </body>
 </html>
